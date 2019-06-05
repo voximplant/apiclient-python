@@ -5,8 +5,7 @@
 
 In order to use the Voximplant Python SDK, you need the following:
 1. A developer account. If you don't have one, [sign up here](https://voximplant.com/sign-up/).
-1. A private API key. 
-    1. To create it, call the [CreateKey](http://testsite.phpstend.internal/docs/references/httpapi/managing_role_system#createkey) HTTP API method with the specified [authentication parameters](https://voximplant.com/docs/references/httpapi/auth_parameters). You'll receive a response with the __result__ field in it. Save the __result__ value in a file (since we don't store the keys, save it securely on your side).
+1. A service account JSON. You can generate it in the [Voximplant Control panel](https://manage.voximplant.com/settings/service_accounts)
 1. Python 2.x or 3.x runtime with `pip` and `setuptools`>=18.5 installed
 
 ## How to use
@@ -23,7 +22,7 @@ Then import the SDK in your script
 from voximplant.apiclient import VoximplantAPI
 ```
 
-Next, specify the path to the file with the __result__ value either in the constructor or using the environment.
+Next, specify the path to the JSON service account file either in the constructor or using the environment.
 
 __constructor__:
 
