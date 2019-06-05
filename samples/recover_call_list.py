@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -7,5 +7,8 @@ if __name__ == "__main__":
 
     LIST_ID = 1
     
-    res = voxapi.recover_call_list(LIST_ID)
+    try:
+        res = voxapi.recover_call_list(LIST_ID)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

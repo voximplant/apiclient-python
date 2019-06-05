@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -10,5 +10,8 @@ if __name__ == "__main__":
     USER_ID = [12, 987, 456]
     ACD_QUEUE_NAME = "myqueue"
     
-    res = voxapi.bind_user_to_queue(BIND, application_id=APPLICATION_ID, user_id=USER_ID, acd_queue_name=ACD_QUEUE_NAME)
+    try:
+        res = voxapi.bind_user_to_queue(BIND, application_id=APPLICATION_ID, user_id=USER_ID, acd_queue_name=ACD_QUEUE_NAME)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

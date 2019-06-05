@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -8,5 +8,8 @@ if __name__ == "__main__":
     RULE_ID = "all"
     APPLICATION_ID = "all"
     
-    res = voxapi.del_rule(rule_id=RULE_ID, application_id=APPLICATION_ID)
+    try:
+        res = voxapi.del_rule(rule_id=RULE_ID, application_id=APPLICATION_ID)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

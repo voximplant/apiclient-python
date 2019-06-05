@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 import datetime
 import pytz
 
@@ -11,5 +11,8 @@ if __name__ == "__main__":
     TO_DATE = datetime.datetime(2014, 1, 1, 0, 0, 0, pytz.utc)
     COUNT = 1
     
-    res = voxapi.get_call_history(FROM_DATE, TO_DATE, count=COUNT)
+    try:
+        res = voxapi.get_call_history(FROM_DATE, TO_DATE, count=COUNT)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

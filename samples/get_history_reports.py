@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -7,5 +7,8 @@ if __name__ == "__main__":
 
     HISTORY_TYPE = "all"
     
-    res = voxapi.get_history_reports(history_type=HISTORY_TYPE)
+    try:
+        res = voxapi.get_history_reports(history_type=HISTORY_TYPE)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

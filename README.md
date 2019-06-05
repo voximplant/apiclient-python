@@ -39,7 +39,7 @@ export VOXIMPLANT_CREDENTIALS=/path/to/credentials.json
 ### Start a scenario
 
 ```python
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     api = VoximplantAPI("credentials.json")
@@ -50,13 +50,16 @@ if __name__ == "__main__":
     SCRIPT_CUSTOM_DATA = "mystr"
     USER_ID = 1
     
-    res = api.start_scenarios(RULE_ID, script_custom_data=SCRIPT_CUSTOM_DATA, user_id=USER_ID)
-    print res
+    try:
+        res = api.start_scenarios(RULE_ID, script_custom_data=SCRIPT_CUSTOM_DATA, user_id=USER_ID)
+        print(res)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
 ```
 
 ### Send an SMS
 ```python
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     api = VoximplantAPI("credentials.json")
@@ -67,13 +70,16 @@ if __name__ == "__main__":
     DESTINATION = "447443332212"
     SMS_BODY = "Test message"
     
-    res = api.send_sms_message(SOURCE, DESTINATION, SMS_BODY)
-    print res
+    try:
+        res = api.send_sms_message(SOURCE, DESTINATION, SMS_BODY)
+        print(res)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
 ```
 ### Get a call history item
 
 ```python
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 import pytz
 import datetime
 
@@ -86,8 +92,11 @@ if __name__ == "__main__":
     TO_DATE = datetime.datetime(2014, 1, 1, 0, 0, 0, pytz.utc)
     COUNT = 1
     
-    res = api.get_call_history(FROM_DATE, TO_DATE, count=COUNT)
-    print res
+    try:
+        res = api.get_call_history(FROM_DATE, TO_DATE, count=COUNT)
+        print(res)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
 
 ```
 

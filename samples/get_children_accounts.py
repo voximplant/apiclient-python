@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -7,5 +7,8 @@ if __name__ == "__main__":
 
     CHILD_ACCOUNT_EMAIL = "mychild@gmail.com"
     
-    res = voxapi.get_children_accounts(child_account_email=CHILD_ACCOUNT_EMAIL)
+    try:
+        res = voxapi.get_children_accounts(child_account_email=CHILD_ACCOUNT_EMAIL)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 import datetime
 import pytz
 
@@ -12,5 +12,8 @@ if __name__ == "__main__":
     WITH_EVENTS = True
     COUNT = 2
     
-    res = voxapi.get_acd_history(FROM_DATE, TO_DATE, with_events=WITH_EVENTS, count=COUNT)
+    try:
+        res = voxapi.get_acd_history(FROM_DATE, TO_DATE, with_events=WITH_EVENTS, count=COUNT)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

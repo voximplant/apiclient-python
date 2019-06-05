@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -9,5 +9,8 @@ if __name__ == "__main__":
     AMOUNT = "-10000000"
     STRICT_MODE = False
     
-    res = voxapi.transfer_money_to_child_account(CHILD_ACCOUNT_ID, AMOUNT, strict_mode=STRICT_MODE)
+    try:
+        res = voxapi.transfer_money_to_child_account(CHILD_ACCOUNT_ID, AMOUNT, strict_mode=STRICT_MODE)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

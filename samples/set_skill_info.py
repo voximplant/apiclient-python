@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -8,5 +8,8 @@ if __name__ == "__main__":
     NEW_SKILL_NAME = "Support"
     SKILL_ID = 1
     
-    res = voxapi.set_skill_info(NEW_SKILL_NAME, skill_id=SKILL_ID)
+    try:
+        res = voxapi.set_skill_info(NEW_SKILL_NAME, skill_id=SKILL_ID)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

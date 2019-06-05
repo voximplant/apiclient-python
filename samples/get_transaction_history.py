@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 import datetime
 import pytz
 
@@ -12,5 +12,8 @@ if __name__ == "__main__":
     COUNT = 3
     TRANSACTION_TYPE = ["gift", "money_distribution"]
     
-    res = voxapi.get_transaction_history(FROM_DATE, TO_DATE, count=COUNT, transaction_type=TRANSACTION_TYPE)
+    try:
+        res = voxapi.get_transaction_history(FROM_DATE, TO_DATE, count=COUNT, transaction_type=TRANSACTION_TYPE)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

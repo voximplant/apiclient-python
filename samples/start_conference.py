@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -10,5 +10,8 @@ if __name__ == "__main__":
     SCRIPT_CUSTOM_DATA = "mystr"
     USER_ID = 1
     
-    res = voxapi.start_conference(CONFERENCE_NAME, RULE_ID, script_custom_data=SCRIPT_CUSTOM_DATA, user_id=USER_ID)
+    try:
+        res = voxapi.start_conference(CONFERENCE_NAME, RULE_ID, script_custom_data=SCRIPT_CUSTOM_DATA, user_id=USER_ID)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

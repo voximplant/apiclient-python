@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -6,5 +6,8 @@ if __name__ == "__main__":
     # Get all active sip registrations
 
     
-    res = voxapi.get_sip_registrations()
+    try:
+        res = voxapi.get_sip_registrations()
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

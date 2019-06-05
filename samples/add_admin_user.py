@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -10,5 +10,8 @@ if __name__ == "__main__":
     NEW_ADMIN_USER_PASSWORD = "1234567"
     ADMIN_ROLE_ID = "1"
     
-    res = voxapi.add_admin_user(NEW_ADMIN_USER_NAME, ADMIN_USER_DISPLAY_NAME, NEW_ADMIN_USER_PASSWORD, admin_role_id=ADMIN_ROLE_ID)
+    try:
+        res = voxapi.add_admin_user(NEW_ADMIN_USER_NAME, ADMIN_USER_DISPLAY_NAME, NEW_ADMIN_USER_PASSWORD, admin_role_id=ADMIN_ROLE_ID)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

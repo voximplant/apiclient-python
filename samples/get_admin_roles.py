@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -10,5 +10,8 @@ if __name__ == "__main__":
     INCLUDED_ADMIN_USER_ID = 22
     COUNT = 2
     
-    res = voxapi.get_admin_roles(with_entries=WITH_ENTRIES, showing_admin_user_id=SHOWING_ADMIN_USER_ID, included_admin_user_id=INCLUDED_ADMIN_USER_ID, count=COUNT)
+    try:
+        res = voxapi.get_admin_roles(with_entries=WITH_ENTRIES, showing_admin_user_id=SHOWING_ADMIN_USER_ID, included_admin_user_id=INCLUDED_ADMIN_USER_ID, count=COUNT)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

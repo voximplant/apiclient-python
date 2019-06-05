@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -8,5 +8,8 @@ if __name__ == "__main__":
     REQUIRED_ADMIN_USER_ID = "all"
     ADMIN_ROLE_ID = [1, 2, 3]
     
-    res = voxapi.attach_admin_role(required_admin_user_id=REQUIRED_ADMIN_USER_ID, admin_role_id=ADMIN_ROLE_ID)
+    try:
+        res = voxapi.attach_admin_role(required_admin_user_id=REQUIRED_ADMIN_USER_ID, admin_role_id=ADMIN_ROLE_ID)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

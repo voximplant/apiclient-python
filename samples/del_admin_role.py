@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -7,5 +7,8 @@ if __name__ == "__main__":
 
     ADMIN_ROLE_ID = 10
     
-    res = voxapi.del_admin_role(admin_role_id=ADMIN_ROLE_ID)
+    try:
+        res = voxapi.del_admin_role(admin_role_id=ADMIN_ROLE_ID)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

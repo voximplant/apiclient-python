@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -7,5 +7,8 @@ if __name__ == "__main__":
 
     CALLERID_NUMBER = "79997770044"
     
-    res = voxapi.get_caller_ids(callerid_number=CALLERID_NUMBER)
+    try:
+        res = voxapi.get_caller_ids(callerid_number=CALLERID_NUMBER)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

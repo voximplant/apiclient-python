@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -8,5 +8,8 @@ if __name__ == "__main__":
     REGULATION_ADDRESS_ID = 1
     PHONE_ID = 1
     
-    res = voxapi.linkregulation_address(REGULATION_ADDRESS_ID, phone_id=PHONE_ID)
+    try:
+        res = voxapi.linkregulation_address(REGULATION_ADDRESS_ID, phone_id=PHONE_ID)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

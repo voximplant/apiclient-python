@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -7,5 +7,8 @@ if __name__ == "__main__":
 
     SIP_REGISTRATION_ID = 1
     
-    res = voxapi.delete_sip_registration(SIP_REGISTRATION_ID)
+    try:
+        res = voxapi.delete_sip_registration(SIP_REGISTRATION_ID)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

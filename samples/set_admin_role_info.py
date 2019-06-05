@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -10,5 +10,8 @@ if __name__ == "__main__":
     ALLOWED_ENTRIES = "all"
     DENIED_ENTRIES = ["DelUser", "DelApplication"]
     
-    res = voxapi.set_admin_role_info(admin_role_id=ADMIN_ROLE_ID, entry_modification_mode=ENTRY_MODIFICATION_MODE, allowed_entries=ALLOWED_ENTRIES, denied_entries=DENIED_ENTRIES)
+    try:
+        res = voxapi.set_admin_role_info(admin_role_id=ADMIN_ROLE_ID, entry_modification_mode=ENTRY_MODIFICATION_MODE, allowed_entries=ALLOWED_ENTRIES, denied_entries=DENIED_ENTRIES)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -8,5 +8,8 @@ if __name__ == "__main__":
     CHILD_ACCOUNT_ID = 1321
     ACTIVE = False
     
-    res = voxapi.set_child_account_info(child_account_id=CHILD_ACCOUNT_ID, active=ACTIVE)
+    try:
+        res = voxapi.set_child_account_info(child_account_id=CHILD_ACCOUNT_ID, active=ACTIVE)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

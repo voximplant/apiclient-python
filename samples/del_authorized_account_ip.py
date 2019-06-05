@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -7,5 +7,8 @@ if __name__ == "__main__":
 
     AUTHORIZED_IP = "92.255.220.0/24"
     
-    res = voxapi.del_authorized_account_ip(authorized_ip=AUTHORIZED_IP)
+    try:
+        res = voxapi.del_authorized_account_ip(authorized_ip=AUTHORIZED_IP)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

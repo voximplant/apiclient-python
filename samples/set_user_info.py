@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -8,5 +8,8 @@ if __name__ == "__main__":
     USER_ID = 1
     USER_PASSWORD = "7654321"
     
-    res = voxapi.set_user_info(user_id=USER_ID, user_password=USER_PASSWORD)
+    try:
+        res = voxapi.set_user_info(user_id=USER_ID, user_password=USER_PASSWORD)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

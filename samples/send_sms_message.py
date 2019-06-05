@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -9,5 +9,8 @@ if __name__ == "__main__":
     DESTINATION = "447443332212"
     SMS_BODY = "Test message"
     
-    res = voxapi.send_sms_message(SOURCE, DESTINATION, SMS_BODY)
+    try:
+        res = voxapi.send_sms_message(SOURCE, DESTINATION, SMS_BODY)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

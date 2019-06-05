@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 import datetime
 import pytz
 
@@ -13,5 +13,8 @@ if __name__ == "__main__":
     ADVANCED_FILTERS = "152"
     COUNT = 3
     
-    res = voxapi.get_audit_log(FROM_DATE, TO_DATE, filtered_cmd=FILTERED_CMD, advanced_filters=ADVANCED_FILTERS, count=COUNT)
+    try:
+        res = voxapi.get_audit_log(FROM_DATE, TO_DATE, filtered_cmd=FILTERED_CMD, advanced_filters=ADVANCED_FILTERS, count=COUNT)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

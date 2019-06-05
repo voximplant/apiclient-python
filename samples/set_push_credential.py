@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -9,5 +9,8 @@ if __name__ == "__main__":
     EXTERNAL_APP_NAME = "testapp"
     CERT_PASSWORD = "1234567"
     
-    res = voxapi.set_push_credential(PUSH_CREDENTIAL_ID, EXTERNAL_APP_NAME, cert_password=CERT_PASSWORD)
+    try:
+        res = voxapi.set_push_credential(PUSH_CREDENTIAL_ID, EXTERNAL_APP_NAME, cert_password=CERT_PASSWORD)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

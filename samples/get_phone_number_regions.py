@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -8,5 +8,8 @@ if __name__ == "__main__":
     COUNTRY_CODE = "RU"
     PHONE_CATEGORY_NAME = "GEOGRAPHIC"
     
-    res = voxapi.get_phone_number_regions(COUNTRY_CODE, PHONE_CATEGORY_NAME)
+    try:
+        res = voxapi.get_phone_number_regions(COUNTRY_CODE, PHONE_CATEGORY_NAME)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

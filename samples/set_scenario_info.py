@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -9,5 +9,8 @@ if __name__ == "__main__":
     SCENARIO_NAME = "scen11"
     SCENARIO_SCRIPT = "var s=\"hello world\";"
     
-    res = voxapi.set_scenario_info(scenario_id=SCENARIO_ID, scenario_name=SCENARIO_NAME, scenario_script=SCENARIO_SCRIPT)
+    try:
+        res = voxapi.set_scenario_info(scenario_id=SCENARIO_ID, scenario_name=SCENARIO_NAME, scenario_script=SCENARIO_SCRIPT)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

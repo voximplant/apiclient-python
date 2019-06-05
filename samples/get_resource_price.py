@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -8,5 +8,8 @@ if __name__ == "__main__":
     RESOURCE_TYPE = "PSTNOUT"
     RESOURCE_PARAM = "79263332211"
     
-    res = voxapi.get_resource_price(resource_type=RESOURCE_TYPE, resource_param=RESOURCE_PARAM)
+    try:
+        res = voxapi.get_resource_price(resource_type=RESOURCE_TYPE, resource_param=RESOURCE_PARAM)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

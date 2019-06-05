@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -7,5 +7,8 @@ if __name__ == "__main__":
 
     PHONE_NUMBER = "all"
     
-    res = voxapi.charge_account(phone_number=PHONE_NUMBER)
+    try:
+        res = voxapi.charge_account(phone_number=PHONE_NUMBER)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

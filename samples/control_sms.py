@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -8,5 +8,8 @@ if __name__ == "__main__":
     PHONE_NUMBER = "447443332211"
     COMMAND = "disable"
     
-    res = voxapi.control_sms(PHONE_NUMBER, COMMAND)
+    try:
+        res = voxapi.control_sms(PHONE_NUMBER, COMMAND)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

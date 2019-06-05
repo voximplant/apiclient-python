@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -7,5 +7,8 @@ if __name__ == "__main__":
 
     DIALOGFLOW_KEY_ID = 1
     
-    res = voxapi.get_dialogflow_keys(dialogflow_key_id=DIALOGFLOW_KEY_ID)
+    try:
+        res = voxapi.get_dialogflow_keys(dialogflow_key_id=DIALOGFLOW_KEY_ID)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

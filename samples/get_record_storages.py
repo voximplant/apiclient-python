@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -7,5 +7,8 @@ if __name__ == "__main__":
 
     RECORD_STORAGE_NAME = "ru1"
     
-    res = voxapi.get_record_storages(record_storage_name=RECORD_STORAGE_NAME)
+    try:
+        res = voxapi.get_record_storages(record_storage_name=RECORD_STORAGE_NAME)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

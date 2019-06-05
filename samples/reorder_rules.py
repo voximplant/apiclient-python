@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -7,5 +7,8 @@ if __name__ == "__main__":
 
     RULE_ID = [1, 7, 3]
     
-    res = voxapi.reorder_rules(RULE_ID)
+    try:
+        res = voxapi.reorder_rules(RULE_ID)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

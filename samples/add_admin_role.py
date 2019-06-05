@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
@@ -8,5 +8,8 @@ if __name__ == "__main__":
     ADMIN_ROLE_NAME = "read_only"
     ALLOWED_ENTRIES = ["GetAccountInfo", "GetCallHistory"]
     
-    res = voxapi.add_admin_role(ADMIN_ROLE_NAME, allowed_entries=ALLOWED_ENTRIES)
+    try:
+        res = voxapi.add_admin_role(ADMIN_ROLE_NAME, allowed_entries=ALLOWED_ENTRIES)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)

@@ -1,4 +1,4 @@
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPI, VoximplantException
 import datetime
 import pytz
 
@@ -14,5 +14,8 @@ if __name__ == "__main__":
     AGGREGATION = "hour"
     GROUP = "user"
     
-    res = voxapi.get_acd_operator_status_statistics(FROM_DATE, USER_ID, to_date=TO_DATE, acd_status=ACD_STATUS, aggregation=AGGREGATION, group=GROUP)
+    try:
+        res = voxapi.get_acd_operator_status_statistics(FROM_DATE, USER_ID, to_date=TO_DATE, acd_status=ACD_STATUS, aggregation=AGGREGATION, group=GROUP)
+    except VoximplantException as e:
+        print("Error: {}".format(e.message))
     print(res)
