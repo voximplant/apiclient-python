@@ -3,13 +3,13 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
 
-    # Delete all the users bound to the 'myapp1' application.
+    # Set roles 1, 2, 3 for the key.
 
-    USER_ID = "all"
-    APPLICATION_NAME = "myapp1"
+    KEY_ID = "ab81c76e-573e-4046-9af9-105269dfafca"
+    ROLE_ID = 1
     
     try:
-        res = voxapi.del_user(user_id=USER_ID, application_name=APPLICATION_NAME)
+        res = voxapi.set_key_roles(KEY_ID, role_id=ROLE_ID)
     except VoximplantException as e:
         print("Error: {}".format(e.message))
     print(res)

@@ -3,13 +3,13 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
 
-    # Delete all the users bound to the 'myapp1' application.
+    # Create a new subuser for account_id = 1.
 
-    USER_ID = "all"
-    APPLICATION_NAME = "myapp1"
+    KEY_ID = "ab98c70e-573e-4446-9af9-105269dfafca"
+    DESCRIPTION = "test_desc"
     
     try:
-        res = voxapi.del_user(user_id=USER_ID, application_name=APPLICATION_NAME)
+        res = voxapi.update_key(KEY_ID, DESCRIPTION)
     except VoximplantException as e:
         print("Error: {}".format(e.message))
     print(res)
