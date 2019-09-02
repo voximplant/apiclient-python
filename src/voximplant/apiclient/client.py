@@ -19,10 +19,16 @@ class VoximplantAPI:
     """Voximplant API access helper"""
 
     def _api_date_to_py(self, d):
-        return datetime.datetime.strptime(d, "%Y-%m-%d").date()
+        if d == "":
+            return None
+        else:
+            return datetime.datetime.strptime(d, "%Y-%m-%d").date()
 
     def _api_datetime_utc_to_py(self, d):
-        return datetime.datetime.strptime(d, "%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
+        if d == "":
+            return None
+        else:
+            return datetime.datetime.strptime(d, "%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
 
     def _py_datetime_to_api(self, d):
         if d.tzinfo is None:
@@ -43,7 +49,7 @@ class VoximplantAPI:
         params = args.copy()
         params["cmd"] = cmd
         headers={'Authorization': self.build_auth_header()}
-        result = requests.post("https://{}/platform_api".format(self.endpoint), params=params, headers=headers)
+        result = requests.post("https://{}/platform_api".format(self.endpoint), data=params, headers=headers)
         if result.headers.get("content-type","").split(";")[0].lower() == "application/json":
             return json.loads(result.text)
         else:
@@ -79,8 +85,7 @@ class VoximplantAPI:
         if "created" in s:
             s["created"] = self._api_datetime_utc_to_py(s["created"])
         if "billing_limits" in s:
-            for k in s["billing_limits"]:
-                self._preprocess_billing_limits_type(k)
+            self._preprocess_billing_limits_type(s["billing_limits"])
 
     def _preprocess_billing_limits_type(self, s):
         if "robokassa" in s:
@@ -1198,7 +1203,7 @@ class VoximplantAPI:
         Gets the resource price.
 
         
-        :param resource_type: The resource type list. The possible values are: ASR, AUDIORECORD, PSTN_IN_GB, PSTN_IN_GEOGRAPHIC, PSTN_IN_RU, PSTN_IN_RU_TOLLFREE, PSTN_IN_US, PSTN_IN_US_TF, PSTNOUT, SIPOUT, SIPOUTVIDEO, VOIPIN, VOIPOUT, VOIPOUTVIDEO 
+        :param resource_type: The resource type list. The possible values are: AUDIOHDCONFERENCE, AUDIOHDRECORD, AUDIORECORD, CALLLIST, CALLSESSION, DIALOGFLOW, IM, PSTN_IN_ALASKA, PSTN_IN_GB, PSTN_IN_GEOGRAPHIC, PSTN_IN_GEO_PH, PSTN_IN_RU, PSTN_IN_RU_TOLLFREE, PSTN_INTERNATIONAL, PSTNINTEST, PSTN_IN_TF_AR, PSTN_IN_TF_AT, PSTN_IN_TF_AU, PSTN_IN_TF_BE, PSTN_IN_TF_BR, PSTN_IN_TF_CA, PSTN_IN_TF_CO, PSTN_IN_TF_CY, PSTN_IN_TF_DE, PSTN_IN_TF_DK, PSTN_IN_TF_DO, PSTN_IN_TF_FI, PSTN_IN_TF_FR, PSTN_IN_TF_GB, PSTN_IN_TF_HR, PSTN_IN_TF_HU, PSTN_IN_TF_IL, PSTN_IN_TF_LT, PSTN_IN_TF_PE, PSTN_IN_TF_US, PSTN_IN_US, PSTNOUT, PSTNOUT_EEA, PSTNOUTEMERG, PSTNOUT_KZ, PSTNOUT_LOCAL, PSTN_OUT_LOCAL_RU, RELAYED_TRAFFIC, SIPOUT, SIPOUTVIDEO, SMSINPUT, SMSOUT, SMSOUT_INTERNATIONAL, TRANSCRIPTION, TTS_TEXT_GOOGLE, TTS_YANDEX, USER_LOGON, VIDEOCALL, VIDEORECORD, VOICEMAILDETECTION, VOIPIN, VOIPOUT, VOIPOUTVIDEO, YANDEXASR, ASR, ASR_GOOGLE_ENHANCED 
         :type resource_type: list | string
         
         :param price_group_id: The price group ID list. 
@@ -1706,7 +1711,7 @@ class VoximplantAPI:
                 self._preprocess_application_info_type(p)
         return res
 
-    def add_user(self, user_name, user_display_name, user_password, application_id=None, application_name=None, mobile_phone=None, user_active=None, user_custom_data=None):
+    def add_user(self, user_name, user_display_name, user_password, application_id=None, application_name=None, parent_accounting=None, mobile_phone=None, user_active=None, user_custom_data=None):
         """
         Adds a new user.
 
@@ -1725,6 +1730,9 @@ class VoximplantAPI:
         
         :param application_name: The application name which new user will be bound to. Could be used instead of the <b>application_id</b> parameter. 
         :type application_name: str
+        
+        :param parent_accounting: 'True' if the user will use the parent account's money, 'false' if the user will have a separate balance. 
+        :type parent_accounting: bool
         
         :param mobile_phone: The user mobile phone. The length must be less than 50. 
         :type mobile_phone: str
@@ -1763,6 +1771,9 @@ class VoximplantAPI:
 
         if application_name is not None:
             params['application_name']=application_name
+
+        if parent_accounting is not None:
+            params['parent_accounting']=parent_accounting
 
         if mobile_phone is not None:
             params['mobile_phone']=mobile_phone
@@ -1843,7 +1854,7 @@ class VoximplantAPI:
         
         return res
 
-    def set_user_info(self, user_id=None, user_name=None, application_id=None, application_name=None, new_user_name=None, user_display_name=None, user_password=None, user_active=None, user_custom_data=None, mobile_phone=None):
+    def set_user_info(self, user_id=None, user_name=None, application_id=None, application_name=None, new_user_name=None, user_display_name=None, user_password=None, parent_accounting=None, user_active=None, user_custom_data=None, mobile_phone=None):
         """
         Edits the user.
 
@@ -1868,6 +1879,9 @@ class VoximplantAPI:
         
         :param user_password: The new user password. The length must be at least 6 symbols. 
         :type user_password: str
+        
+        :param parent_accounting:  Set 'true' to use the parent account's money, 'false' to use a separate user balance. 
+        :type parent_accounting: bool
         
         :param user_active: The user enable flag 
         :type user_active: bool
@@ -1925,6 +1939,9 @@ class VoximplantAPI:
 
         if user_password is not None:
             params['user_password']=user_password
+
+        if parent_accounting is not None:
+            params['parent_accounting']=parent_accounting
 
         if user_active is not None:
             params['user_active']=user_active
@@ -2081,9 +2098,101 @@ class VoximplantAPI:
                 self._preprocess_user_info_type(p)
         return res
 
+    def transfer_money_to_user(self, amount, user_id=None, user_name=None, application_id=None, application_name=None, currency=None, strict_mode=None, user_transaction_description=None, account_transaction_description=None):
+        """
+        Transfer the account's money to the user or transfer the user's money to the account if the money amount is negative.
+
+        
+        :param amount: The money amount, $. The absolute amount value must be equal or greater than 0.01 
+        :type amount: decimal
+        
+        :param user_id: The user ID list or the 'all' value. 
+        :type user_id: list | int | string
+        
+        :param user_name: The user name list that can be used instead of <b>user_id</b>. 
+        :type user_name: list | string
+        
+        :param application_id: The application ID. It is required if the <b>user_name</b> is specified. 
+        :type application_id: int
+        
+        :param application_name: The application name that can be used instead of <b>application_id</b>. 
+        :type application_name: str
+        
+        :param currency: The amount currency. Examples: RUR, EUR, USD. 
+        :type currency: str
+        
+        :param strict_mode: Returns error if strict_mode is true and a user or the account hasn't enough money. 
+        :type strict_mode: bool
+        
+        :param user_transaction_description: The user transaction description. 
+        :type user_transaction_description: str
+        
+        :param account_transaction_description: The account transaction description. The following macro available: ${user_id}, ${user_name} 
+        :type account_transaction_description: str
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if user_id is not None:
+            passed_args.append('user_id')
+        if user_name is not None:
+            passed_args.append('user_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into transfer_money_to_user")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of user_id, user_name passed into transfer_money_to_user")
+        
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into transfer_money_to_user")
+        
+        
+        params['amount']=amount
+
+        
+        if user_id is not None:
+            params['user_id']=self._serialize_list(user_id)
+
+        if user_name is not None:
+            params['user_name']=self._serialize_list(user_name)
+
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if currency is not None:
+            params['currency']=currency
+
+        if strict_mode is not None:
+            params['strict_mode']=strict_mode
+
+        if user_transaction_description is not None:
+            params['user_transaction_description']=user_transaction_description
+
+        if account_transaction_description is not None:
+            params['account_transaction_description']=account_transaction_description
+
+        
+        res = self._perform_request('TransferMoneyToUser', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"])
+        
+        return res
+
     def create_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, queue_id=None, avg_waiting_sec=None, encoding=None, delimiter=None, escape=None, reference_ip=None):
         """
-        Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the options ____start_execution_time__ and ____end_execution_time__ in CSV file. Time is in UTC+0 24-h format: HH:mm:ss. <b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing won't start, or it stops immediately if it was active.
+        Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the following options in a CSV file: <ul><li>____start_execution_time__ – when the call list processing will start every day</li><li>____end_execution_time__ – when the call list processing will stop every day</li><li>____start_at__ – when the call list processing will start. If not specified, the processing will start immediately after a method call.</li></ul><br/>Time is in UTC+0 24-h format: HH:mm:ss. <b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing won't start, or it stops immediately if it was active.
 
         
         :param rule_id: The rule ID. It's specified in the <a href='//manage.voximplant.com/#applications'>Applications</a> section of the Control Panel 
@@ -4621,7 +4730,7 @@ class VoximplantAPI:
         :param phone_count: The phone count to attach. 
         :type phone_count: int
         
-        :param phone_number: The phone number that can be used instead of <b>phone_count</b>. See the <a href='//voximplant.com/docs/references/httpapi/managing_phone_numbers#getphonenumbers'>GetNewPhoneNumbers</a> method. 
+        :param phone_number: The phone number that can be used instead of <b>phone_count</b>. See the [GetNewPhoneNumbers] method. 
         :type phone_number: str
         
         :param country_state: The country state. See the <a href='//voximplant.com/docs/references/httpapi/managing_phone_numbers#getphonenumbercategories'>GetPhoneNumberCategories</a> and <a href='//voximplant.com/docs/references/httpapi/managing_phone_numbers#getphonenumbercountrystates'>GetPhoneNumberCountryStates</a> methods. 
