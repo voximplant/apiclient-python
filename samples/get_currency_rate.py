@@ -2,13 +2,14 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
+    
+    # Get the current currency rate: RUR/USD.
 
-    # Get the current currency rates: RUR/USD and EUR/USD.
-
-    CURRENCY = ["RUR", "EUR"]
+    CURRENCY = "RUR"
     
     try:
         res = voxapi.get_currency_rate(CURRENCY)
+        print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))
-    print(res)
+    

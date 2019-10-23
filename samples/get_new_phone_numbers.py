@@ -2,7 +2,7 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
-
+    
     # Get the two new fixed Russian phone numbers at max.
 
     COUNTRY_CODE = "RU"
@@ -11,7 +11,11 @@ if __name__ == "__main__":
     COUNT = 2
     
     try:
-        res = voxapi.get_new_phone_numbers(COUNTRY_CODE, PHONE_CATEGORY_NAME, PHONE_REGION_ID, count=COUNT)
+        res = voxapi.get_new_phone_numbers(COUNTRY_CODE,
+            PHONE_CATEGORY_NAME,
+            PHONE_REGION_ID,
+            count=COUNT)
+        print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))
-    print(res)
+    

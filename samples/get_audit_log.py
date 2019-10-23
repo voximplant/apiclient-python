@@ -1,11 +1,12 @@
 from voximplant.apiclient import VoximplantAPI, VoximplantException
-import datetime
 import pytz
+import datetime
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
-
-    # Get the three log items from the 2018-02-01 00:00:00 to the 2018-03-01 00:00:00 and filter.
+    
+    # Get the three log items from the 2018-02-01 00:00:00 to the
+    # 2018-03-01 00:00:00 and filter.
 
     FROM_DATE = datetime.datetime(2018, 2, 1, 0, 0, 0, pytz.utc)
     TO_DATE = datetime.datetime(2018, 3, 1, 0, 0, 0, pytz.utc)
@@ -14,7 +15,12 @@ if __name__ == "__main__":
     COUNT = 3
     
     try:
-        res = voxapi.get_audit_log(FROM_DATE, TO_DATE, filtered_cmd=FILTERED_CMD, advanced_filters=ADVANCED_FILTERS, count=COUNT)
+        res = voxapi.get_audit_log(FROM_DATE,
+            TO_DATE,
+            filtered_cmd=FILTERED_CMD,
+            advanced_filters=ADVANCED_FILTERS,
+            count=COUNT)
+        print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))
-    print(res)
+    

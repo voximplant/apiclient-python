@@ -2,7 +2,7 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
-
+    
     # Bind three users to one queue.
 
     BIND = True
@@ -11,7 +11,11 @@ if __name__ == "__main__":
     ACD_QUEUE_NAME = "myqueue"
     
     try:
-        res = voxapi.bind_user_to_queue(BIND, application_id=APPLICATION_ID, user_id=USER_ID, acd_queue_name=ACD_QUEUE_NAME)
+        res = voxapi.bind_user_to_queue(BIND,
+            application_id=APPLICATION_ID,
+            user_id=USER_ID,
+            acd_queue_name=ACD_QUEUE_NAME)
+        print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))
-    print(res)
+    

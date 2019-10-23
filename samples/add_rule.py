@@ -2,7 +2,7 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
-
+    
     # Add a new rule.
 
     RULE_NAME = "allowall"
@@ -10,7 +10,10 @@ if __name__ == "__main__":
     APPLICATION_ID = 1
     
     try:
-        res = voxapi.add_rule(RULE_NAME, RULE_PATTERN, application_id=APPLICATION_ID)
+        res = voxapi.add_rule(RULE_NAME,
+            RULE_PATTERN,
+            application_id=APPLICATION_ID)
+        print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))
-    print(res)
+    
