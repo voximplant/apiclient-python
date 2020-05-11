@@ -3,14 +3,16 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Add a new scenario: var s='hello';
+    # Enable the auto charging.
 
-    SCENARIO_NAME = "scen1"
-    SCENARIO_SCRIPT = "var s=\"hello\";"
+    AUTO_CHARGE = True
+    MIN_BALANCE = "5"
+    CARD_OVERRUN_VALUE = "10"
     
     try:
-        res = voxapi.add_scenario(SCENARIO_NAME,
-            scenario_script=SCENARIO_SCRIPT)
+        res = voxapi.config_card_payments(auto_charge=AUTO_CHARGE,
+            min_balance=MIN_BALANCE,
+            card_overrun_value=CARD_OVERRUN_VALUE)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

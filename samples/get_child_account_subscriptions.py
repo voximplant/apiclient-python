@@ -3,14 +3,14 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Add a new scenario: var s='hello';
+    # Get the subscription with ID = 20.
 
-    SCENARIO_NAME = "scen1"
-    SCENARIO_SCRIPT = "var s=\"hello\";"
+    CHILD_ACCOUNT_ID = 10
+    SUBSCRIPTION_ID = 20
     
     try:
-        res = voxapi.add_scenario(SCENARIO_NAME,
-            scenario_script=SCENARIO_SCRIPT)
+        res = voxapi.get_child_account_subscriptions(CHILD_ACCOUNT_ID,
+            subscription_id=SUBSCRIPTION_ID)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))
