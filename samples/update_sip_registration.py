@@ -6,7 +6,7 @@ if __name__ == "__main__":
     # Update SIP registration with id 1.
 
     SIP_REGISTRATION_ID = 1
-    SIP_USERNAME = "test"
+    SIP_USERNAME = "HedyLamarr"
     OUTBOUND_PROXY = "12"
     PASSWORD = "123456"
     

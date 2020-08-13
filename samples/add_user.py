@@ -5,8 +5,8 @@ if __name__ == "__main__":
     
     # Add a new user.
 
-    USER_NAME = "iden1"
-    USER_DISPLAY_NAME = "iden1"
+    USER_NAME = "GordonFreeman"
+    USER_DISPLAY_NAME = "GordonFreeman"
     USER_PASSWORD = "1234567"
     APPLICATION_ID = 1
     

@@ -5,7 +5,7 @@ if __name__ == "__main__":
     
     # Create SIP registration.
 
-    SIP_USERNAME = "test"
+    SIP_USERNAME = "JohnGalt"
     PROXY = "localhost"
     
     try:

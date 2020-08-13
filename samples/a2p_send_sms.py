@@ -4,16 +4,17 @@ if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
     # Send the SMS message with the text "Test message" from the phone
-    # number 447443332211 to the phone number 447443332212.
+    # number 447443332211 to the phone numbers 447443332212 and
+    # 447443332213.
 
-    SOURCE = "447443332211"
-    DESTINATION = "447443332212"
-    SMS_BODY = "Test message"
+    SRC_NUMBER = "447443332211"
+    DST_NUMBERS = "447443332212"
+    TEXT = "Test message"
     
     try:
-        res = voxapi.send_sms_message(SOURCE,
-            DESTINATION,
-            SMS_BODY)
+        res = voxapi.a2p_send_sms(SRC_NUMBER,
+            DST_NUMBERS,
+            TEXT)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

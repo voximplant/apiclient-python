@@ -5,8 +5,8 @@ if __name__ == "__main__":
     
     # Add a new admin user.
 
-    NEW_ADMIN_USER_NAME = "adm1"
-    ADMIN_USER_DISPLAY_NAME = "adm1"
+    NEW_ADMIN_USER_NAME = "Overseer_Campbell"
+    ADMIN_USER_DISPLAY_NAME = "Overseer_Campbell"
     NEW_ADMIN_USER_PASSWORD = "1234567"
     ADMIN_ROLE_ID = "1"
     

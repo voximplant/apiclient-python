@@ -6,7 +6,7 @@ if __name__ == "__main__":
     # Add a new scenario: var s='hello';
 
     SCENARIO_ID = 1
-    SCENARIO_NAME = "scen11"
+    SCENARIO_NAME = "call_scenario"
     SCENARIO_SCRIPT = "var s=\"hello world\";"
     
     try:

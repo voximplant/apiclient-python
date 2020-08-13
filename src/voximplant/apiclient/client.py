@@ -668,6 +668,9 @@ class VoximplantAPI:
         if "balance_is_changed" in s:
             self._preprocess_balance_is_changed(s["balance_is_changed"])
 
+    def _preprocess_a2p_sms_delivery_callback(self, s):
+            pass
+
     def _preprocess_account_document_uploaded_callback(self, s):
         if "uploaded" in s:
             s["uploaded"] = self._api_datetime_utc_to_py(s["uploaded"])
@@ -871,6 +874,12 @@ class VoximplantAPI:
         if "mgp_deactivated" in s:
             s["mgp_deactivated"] = self._api_date_to_py(s["mgp_deactivated"])
 
+    def _preprocess_sms_transaction(self, s):
+            pass
+
+    def _preprocess_failed_sms(self, s):
+            pass
+
     def _preprocess_mgp_template_info(self, s):
             pass
 
@@ -909,6 +918,10 @@ class VoximplantAPI:
     def _preprocess_sms_history_type(self, s):
         if "processed_date" in s:
             s["processed_date"] = self._api_date_to_py(s["processed_date"])
+
+    def _preprocess_a2p_sms_history_type(self, s):
+        if "processing_date" in s:
+            s["processing_date"] = self._api_date_to_py(s["processing_date"])
 
     def _preprocess_expired_agreement_callback(self, s):
             pass
@@ -1816,59 +1829,9 @@ class VoximplantAPI:
         
         return res
 
-    def create_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, queue_id=None, avg_waiting_sec=None, encoding=None, delimiter=None, escape=None, reference_ip=None):
-        """
-        Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the following options in a CSV file: <ul><li>**__start_execution_time** – when the call list processing will start every day, UTC+0 24-h format: HH:mm:ss</li><li>**__end_execution_time** – when the call list processing will stop every day,  UTC+0 24-h format: HH:mm:ss</li><li>**__start_at** – when the call list processing will start, UNIX timestamp. If not specified, the processing will start immediately after a method call</li></ul><br/><b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing won't start, or it stops immediately if it was active.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        params['rule_id']=rule_id
-
-        params['priority']=priority
-
-        params['max_simultaneous']=max_simultaneous
-
-        params['num_attempts']=num_attempts
-
-        params['name']=name
-
-        params['file_content']=file_content
-
-        
-        if interval_seconds is not None:
-            params['interval_seconds']=interval_seconds
-
-        if queue_id is not None:
-            params['queue_id']=queue_id
-
-        if avg_waiting_sec is not None:
-            params['avg_waiting_sec']=avg_waiting_sec
-
-        if encoding is not None:
-            params['encoding']=encoding
-
-        if delimiter is not None:
-            params['delimiter']=delimiter
-
-        if escape is not None:
-            params['escape']=escape
-
-        if reference_ip is not None:
-            params['reference_ip']=reference_ip
-
-        
-        res = self._perform_request('CreateCallList', params)
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        return res
-
     def create_manual_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, encoding=None, delimiter=None, escape=None, reference_ip=None):
         """
-        Adds a new CSV file for manual call list processing and bind it with the specified rule. To send a file, use the request body. To start processing calls, use the function <a href='//voximplant.com/docs/references/httpapi/managing_call_lists#startnextcalltask'>StartNextCallTask</a>. <b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing won't start, or it stops immediately if it was active.
+        Adds a new CSV file for manual call list processing and bind it with the specified rule. To send a file, use the request body. To start processing calls, use the function [StartNextCallTask]. <b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing won't start, or it stops immediately if it was active.
 
         
         :rtype: dict
@@ -1927,52 +1890,6 @@ class VoximplantAPI:
 
         
         res = self._perform_request('StartNextCallTask', params)
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        return res
-
-    def append_to_call_list(self, file_content, list_id=None, list_name=None, encoding=None, escape=None, delimiter=None):
-        """
-        Appending a new task to the existing call list.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        passed_args = []
-        if list_id is not None:
-            passed_args.append('list_id')
-        if list_name is not None:
-            passed_args.append('list_name')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into append_to_call_list")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of list_id, list_name passed into append_to_call_list")
-        
-        
-        params['file_content']=file_content
-
-        
-        if list_id is not None:
-            params['list_id']=list_id
-
-        if list_name is not None:
-            params['list_name']=list_name
-
-        if encoding is not None:
-            params['encoding']=encoding
-
-        if escape is not None:
-            params['escape']=escape
-
-        if delimiter is not None:
-            params['delimiter']=delimiter
-
-        
-        res = self._perform_request('AppendToCallList', params)
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
@@ -2674,7 +2591,7 @@ class VoximplantAPI:
 
     def reorder_rules(self, rule_id):
         """
-        Configures the rules' order in the <a href='//manage.voximplant.com/#editApplication'>Applications</a> section of Control panel. Note: the rules must belong to the same application!
+        Configures the rules' order in the <a href='//manage.voximplant.com/applications'>Applications</a> section of Control panel. Note: the rules must belong to the same application!
 
         
         :rtype: dict
@@ -4763,51 +4680,6 @@ class VoximplantAPI:
         
         return res
 
-    def config_card_payments(self, auto_charge=None, min_balance=None, card_overrun_value=None):
-        """
-        Configure the credit card payments.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        
-        if auto_charge is not None:
-            params['auto_charge']=auto_charge
-
-        if min_balance is not None:
-            params['min_balance']=min_balance
-
-        if card_overrun_value is not None:
-            params['card_overrun_value']=card_overrun_value
-
-        
-        res = self._perform_request('ConfigCardPayments', params)
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        return res
-
-    def get_payment_credentials(self):
-        """
-        Gets the saved credit cards.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        
-        
-        res = self._perform_request('GetPaymentCredentials', params)
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        if "result" in res:
-            for p in res["result"]:
-                self._preprocess_bank_card_type(p)
-        return res
-
     def get_account_documents(self, with_details=None, verification_name=None, verification_status=None, from_unverified_hold_until=None, to_unverified_hold_until=None, child_account_id=None, children_verifications_only=None):
         """
         Gets the account documents and the verification states.
@@ -5928,7 +5800,7 @@ class VoximplantAPI:
 
     def send_sms_message(self, source, destination, sms_body):
         """
-        Send SMS message between two phone numbers. The source phone number should be purchased from Voximplant and support SMS (which is indicated by the <b>is_sms_supported</b> property in the objects returned by the <a href='//voximplant.com/docs/references/httpapi/managing_phone_numbers#getphonenumbers'>/GetPhoneNumbers</a> HTTP API) and SMS should be enabled for it via the <a href='//voximplant.com/docs/references/httpapi/managing_sms#controlsms'>/ControlSms</a> HTTP API. SMS messages can be received via HTTP callbacks, see <a href='//voximplant.com/blog/http-api-callbacks'>this article</a> for details.
+        Send SMS message between two phone numbers. The source phone number should be purchased from Voximplant and support SMS (which is indicated by the <b>is_sms_supported</b> property in the objects returned by the [GetPhoneNumbers] HTTP API) and SMS should be enabled for it via the [ControlSms] HTTP API. SMS messages can be received via HTTP callbacks, see <a href='/docs/howtos/integration/httpapi/callbacks'>this article</a> for details.
 
         
         :rtype: dict
@@ -5949,9 +5821,34 @@ class VoximplantAPI:
         
         return res
 
+    def a2p_send_sms(self, src_number, dst_numbers, text):
+        """
+        Send SMS message from the application to customers. The source phone number should be purchased from Voximplant and support SMS (which is indicated by the <b>is_sms_supported</b> property in the objects returned by the <a href='//voximplant.com/docs/references/httpapi/managing_phone_numbers#getphonenumbers'>/GetPhoneNumbers</a> HTTP API) and SMS should be enabled for it via the <a href='//voximplant.com/docs/references/httpapi/managing_sms#controlsms'>/ControlSms</a> HTTP API.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['src_number']=src_number
+
+        params['dst_numbers']=self._serialize_list(dst_numbers)
+
+        params['text']=text
+
+        
+        
+        res = self._perform_request('A2PSendSms', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            for p in res["result"]:
+                self._preprocess_sms_transaction(p)
+        return res
+
     def control_sms(self, phone_number, command):
         """
-        Enable or disable SMS sending and receiving for the phone number. Can be used only for phone numbers with SMS support, which is indicated by the <b>is_sms_supported</b> property in the objects returned by the <a href='//voximplant.com/docs/references/httpapi/managing_phone_numbers#getphonenumbers'>/GetPhoneNumbers</a> HTTP API. Each inbound SMS message is billed according to the <a href='//voximplant.com/pricing'>pricing</a>. If enabled, SMS can be sent from this phone number using the <a href='//voximplant.com/docs/references/httpapi/managing_sms#sendsmsmessage'>/SendSmsMessage</a> HTTP API and received using the [InboundSmsCallback] property of the HTTP callback. See <a href='//voximplant.com/blog/http-api-callbacks'>this article</a> for HTTP callback details.
+        Enable or disable SMS sending and receiving for the phone number. Can be used only for phone numbers with SMS support, which is indicated by the <b>is_sms_supported</b> property in the objects returned by the [GetPhoneNumbers] HTTP API. Each inbound SMS message is billed according to the <a href='//voximplant.com/pricing'>pricing</a>. If enabled, SMS can be sent from this phone number using the [SendSmsMessage] HTTP API and received using the [InboundSmsCallback] property of the HTTP callback. See <a href='/docs/howtos/integration/httpapi/callbacks'>this article</a> for HTTP callback details.
 
         
         :rtype: dict
@@ -6594,4 +6491,47 @@ class VoximplantAPI:
         if "result" in res:
             for p in res["result"]:
                 self._preprocess_sms_history_type(p)
+        return res
+
+    def a2p_get_sms_history(self, source_number=None, destination_number=None, count=None, offset=None, from_date=None, to_date=None, output=None, delivery_status=None):
+        """
+        Get history of sent/or received A2P SMS.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        
+        if source_number is not None:
+            params['source_number']=source_number
+
+        if destination_number is not None:
+            params['destination_number']=destination_number
+
+        if count is not None:
+            params['count']=count
+
+        if offset is not None:
+            params['offset']=offset
+
+        if from_date is not None:
+            params['from_date']=self._py_datetime_to_api(from_date)
+
+        if to_date is not None:
+            params['to_date']=self._py_datetime_to_api(to_date)
+
+        if output is not None:
+            params['output']=output
+
+        if delivery_status is not None:
+            params['delivery_status']=delivery_status
+
+        
+        res = self._perform_request('A2PGetSmsHistory', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            for p in res["result"]:
+                self._preprocess_a2p_sms_history_type(p)
         return res
