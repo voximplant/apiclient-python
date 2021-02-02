@@ -41,7 +41,7 @@ class VoximplantAPI:
     def build_auth_header(self):
         ts = int(time.time())
         token = jwt.encode({"iss":self.account_id, "iat":ts-5, "exp":ts+24}, self.credentials["private_key"], algorithm='RS256', headers={"kid": self.credentials["key_id"]})
-        if sys.version_info[0] < 3:
+        if isinstance(token, str):
             return 'Bearer '+token
         else:
             return 'Bearer '+token.decode("utf-8")
