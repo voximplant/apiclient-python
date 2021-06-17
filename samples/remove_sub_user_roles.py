@@ -3,7 +3,7 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Remove roles 1,2,3 from the subuser with id = 12
+    # Remove roles 1,2,3 from the subuser with id = 12.
 
     SUBUSER_ID = 12
     ROLE_ID = 1

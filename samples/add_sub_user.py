@@ -3,7 +3,7 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Create a new subuser for account_id = 1
+    # Create a new subuser for account_id = 1.
 
     NEW_SUBUSER_NAME = "John_McClane"
     NEW_SUBUSER_PASSWORD = "pssw0rd"

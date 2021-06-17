@@ -3,7 +3,7 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Search available regulation address
+    # Search available regulation address.
 
     COUNTRY_CODE = "DE"
     PHONE_CATEGORY_NAME = "GEOGRAPHIC"

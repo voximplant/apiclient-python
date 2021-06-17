@@ -3,12 +3,16 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Cancel list with id = 1.
+    # Edit settings of the agent with id = 2.
 
-    LIST_ID = 1
+    APPLICATION_ID = 1
+    USER_ID = 2
+    HANDLE_CALLS = True
     
     try:
-        res = voxapi.stop_call_list_processing(LIST_ID)
+        res = voxapi.sq__set_agent_info(APPLICATION_ID,
+            USER_ID,
+            HANDLE_CALLS)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

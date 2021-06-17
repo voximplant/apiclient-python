@@ -3,12 +3,12 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Cancel list with id = 1.
+    # Get allowed IM plans to change.
 
-    LIST_ID = 1
+    PLAN_TYPE = "IM"
     
     try:
-        res = voxapi.stop_call_list_processing(LIST_ID)
+        res = voxapi.get_available_plans(plan_type=PLAN_TYPE)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

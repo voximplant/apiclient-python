@@ -3,12 +3,14 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Cancel list with id = 1.
+    # Get all agents with their current statuses.
 
-    LIST_ID = 1
+    APPLICATION_ID = 1
+    WITH_SQ_STATUSES = True
     
     try:
-        res = voxapi.stop_call_list_processing(LIST_ID)
+        res = voxapi.sq__get_agents(APPLICATION_ID,
+            with_sq_statuses=WITH_SQ_STATUSES)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

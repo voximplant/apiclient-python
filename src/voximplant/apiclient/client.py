@@ -150,9 +150,6 @@ class VoximplantAPI:
     def _preprocess_application_info_type(self, s):
         if "modified" in s:
             s["modified"] = self._api_datetime_utc_to_py(s["modified"])
-        if "users" in s:
-            for k in s["users"]:
-                self._preprocess_user_info_type(k)
 
     def _preprocess_cloned_application_type(self, s):
         if "users" in s:
@@ -507,7 +504,10 @@ class VoximplantAPI:
             s["dt_complete"] = self._api_datetime_utc_to_py(s["dt_complete"])
 
     def _preprocess_call_list_detail_type(self, s):
-            pass
+        if "start_execution_time" in s:
+            s["start_execution_time"] = self._api_datetime_utc_to_py(s["start_execution_time"])
+        if "finish_execution_time" in s:
+            s["finish_execution_time"] = self._api_datetime_utc_to_py(s["finish_execution_time"])
 
     def _preprocess_sip_registration_type(self, s):
         if "next_subscription_renewal" in s:
@@ -655,6 +655,8 @@ class VoximplantAPI:
             self._preprocess_expired_caller_id_callback(s["expired_callerid"])
         if "transcription_complete" in s:
             self._preprocess_transcription_complete_callback(s["transcription_complete"])
+        if "classification_complete" in s:
+            self._preprocess_classification_complete_callback(s["classification_complete"])
         if "sms_inbound" in s:
             self._preprocess_inbound_sms_callback(s["sms_inbound"])
         if "new_invoice" in s:
@@ -667,6 +669,20 @@ class VoximplantAPI:
             self._preprocess_restored_agreement_status_callback(s["restored_agreement_status"])
         if "balance_is_changed" in s:
             self._preprocess_balance_is_changed(s["balance_is_changed"])
+        if "next_charge_alert" in s:
+            self._preprocess_next_charge_alert_callback(s["next_charge_alert"])
+        if "certificate_expired" in s:
+            self._preprocess_certificate_expired_callback(s["certificate_expired"])
+        if "expired_certificates" in s:
+            self._preprocess_expired_certificate_callback(s["expired_certificates"])
+        if "expiring_certificates" in s:
+            self._preprocess_expiring_certificate_callback(s["expiring_certificates"])
+        if "account_document_status_updated" in s:
+            self._preprocess_account_document_status_updated_callback(s["account_document_status_updated"])
+        if "a2p_sms_activated" in s:
+            self._preprocess_a2p_activated_callback(s["a2p_sms_activated"])
+        if "regulation_address_documents_requested" in s:
+            self._preprocess_regulation_address_documents_requested_callback(s["regulation_address_documents_requested"])
 
     def _preprocess_a2p_sms_delivery_callback(self, s):
             pass
@@ -735,6 +751,9 @@ class VoximplantAPI:
     def _preprocess_renewed_subscriptions_callback_item(self, s):
         if "next_renewal" in s:
             s["next_renewal"] = self._api_date_to_py(s["next_renewal"])
+        if "details" in s:
+            for k in s["details"]:
+                self._preprocess_subscription_callback_details(k)
 
     def _preprocess_reset_account_password_request_callback(self, s):
             pass
@@ -748,7 +767,9 @@ class VoximplantAPI:
                 self._preprocess_subscription_is_detached_callback_item(k)
 
     def _preprocess_subscription_is_detached_callback_item(self, s):
-            pass
+        if "details" in s:
+            for k in s["details"]:
+                self._preprocess_subscription_callback_details(k)
 
     def _preprocess_subscription_is_frozen_callback(self, s):
         if "subscriptions" in s:
@@ -756,7 +777,9 @@ class VoximplantAPI:
                 self._preprocess_subscription_is_frozen_callback_item(k)
 
     def _preprocess_subscription_is_frozen_callback_item(self, s):
-            pass
+        if "details" in s:
+            for k in s["details"]:
+                self._preprocess_subscription_callback_details(k)
 
     def _preprocess_stagnant_account_callback(self, s):
             pass
@@ -779,7 +802,9 @@ class VoximplantAPI:
                 self._preprocess_unverified_subscription_detached_callback_item(k)
 
     def _preprocess_unverified_subscription_detached_callback_item(self, s):
-            pass
+        if "details" in s:
+            for k in s["details"]:
+                self._preprocess_subscription_callback_details(k)
 
     def _preprocess_expiring_caller_id_callback(self, s):
         if "expiration_date" in s:
@@ -795,9 +820,66 @@ class VoximplantAPI:
     def _preprocess_transcription_complete_callback_item(self, s):
             pass
 
+    def _preprocess_classification_complete_callback(self, s):
+        if "classification_complete" in s:
+            self._preprocess_classification_complete_callback_item(s["classification_complete"])
+
+    def _preprocess_classification_complete_callback_item(self, s):
+        if "classification_info" in s:
+            for k in s["classification_info"]:
+                self._preprocess_classification_unit(k)
+
+    def _preprocess_classification_unit(self, s):
+            pass
+
     def _preprocess_expiring_agreement_callback(self, s):
-        if "expiration_date " in s:
-            s["expiration_date "] = self._api_date_to_py(s["expiration_date "])
+        if "expiration_date" in s:
+            s["expiration_date"] = self._api_date_to_py(s["expiration_date"])
+
+    def _preprocess_next_charge_alert_callback(self, s):
+            pass
+
+    def _preprocess_certificate_expired_callback(self, s):
+            pass
+
+    def _preprocess_expired_certificate_callback(self, s):
+        if "certificates" in s:
+            for k in s["certificates"]:
+                self._preprocess_certificate_info_type(k)
+
+    def _preprocess_expiring_certificate_callback(self, s):
+        if "certificates" in s:
+            for k in s["certificates"]:
+                self._preprocess_certificate_info_type(k)
+
+    def _preprocess_certificate_info_type(self, s):
+        if "expiration_date" in s:
+            s["expiration_date"] = self._api_date_to_py(s["expiration_date"])
+
+    def _preprocess_subscription_callback_details(self, s):
+        if "phone_numbers" in s:
+            for k in s["phone_numbers"]:
+                self._preprocess_subscription_callback_details_phone_numbers(k)
+        if "sip_registrations" in s:
+            for k in s["sip_registrations"]:
+                self._preprocess_subscription_callback_details_sip_registrations(k)
+
+    def _preprocess_subscription_callback_details_phone_numbers(self, s):
+            pass
+
+    def _preprocess_subscription_callback_details_sip_registrations(self, s):
+            pass
+
+    def _preprocess_a2p_activated_callback(self, s):
+            pass
+
+    def _preprocess_account_document_status_updated_callback(self, s):
+        if "update_time" in s:
+            s["update_time"] = self._api_datetime_utc_to_py(s["update_time"])
+
+    def _preprocess_regulation_address_documents_requested_callback(self, s):
+        if "update_time" in s:
+            s["update_time"] = self._api_datetime_utc_to_py(s["update_time"])
 
     def _preprocess_zip_code(self, s):
             pass
@@ -837,7 +919,8 @@ class VoximplantAPI:
 
     def _preprocess_push_credential_info(self, s):
         if "content" in s:
-            self._preprocess_push_credential_content(s["content"])
+            for k in s["content"]:
+                self._preprocess_push_credential_content(k)
         if "applications" in s:
             for k in s["applications"]:
                 self._preprocess_application_info_type(k)
@@ -847,8 +930,7 @@ class VoximplantAPI:
 
     def _preprocess_inbound_sms_callback(self, s):
         if "sms_inbound" in s:
-            for k in s["sms_inbound"]:
-                self._preprocess_inbound_sms_callback_item(k)
+            self._preprocess_inbound_sms_callback_item(s["sms_inbound"])
 
     def _preprocess_inbound_sms_callback_item(self, s):
             pass
@@ -936,6 +1018,95 @@ class VoximplantAPI:
     def _preprocess_get_autocharge_config_result_type(self, s):
             pass
 
+    def _preprocess_get_sq_queues_result(self, s):
+        if "created" in s:
+            s["created"] = self._api_datetime_utc_to_py(s["created"])
+        if "modified" in s:
+            s["modified"] = self._api_datetime_utc_to_py(s["modified"])
+
+    def _preprocess_get_sq_skills_result(self, s):
+        if "created" in s:
+            s["created"] = self._api_datetime_utc_to_py(s["created"])
+        if "modified" in s:
+            s["modified"] = self._api_datetime_utc_to_py(s["modified"])
+
+    def _preprocess_get_sq_agents_result(self, s):
+            pass
+
+    def _preprocess_sq_agent_selection_strategies(self, s):
+            pass
+
+    def _preprocess_sq_task_selection_strategies(self, s):
+            pass
+
+    def _preprocess_sq_skill_binding_modes(self, s):
+            pass
+
+    def _preprocess_sq_agent_binding_modes(self, s):
+            pass
+
+    def _preprocess_smart_queue_metrics_result(self, s):
+        if "groups" in s:
+            for k in s["groups"]:
+                self._preprocess_smart_queue_metrics_groups(k)
+
+    def _preprocess_smart_queue_metrics_groups(self, s):
+        if "values" in s:
+            for k in s["values"]:
+                self._preprocess_smart_queue_metrics_groups_values(k)
+
+    def _preprocess_smart_queue_metrics_groups_values(self, s):
+        if "from_date" in s:
+            s["from_date"] = self._api_datetime_utc_to_py(s["from_date"])
+        if "to_date" in s:
+            s["to_date"] = self._api_datetime_utc_to_py(s["to_date"])
+
+    def _preprocess_smart_queue_state(self, s):
+        if "sq_agents" in s:
+            for k in s["sq_agents"]:
+                self._preprocess_smart_queue_state__agent(k)
+        if "tasks" in s:
+            for k in s["tasks"]:
+                self._preprocess_smart_queue_state__task(k)
+
+    def _preprocess_smart_queue_state__task(self, s):
+        if "sq_skills" in s:
+            for k in s["sq_skills"]:
+                self._preprocess_smart_queue_task__skill(k)
+
+    def _preprocess_smart_queue_state__agent(self, s):
+        if "sq_skills" in s:
+            for k in s["sq_skills"]:
+                self._preprocess_smart_queue_agent__skill(k)
+        if "sq_statuses" in s:
+            for k in s["sq_statuses"]:
+                self._preprocess_smart_queue_state__agent__status(k)
+
+    def _preprocess_smart_queue_agent__skill(self, s):
+            pass
+
+    def _preprocess_smart_queue_task__skill(self, s):
+            pass
+
+    def _preprocess_smart_queue_state__agent__status(self, s):
+        if "IM" in s:
+            self._preprocess_smart_queue_state__agent__status__type(s["IM"])
+        if "CALL" in s:
+            self._preprocess_smart_queue_state__agent__status__type(s["CALL"])
+
+    def _preprocess_smart_queue_state__agent__status__type(self, s):
+        if "from_date" in s:
+            s["from_date"] = self._api_datetime_utc_to_py(s["from_date"])
+
+    def _preprocess_key_value_items(self, s):
+            pass
+
+    def _preprocess_key_value_pairs(self, s):
+            pass
+
+    def _preprocess_key_value_keys(self, s):
+            pass
+
 
     def get_account_info(self, return_live_balance=None):
         """
@@ -958,7 +1129,7 @@ class VoximplantAPI:
                 self._preprocess_account_info_type(res["result"])
         return res
 
-    def set_account_info(self, new_account_email=None, new_account_password=None, language_code=None, location=None, account_first_name=None, account_last_name=None, mobile_phone=None, min_balance_to_notify=None, account_notifications=None, tariff_changing_notifications=None, news_notifications=None, send_js_error=None, billing_address_name=None, billing_address_country_code=None, billing_address_address=None, billing_address_zip=None, billing_address_phone=None, account_custom_data=None, callback_url=None, callback_salt=None):
+    def set_account_info(self, new_account_email=None, new_account_password=None, language_code=None, location=None, account_first_name=None, account_last_name=None, min_balance_to_notify=None, account_notifications=None, tariff_changing_notifications=None, news_notifications=None, send_js_error=None, billing_address_name=None, billing_address_country_code=None, billing_address_address=None, billing_address_zip=None, billing_address_phone=None, account_custom_data=None, callback_url=None, callback_salt=None):
         """
         Edits the account's profile.
 
@@ -985,9 +1156,6 @@ class VoximplantAPI:
 
         if account_last_name is not None:
             params['account_last_name']=account_last_name
-
-        if mobile_phone is not None:
-            params['mobile_phone']=mobile_phone
 
         if min_balance_to_notify is not None:
             params['min_balance_to_notify']=min_balance_to_notify
@@ -1260,45 +1428,6 @@ class VoximplantAPI:
                 self._preprocess_account_info_type(p)
         return res
 
-    def transfer_money_to_child_account(self, child_account_id, amount, currency=None, strict_mode=None, child_transaction_description=None, parent_transaction_description=None, payment_reference=None, check_duplicate_reference_from=None):
-        """
-        Transfer the parent account's money to the child account or transfer the child's money to the parent account if the money amount is negative.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        params['child_account_id']=self._serialize_list(child_account_id)
-
-        params['amount']=amount
-
-        
-        if currency is not None:
-            params['currency']=currency
-
-        if strict_mode is not None:
-            params['strict_mode']=strict_mode
-
-        if child_transaction_description is not None:
-            params['child_transaction_description']=child_transaction_description
-
-        if parent_transaction_description is not None:
-            params['parent_transaction_description']=parent_transaction_description
-
-        if payment_reference is not None:
-            params['payment_reference']=payment_reference
-
-        if check_duplicate_reference_from is not None:
-            params['check_duplicate_reference_from']=self._py_datetime_to_api(check_duplicate_reference_from)
-
-        
-        res = self._perform_request('TransferMoneyToChildAccount', params)
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        return res
-
     def get_money_amount_to_charge(self, currency=None, charge_date=None):
         """
         Get the recommended money amount to charge.
@@ -1357,6 +1486,78 @@ class VoximplantAPI:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
                 self._preprocess_charge_account_result(res["result"])
+        return res
+
+    def change_account_plan(self, plan_type, plan_subscription_template_id=None):
+        """
+        Configures the account's plan.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['plan_type']=plan_type
+
+        
+        if plan_subscription_template_id is not None:
+            params['plan_subscription_template_id']=plan_subscription_template_id
+
+        
+        res = self._perform_request('ChangeAccountPlan', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
+    def get_account_plans(self, plan_type=None, plan_subscription_template_id=None):
+        """
+        Gets the account plans with packages.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        
+        if plan_type is not None:
+            params['plan_type']=self._serialize_list(plan_type)
+
+        if plan_subscription_template_id is not None:
+            params['plan_subscription_template_id']=self._serialize_list(plan_subscription_template_id)
+
+        
+        res = self._perform_request('GetAccountPlans', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            for p in res["result"]:
+                self._preprocess_account_plan_type(p)
+        return res
+
+    def get_available_plans(self, plan_type=None, plan_subscription_template_id=None):
+        """
+        Gets the allowed plans to change.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        
+        if plan_type is not None:
+            params['plan_type']=self._serialize_list(plan_type)
+
+        if plan_subscription_template_id is not None:
+            params['plan_subscription_template_id']=self._serialize_list(plan_subscription_template_id)
+
+        
+        res = self._perform_request('GetAvailablePlans', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            for p in res["result"]:
+                self._preprocess_plan_type(p)
         return res
 
     def add_application(self, application_name, secure_record_storage=None):
@@ -1457,7 +1658,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_applications(self, application_id=None, application_name=None, user_id=None, excluded_user_id=None, showing_user_id=None, with_rules=None, with_scenarios=None, count=None, offset=None):
+    def get_applications(self, application_id=None, application_name=None, with_rules=None, with_scenarios=None, count=None, offset=None):
         """
         Gets the account's applications.
 
@@ -1472,15 +1673,6 @@ class VoximplantAPI:
 
         if application_name is not None:
             params['application_name']=application_name
-
-        if user_id is not None:
-            params['user_id']=user_id
-
-        if excluded_user_id is not None:
-            params['excluded_user_id']=excluded_user_id
-
-        if showing_user_id is not None:
-            params['showing_user_id']=showing_user_id
 
         if with_rules is not None:
             params['with_rules']=with_rules
@@ -1503,7 +1695,7 @@ class VoximplantAPI:
                 self._preprocess_application_info_type(p)
         return res
 
-    def add_user(self, user_name, user_display_name, user_password, application_id=None, application_name=None, parent_accounting=None, mobile_phone=None, user_active=None, user_custom_data=None):
+    def add_user(self, user_name, user_display_name, user_password, application_id=None, application_name=None, parent_accounting=None, user_active=None, user_custom_data=None):
         """
         Adds a new user.
 
@@ -1539,9 +1731,6 @@ class VoximplantAPI:
 
         if parent_accounting is not None:
             params['parent_accounting']=parent_accounting
-
-        if mobile_phone is not None:
-            params['mobile_phone']=mobile_phone
 
         if user_active is not None:
             params['user_active']=user_active
@@ -1607,7 +1796,7 @@ class VoximplantAPI:
         
         return res
 
-    def set_user_info(self, user_id=None, user_name=None, application_id=None, application_name=None, new_user_name=None, user_display_name=None, user_password=None, parent_accounting=None, user_active=None, user_custom_data=None, mobile_phone=None):
+    def set_user_info(self, user_id=None, user_name=None, application_id=None, application_name=None, new_user_name=None, user_display_name=None, user_password=None, parent_accounting=None, user_active=None, user_custom_data=None):
         """
         Edits the user.
 
@@ -1668,9 +1857,6 @@ class VoximplantAPI:
 
         if user_custom_data is not None:
             params['user_custom_data']=user_custom_data
-
-        if mobile_phone is not None:
-            params['mobile_phone']=mobile_phone
 
         
         res = self._perform_request('SetUserInfo', params)
@@ -1882,7 +2068,7 @@ class VoximplantAPI:
         """
         params = dict()
         
-        params['list_id']=list_id
+        params['list_id']=self._serialize_list(list_id)
 
         
         if custom_params is not None:
@@ -2747,7 +2933,7 @@ class VoximplantAPI:
                 self._preprocess_history_report_type(p)
         return res
 
-    def get_transaction_history(self, from_date, to_date, transaction_id=None, payment_reference=None, transaction_type=None, user_id=None, child_account_id=None, children_transactions_only=None, users_transactions_only=None, desc_order=None, count=None, offset=None, output=None, is_async=None):
+    def get_transaction_history(self, from_date, to_date, transaction_id=None, transaction_type=None, user_id=None, child_account_id=None, children_transactions_only=None, users_transactions_only=None, desc_order=None, count=None, offset=None, output=None, is_async=None):
         """
         Gets the transaction history.
 
@@ -2763,9 +2949,6 @@ class VoximplantAPI:
         
         if transaction_id is not None:
             params['transaction_id']=self._serialize_list(transaction_id)
-
-        if payment_reference is not None:
-            params['payment_reference']=payment_reference
 
         if transaction_type is not None:
             params['transaction_type']=self._serialize_list(transaction_type)
@@ -3641,6 +3824,44 @@ class VoximplantAPI:
         
         return res
 
+    def set_phone_number_info(self, phone_id=None, phone_number=None, incoming_sms_callback_url=None):
+        """
+        Set the phone number information.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if phone_id is not None:
+            passed_args.append('phone_id')
+        if phone_number is not None:
+            passed_args.append('phone_number')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_phone_number_info")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of phone_id, phone_number passed into set_phone_number_info")
+        
+        
+        
+        if phone_id is not None:
+            params['phone_id']=self._serialize_list(phone_id)
+
+        if phone_number is not None:
+            params['phone_number']=self._serialize_list(phone_number)
+
+        if incoming_sms_callback_url is not None:
+            params['incoming_sms_callback_url']=incoming_sms_callback_url
+
+        
+        res = self._perform_request('SetPhoneNumberInfo', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
     def get_phone_numbers(self, phone_id=None, application_id=None, application_name=None, is_bound_to_application=None, phone_template=None, country_code=None, phone_category_name=None, canceled=None, deactivated=None, auto_charge=None, from_phone_next_renewal=None, to_phone_next_renewal=None, from_phone_purchase_date=None, to_phone_purchase_date=None, child_account_id=None, children_phones_only=None, verification_name=None, verification_status=None, from_unverified_hold_until=None, to_unverified_hold_until=None, can_be_used=None, order_by=None, sandbox=None, count=None, offset=None, phone_region_name=None, rule_id=None, rule_name=None, is_bound_to_rule=None):
         """
         Gets the account phone numbers.
@@ -3791,7 +4012,7 @@ class VoximplantAPI:
                 self._preprocess_new_phone_info_type(p)
         return res
 
-    def get_phone_number_categories(self, country_code=None, sandbox=None):
+    def get_phone_number_categories(self, country_code=None, sandbox=None, locale=None):
         """
         Gets the phone number categories.
 
@@ -3802,10 +4023,13 @@ class VoximplantAPI:
         
         
         if country_code is not None:
-            params['country_code']=country_code
+            params['country_code']=self._serialize_list(country_code)
 
         if sandbox is not None:
             params['sandbox']=sandbox
+
+        if locale is not None:
+            params['locale']=locale
 
         
         res = self._perform_request('GetPhoneNumberCategories', params)
@@ -3842,7 +4066,7 @@ class VoximplantAPI:
                 self._preprocess_phone_number_country_state_info_type(p)
         return res
 
-    def get_phone_number_regions(self, country_code, phone_category_name, country_state=None, omit_empty=None, phone_region_id=None, phone_region_name=None, phone_region_code=None):
+    def get_phone_number_regions(self, country_code, phone_category_name, country_state=None, omit_empty=None, phone_region_id=None, phone_region_name=None, phone_region_code=None, locale=None):
         """
         Get the country regions of the phone numbers. The response will also contain the info about multiple numbers subscription for the child accounts.
 
@@ -3871,6 +4095,9 @@ class VoximplantAPI:
         if phone_region_code is not None:
             params['phone_region_code']=phone_region_code
 
+        if locale is not None:
+            params['locale']=locale
+
         
         res = self._perform_request('GetPhoneNumberRegions', params)
         if "error" in res:
@@ -3880,9 +4107,9 @@ class VoximplantAPI:
                 self._preprocess_phone_number_country_region_info_type(p)
         return res
 
-    def get_actual_phone_number_region(self, country_code, phone_category_name, phone_region_id):
+    def get_actual_phone_number_region(self, country_code, phone_category_name, phone_region_id, country_state=None, locale=None):
         """
-        Get actual info the country region of the phone numbers. The response will also contain the info about multiple numbers subscription for the child accounts.
+        Get actual info on the country region of the phone numbers. The response will also contain the info about multiple numbers subscription for the child accounts.
 
         
         :rtype: dict
@@ -3896,6 +4123,12 @@ class VoximplantAPI:
         params['phone_region_id']=phone_region_id
 
         
+        if country_state is not None:
+            params['country_state']=country_state
+
+        if locale is not None:
+            params['locale']=locale
+
         
         res = self._perform_request('GetActualPhoneNumberRegion', params)
         if "error" in res:
@@ -4468,6 +4701,331 @@ class VoximplantAPI:
                 self._preprocess_acd_operator_status_aggregation_group_type(p)
         return res
 
+    def get_smart_queue_realtime_metrics(self, report_type, application_id=None, application_name=None, user_id=None, user_name=None, sq_queue_id=None, sq_queue_name=None, from_date=None, to_date=None, timezone=None, interval=None, group_by=None, max_waiting_sec=None):
+        """
+        Gets the metrics for the specified smart queue for the last 30 minutes.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_smart_queue_realtime_metrics")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of application_id, application_name passed into get_smart_queue_realtime_metrics")
+        
+        
+        passed_args = []
+        if user_id is not None:
+            passed_args.append('user_id')
+        if user_name is not None:
+            passed_args.append('user_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_smart_queue_realtime_metrics")
+        
+        
+        passed_args = []
+        if sq_queue_id is not None:
+            passed_args.append('sq_queue_id')
+        if sq_queue_name is not None:
+            passed_args.append('sq_queue_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_smart_queue_realtime_metrics")
+        
+        
+        params['report_type']=self._serialize_list(report_type)
+
+        
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if user_id is not None:
+            params['user_id']=self._serialize_list(user_id)
+
+        if user_name is not None:
+            params['user_name']=self._serialize_list(user_name)
+
+        if sq_queue_id is not None:
+            params['sq_queue_id']=self._serialize_list(sq_queue_id)
+
+        if sq_queue_name is not None:
+            params['sq_queue_name']=self._serialize_list(sq_queue_name)
+
+        if from_date is not None:
+            params['from_date']=self._py_datetime_to_api(from_date)
+
+        if to_date is not None:
+            params['to_date']=self._py_datetime_to_api(to_date)
+
+        if timezone is not None:
+            params['timezone']=timezone
+
+        if interval is not None:
+            params['interval']=interval
+
+        if group_by is not None:
+            params['group_by']=group_by
+
+        if max_waiting_sec is not None:
+            params['max_waiting_sec']=max_waiting_sec
+
+        
+        res = self._perform_request('GetSmartQueueRealtimeMetrics', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            for p in res["result"]:
+                self._preprocess_smart_queue_metrics_result(p)
+        return res
+
+    def get_smart_queue_day_history(self, report_type, application_id=None, application_name=None, user_id=None, user_name=None, sq_queue_id=None, sq_queue_name=None, from_date=None, to_date=None, timezone=None, interval=None, group_by=None, max_waiting_sec=None):
+        """
+        Gets the metrics for the specified smart queue for the last 2 days.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_smart_queue_day_history")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of application_id, application_name passed into get_smart_queue_day_history")
+        
+        
+        passed_args = []
+        if user_id is not None:
+            passed_args.append('user_id')
+        if user_name is not None:
+            passed_args.append('user_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_smart_queue_day_history")
+        
+        
+        passed_args = []
+        if sq_queue_id is not None:
+            passed_args.append('sq_queue_id')
+        if sq_queue_name is not None:
+            passed_args.append('sq_queue_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_smart_queue_day_history")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of sq_queue_id, sq_queue_name passed into get_smart_queue_day_history")
+        
+        
+        params['report_type']=self._serialize_list(report_type)
+
+        
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if user_id is not None:
+            params['user_id']=self._serialize_list(user_id)
+
+        if user_name is not None:
+            params['user_name']=self._serialize_list(user_name)
+
+        if sq_queue_id is not None:
+            params['sq_queue_id']=self._serialize_list(sq_queue_id)
+
+        if sq_queue_name is not None:
+            params['sq_queue_name']=self._serialize_list(sq_queue_name)
+
+        if from_date is not None:
+            params['from_date']=self._py_datetime_to_api(from_date)
+
+        if to_date is not None:
+            params['to_date']=self._py_datetime_to_api(to_date)
+
+        if timezone is not None:
+            params['timezone']=timezone
+
+        if interval is not None:
+            params['interval']=interval
+
+        if group_by is not None:
+            params['group_by']=group_by
+
+        if max_waiting_sec is not None:
+            params['max_waiting_sec']=max_waiting_sec
+
+        
+        res = self._perform_request('GetSmartQueueDayHistory', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            for p in res["result"]:
+                self._preprocess_smart_queue_metrics_result(p)
+        return res
+
+    def request_smart_queue_history(self, from_date, to_date, report_type, application_id=None, application_name=None, user_id=None, user_name=None, sq_queue_id=None, sq_queue_name=None, timezone=None, interval=None, group_by=None, max_waiting_sec=None):
+        """
+        Gets history for the specified smart queue.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into request_smart_queue_history")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of application_id, application_name passed into request_smart_queue_history")
+        
+        
+        passed_args = []
+        if user_id is not None:
+            passed_args.append('user_id')
+        if user_name is not None:
+            passed_args.append('user_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into request_smart_queue_history")
+        
+        
+        passed_args = []
+        if sq_queue_id is not None:
+            passed_args.append('sq_queue_id')
+        if sq_queue_name is not None:
+            passed_args.append('sq_queue_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into request_smart_queue_history")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of sq_queue_id, sq_queue_name passed into request_smart_queue_history")
+        
+        
+        params['from_date']=self._py_datetime_to_api(from_date)
+
+        params['to_date']=self._py_datetime_to_api(to_date)
+
+        params['report_type']=self._serialize_list(report_type)
+
+        
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if user_id is not None:
+            params['user_id']=self._serialize_list(user_id)
+
+        if user_name is not None:
+            params['user_name']=self._serialize_list(user_name)
+
+        if sq_queue_id is not None:
+            params['sq_queue_id']=self._serialize_list(sq_queue_id)
+
+        if sq_queue_name is not None:
+            params['sq_queue_name']=self._serialize_list(sq_queue_name)
+
+        if timezone is not None:
+            params['timezone']=timezone
+
+        if interval is not None:
+            params['interval']=interval
+
+        if group_by is not None:
+            params['group_by']=group_by
+
+        if max_waiting_sec is not None:
+            params['max_waiting_sec']=max_waiting_sec
+
+        
+        res = self._perform_request('RequestSmartQueueHistory', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
+    def get_sq_state(self, application_id=None, application_name=None, sq_queue_id=None, sq_queue_name=None, timezone=None):
+        """
+        Gets the current state of the specified smart queue.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_sq_state")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of application_id, application_name passed into get_sq_state")
+        
+        
+        passed_args = []
+        if sq_queue_id is not None:
+            passed_args.append('sq_queue_id')
+        if sq_queue_name is not None:
+            passed_args.append('sq_queue_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_sq_state")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of sq_queue_id, sq_queue_name passed into get_sq_state")
+        
+        
+        
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if sq_queue_id is not None:
+            params['sq_queue_id']=self._serialize_list(sq_queue_id)
+
+        if sq_queue_name is not None:
+            params['sq_queue_name']=self._serialize_list(sq_queue_name)
+
+        if timezone is not None:
+            params['timezone']=timezone
+
+        
+        res = self._perform_request('GetSQState', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            for p in res["result"]:
+                self._preprocess_smart_queue_state(p)
+        return res
+
     def add_skill(self, skill_name):
         """
         Adds a new ACD operator skill.
@@ -4846,7 +5404,7 @@ class VoximplantAPI:
 
     def get_admin_users(self, required_admin_user_id=None, required_admin_user_name=None, admin_user_display_name=None, admin_user_active=None, with_roles=None, with_access_entries=None, count=None, offset=None):
         """
-        Gets the admin users of the specified account. Note that both account types - parent and child - could have its own admins.
+        Gets the admin users of the specified account. Note that both account types - parent and child - can have its own admins.
 
         
         :rtype: dict
@@ -5273,9 +5831,9 @@ class VoximplantAPI:
         
         return res
 
-    def linkregulation_address(self, regulation_address_id, phone_id=None, phone_number=None):
+    def link_regulation_address(self, regulation_address_id, phone_id=None, phone_number=None):
         """
-        Link regulation address to phone
+        Links the regulation address to a phone.
 
         
         :rtype: dict
@@ -5289,9 +5847,9 @@ class VoximplantAPI:
             passed_args.append('phone_number')
         
         if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into linkregulation_address")
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into link_regulation_address")
         if len(passed_args) == 0:
-            raise VoximplantException("None of phone_id, phone_number passed into linkregulation_address")
+            raise VoximplantException("None of phone_id, phone_number passed into link_regulation_address")
         
         
         params['regulation_address_id']=regulation_address_id
@@ -5304,7 +5862,7 @@ class VoximplantAPI:
             params['phone_number']=phone_number
 
         
-        res = self._perform_request('LinkregulationAddress', params)
+        res = self._perform_request('LinkRegulationAddress', params)
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
@@ -5312,7 +5870,7 @@ class VoximplantAPI:
 
     def get_zip_codes(self, country_code, phone_region_code=None, count=None, offset=None):
         """
-        Search available zip codes
+        Searches for available zip codes.
 
         
         :rtype: dict
@@ -5342,7 +5900,7 @@ class VoximplantAPI:
 
     def get_regulations_address(self, country_code=None, phone_category_name=None, phone_region_code=None, regulation_address_id=None, verified=None, in_progress=None):
         """
-        Search user's regulation address
+        Searches for the user's regulation address.
 
         
         :rtype: dict
@@ -5379,7 +5937,7 @@ class VoximplantAPI:
 
     def get_available_regulations(self, country_code, phone_category_name, phone_region_code=None):
         """
-        Search available regulation for link
+        Searches for the available regulation for a link.
 
         
         :rtype: dict
@@ -5403,7 +5961,7 @@ class VoximplantAPI:
 
     def get_countries(self, country_code=None):
         """
-        Get all countries
+        Gets all countries.
 
         
         :rtype: dict
@@ -5425,7 +5983,7 @@ class VoximplantAPI:
 
     def get_regions(self, country_code, phone_category_name, city_name=None, count=None, offset=None):
         """
-        Get available regions in country
+        Gets available regions in a country.
 
         
         :rtype: dict
@@ -5455,9 +6013,9 @@ class VoximplantAPI:
                 self._preprocess_regulation_region_record(p)
         return res
 
-    def add_push_credential(self, push_provider_name=None, push_provider_id=None, credential_bundle=None, cert_content=None, cert_file_name=None, cert_password=None, is_dev_mode=None, sender_id=None, server_key=None):
+    def add_push_credential(self, push_provider_name=None, push_provider_id=None, application_id=None, application_name=None, credential_bundle=None, cert_content=None, cert_file_name=None, cert_password=None, is_dev_mode=None, sender_id=None, server_key=None, service_account_file=None, huawei_client_id=None, huawei_client_secret=None, huawei_application_id=None):
         """
-        Add push credentials
+        Adds push credentials.
 
         
         :rtype: dict
@@ -5497,11 +6055,27 @@ class VoximplantAPI:
             passed_args.append('sender_id')
         if server_key is not None:
             passed_args.append('server_key')
+        if service_account_file is not None:
+            passed_args.append('service_account_file')
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_push_credential")
         if len(passed_args) == 0:
-            raise VoximplantException("None of sender_id, server_key passed into add_push_credential")
+            raise VoximplantException("None of sender_id, server_key, service_account_file passed into add_push_credential")
+        
+        
+        passed_args = []
+        if huawei_client_id is not None:
+            passed_args.append('huawei_client_id')
+        if huawei_client_secret is not None:
+            passed_args.append('huawei_client_secret')
+        if huawei_application_id is not None:
+            passed_args.append('huawei_application_id')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_push_credential")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of huawei_client_id, huawei_client_secret, huawei_application_id passed into add_push_credential")
         
         
         
@@ -5510,6 +6084,12 @@ class VoximplantAPI:
 
         if push_provider_id is not None:
             params['push_provider_id']=push_provider_id
+
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
 
         if credential_bundle is not None:
             params['credential_bundle']=credential_bundle
@@ -5532,6 +6112,18 @@ class VoximplantAPI:
         if server_key is not None:
             params['server_key']=server_key
 
+        if service_account_file is not None:
+            params['service_account_file']=service_account_file
+
+        if huawei_client_id is not None:
+            params['huawei_client_id']=huawei_client_id
+
+        if huawei_client_secret is not None:
+            params['huawei_client_secret']=huawei_client_secret
+
+        if huawei_application_id is not None:
+            params['huawei_application_id']=huawei_application_id
+
         
         res = self._perform_request('AddPushCredential', params)
         if "error" in res:
@@ -5539,9 +6131,9 @@ class VoximplantAPI:
         
         return res
 
-    def set_push_credential(self, push_credential_id, cert_content=None, cert_password=None, is_dev_mode=None, sender_id=None, server_key=None):
+    def set_push_credential(self, push_credential_id, cert_content=None, cert_password=None, is_dev_mode=None, sender_id=None, server_key=None, service_account_file=None, huawei_client_id=None, huawei_client_secret=None, huawei_application_id=None):
         """
-        Modify push credentials
+        Modifies push credentials.
 
         
         :rtype: dict
@@ -5567,11 +6159,27 @@ class VoximplantAPI:
             passed_args.append('sender_id')
         if server_key is not None:
             passed_args.append('server_key')
+        if service_account_file is not None:
+            passed_args.append('service_account_file')
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_push_credential")
         if len(passed_args) == 0:
-            raise VoximplantException("None of sender_id, server_key passed into set_push_credential")
+            raise VoximplantException("None of sender_id, server_key, service_account_file passed into set_push_credential")
+        
+        
+        passed_args = []
+        if huawei_client_id is not None:
+            passed_args.append('huawei_client_id')
+        if huawei_client_secret is not None:
+            passed_args.append('huawei_client_secret')
+        if huawei_application_id is not None:
+            passed_args.append('huawei_application_id')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_push_credential")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of huawei_client_id, huawei_client_secret, huawei_application_id passed into set_push_credential")
         
         
         params['push_credential_id']=push_credential_id
@@ -5592,6 +6200,18 @@ class VoximplantAPI:
         if server_key is not None:
             params['server_key']=server_key
 
+        if service_account_file is not None:
+            params['service_account_file']=service_account_file
+
+        if huawei_client_id is not None:
+            params['huawei_client_id']=huawei_client_id
+
+        if huawei_client_secret is not None:
+            params['huawei_client_secret']=huawei_client_secret
+
+        if huawei_application_id is not None:
+            params['huawei_application_id']=huawei_application_id
+
         
         res = self._perform_request('SetPushCredential', params)
         if "error" in res:
@@ -5601,7 +6221,7 @@ class VoximplantAPI:
 
     def del_push_credential(self, push_credential_id):
         """
-        Remove push credentials
+        Removes push credentials.
 
         
         :rtype: dict
@@ -5620,7 +6240,7 @@ class VoximplantAPI:
 
     def get_push_credential(self, push_credential_id=None, push_provider_name=None, push_provider_id=None, application_name=None, application_id=None, with_cert=None):
         """
-        Get push credentials
+        Gets push credentials.
 
         
         :rtype: dict
@@ -5657,7 +6277,7 @@ class VoximplantAPI:
 
     def bind_push_credential(self, push_credential_id, application_id, bind=None):
         """
-        Bind push credentials to applications
+        Binds push credentials to applications.
 
         
         :rtype: dict
@@ -5681,7 +6301,7 @@ class VoximplantAPI:
 
     def add_dialogflow_key(self, application_id, json_credentials, application_name=None, description=None):
         """
-        Add Dialogflow key.
+        Adds a Dialogflow key.
 
         
         :rtype: dict
@@ -5708,7 +6328,7 @@ class VoximplantAPI:
 
     def set_dialogflow_key(self, dialogflow_key_id, description):
         """
-        Edit Dialogflow key.
+        Edits a Dialogflow key.
 
         
         :rtype: dict
@@ -5729,7 +6349,7 @@ class VoximplantAPI:
 
     def del_dialogflow_key(self, dialogflow_key_id):
         """
-        Remove Dialogflow key.
+        Removes a Dialogflow key.
 
         
         :rtype: dict
@@ -5748,7 +6368,7 @@ class VoximplantAPI:
 
     def get_dialogflow_keys(self, dialogflow_key_id=None, application_name=None, application_id=None):
         """
-        Get Dialogflow keys.
+        Gets Dialogflow keys.
 
         
         :rtype: dict
@@ -5776,7 +6396,7 @@ class VoximplantAPI:
 
     def bind_dialogflow_keys(self, dialogflow_key_id, application_id, bind=None):
         """
-        Bind a Dialogflow key to the specified applications.
+        Binds a Dialogflow key to the specified applications.
 
         
         :rtype: dict
@@ -5800,7 +6420,7 @@ class VoximplantAPI:
 
     def send_sms_message(self, source, destination, sms_body):
         """
-        Send SMS message between two phone numbers. The source phone number should be purchased from Voximplant and support SMS (which is indicated by the <b>is_sms_supported</b> property in the objects returned by the [GetPhoneNumbers] HTTP API) and SMS should be enabled for it via the [ControlSms] HTTP API. SMS messages can be received via HTTP callbacks, see <a href='/docs/howtos/integration/httpapi/callbacks'>this article</a> for details.
+        Sends an SMS message between two phone numbers. The source phone number should be purchased from Voximplant and support SMS (which is indicated by the <b>is_sms_supported</b> property in the objects returned by the [GetPhoneNumbers] Management API) and SMS should be enabled for it via the [ControlSms] Management API. SMS messages can be received via HTTP callbacks, see <a href='/docs/howtos/integration/httpapi/callbacks'>this article</a> for details.
 
         
         :rtype: dict
@@ -5823,7 +6443,7 @@ class VoximplantAPI:
 
     def a2p_send_sms(self, src_number, dst_numbers, text):
         """
-        Send SMS message from the application to customers. The source phone number should be purchased from Voximplant and support SMS (which is indicated by the <b>is_sms_supported</b> property in the objects returned by the <a href='//voximplant.com/docs/references/httpapi/managing_phone_numbers#getphonenumbers'>/GetPhoneNumbers</a> HTTP API) and SMS should be enabled for it via the <a href='//voximplant.com/docs/references/httpapi/managing_sms#controlsms'>/ControlSms</a> HTTP API.
+        Sends an SMS message from the application to customers. The source phone number should be purchased from Voximplant and support SMS (which is indicated by the <b>is_sms_supported</b> property in the objects returned by the <a href='//voximplant.com/docs/references/httpapi/managing_phone_numbers#getphonenumbers'>/GetPhoneNumbers</a> Management API) and SMS should be enabled for it via the <a href='//voximplant.com/docs/references/httpapi/managing_sms#controlsms'>/ControlSms</a> Management API.
 
         
         :rtype: dict
@@ -5848,7 +6468,7 @@ class VoximplantAPI:
 
     def control_sms(self, phone_number, command):
         """
-        Enable or disable SMS sending and receiving for the phone number. Can be used only for phone numbers with SMS support, which is indicated by the <b>is_sms_supported</b> property in the objects returned by the [GetPhoneNumbers] HTTP API. Each inbound SMS message is billed according to the <a href='//voximplant.com/pricing'>pricing</a>. If enabled, SMS can be sent from this phone number using the [SendSmsMessage] HTTP API and received using the [InboundSmsCallback] property of the HTTP callback. See <a href='/docs/howtos/integration/httpapi/callbacks'>this article</a> for HTTP callback details.
+        Enables or disables sending and receiving SMS for the phone number. Can be used only for phone numbers with SMS support, which is indicated by the <b>is_sms_supported</b> property in the objects returned by the [GetPhoneNumbers] Management API. Each inbound SMS message is charged according to the <a href='//voximplant.com/pricing'>pricing</a>. If enabled, SMS can be sent from this phone number using the [SendSmsMessage] Management API and received using the [InboundSmsCallback] property of the HTTP callback. See <a href='/docs/howtos/integration/httpapi/callbacks'>this article</a> for HTTP callback details.
 
         
         :rtype: dict
@@ -5869,7 +6489,7 @@ class VoximplantAPI:
 
     def get_record_storages(self, record_storage_id=None, record_storage_name=None):
         """
-        Get the record storages.
+        Gets the record storages.
 
         
         :rtype: dict
@@ -5893,7 +6513,7 @@ class VoximplantAPI:
 
     def create_key(self, description=None, role_id=None, role_name=None):
         """
-        Creates a public/private key pair. You can optionally specify one or more roles for the key, see [this article](https://voximplant.com/blog/service-accounts-introduction) for details.
+        Creates a public/private key pair. You can optionally specify one or more roles for the key, see [this article](https://voximplant.com/docs/introduction/introduction_to_voximplant/basic_concepts/service_accounts) for details.
 
         
         :rtype: dict
@@ -6359,100 +6979,154 @@ class VoximplantAPI:
                 self._preprocess_role_group_view(p)
         return res
 
-    def add_child_account_subscription(self, child_account_id, subscription_template_id, subscription_name=None):
+    def set_key_value_item(self, key, value, application_id, application_name=None, ttl=None, expires_at=None):
         """
-        Adds a new subscription for the specified child account.
+        Creates or updates a key-value pair. If an existing key is passed, the method will return the existing item and will change the value if needed. The keys should be unique within a Voximplant application.
 
         
         :rtype: dict
         """
         params = dict()
         
-        params['child_account_id']=child_account_id
+        params['key']=key
 
-        params['subscription_template_id']=subscription_template_id
+        params['value']=value
 
-        
-        if subscription_name is not None:
-            params['subscription_name']=subscription_name
+        params['application_id']=application_id
 
         
-        res = self._perform_request('AddChildAccountSubscription', params)
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        return res
+        if application_name is not None:
+            params['application_name']=application_name
 
-    def get_child_account_subscriptions(self, child_account_id, subscription_id=None):
-        """
-        Gets the active subscription(s) for the specified child account.
+        if ttl is not None:
+            params['ttl']=ttl
 
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        params['child_account_id']=child_account_id
+        if expires_at is not None:
+            params['expires_at']=expires_at
 
         
-        if subscription_id is not None:
-            params['subscription_id']=subscription_id
-
-        
-        res = self._perform_request('GetChildAccountSubscriptions', params)
+        res = self._perform_request('SetKeyValueItem', params)
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_child_account_subscription_type(p)
+                self._preprocess_key_value_items(res["result"])
         return res
 
-    def get_child_account_subscription_templates(self):
+    def del_key_value_item(self, key, application_id, application_name=None):
         """
-        Gets all the eligible subscription templates. A template is considered to be eligible if it is of a type that supports child accounts management.
+        Deletes the specified key-value pair from the storage.
 
         
         :rtype: dict
         """
         params = dict()
         
+        params['key']=key
+
+        params['application_id']=application_id
+
         
+        if application_name is not None:
+            params['application_name']=application_name
+
         
-        res = self._perform_request('GetChildAccountSubscriptionTemplates', params)
+        res = self._perform_request('DelKeyValueItem', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
+    def get_key_value_item(self, key, application_id, application_name=None):
+        """
+        Gets the specified key-value pair from the storage.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['key']=key
+
+        params['application_id']=application_id
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        
+        res = self._perform_request('GetKeyValueItem', params)
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_child_account_subscription_template_type(p)
+                self._preprocess_key_value_items(res["result"])
         return res
 
-    def deactivate_child_account_subscription(self, subscription_id, child_account_id, subscription_finish_date=None):
+    def get_key_value_items(self, key, application_id, count=None, offset=None, application_name=None):
         """
-        Deactivates the specified subscription(s).
+        Gets all the key-value pairs in which the keys begin with a pattern.
 
         
         :rtype: dict
         """
         params = dict()
         
-        params['subscription_id']=subscription_id
+        params['key']=key
 
-        params['child_account_id']=child_account_id
-
-        
-        if subscription_finish_date is not None:
-            params['subscription_finish_date']=self._py_datetime_to_api(subscription_finish_date)
+        params['application_id']=application_id
 
         
-        res = self._perform_request('DeactivateChildAccountSubscription', params)
+        if count is not None:
+            params['count']=count
+
+        if offset is not None:
+            params['offset']=offset
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        
+        res = self._perform_request('GetKeyValueItems', params)
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+                self._preprocess_key_value_items(res["result"])
+        return res
+
+    def get_key_value_keys(self, application_id, key=None, count=None, offset=None, application_name=None):
+        """
+        Gets all the keys of key-value pairs.
+
         
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        
+        if key is not None:
+            params['key']=key
+
+        if count is not None:
+            params['count']=count
+
+        if offset is not None:
+            params['offset']=offset
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        
+        res = self._perform_request('GetKeyValueKeys', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+                self._preprocess_key_value_keys(res["result"])
         return res
 
     def get_sms_history(self, source_number=None, destination_number=None, direction=None, count=None, offset=None, from_date=None, to_date=None, output=None):
         """
-        Get history of sent and/or received SMS.
+        Gets the history of sent and/or received SMS.
 
         
         :rtype: dict
@@ -6495,7 +7169,7 @@ class VoximplantAPI:
 
     def a2p_get_sms_history(self, source_number=None, destination_number=None, count=None, offset=None, from_date=None, to_date=None, output=None, delivery_status=None):
         """
-        Get history of sent/or received A2P SMS.
+        Gets the history of sent/or received A2P SMS.
 
         
         :rtype: dict
@@ -6534,4 +7208,553 @@ class VoximplantAPI:
         if "result" in res:
             for p in res["result"]:
                 self._preprocess_a2p_sms_history_type(p)
+        return res
+
+    def sq__add_queue(self, application_id, sq_queue_name, call_agent_selection, call_task_selection, application_name=None, im_agent_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None):
+        """
+        Adds a new queue.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        params['sq_queue_name']=sq_queue_name
+
+        params['call_agent_selection']=call_agent_selection
+
+        params['call_task_selection']=call_task_selection
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if im_agent_selection is not None:
+            params['im_agent_selection']=im_agent_selection
+
+        if im_task_selection is not None:
+            params['im_task_selection']=im_task_selection
+
+        if description is not None:
+            params['description']=description
+
+        if call_max_waiting_time is not None:
+            params['call_max_waiting_time']=call_max_waiting_time
+
+        if im_max_waiting_time is not None:
+            params['im_max_waiting_time']=im_max_waiting_time
+
+        if call_max_queue_size is not None:
+            params['call_max_queue_size']=call_max_queue_size
+
+        if im_max_queue_size is not None:
+            params['im_max_queue_size']=im_max_queue_size
+
+        
+        res = self._perform_request('SQ_AddQueue', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+                self._preprocess_None(res["result"])
+        return res
+
+    def sq__set_queue_info(self, application_id, sq_queue_id, application_name=None, sq_queue_name=None, new_sq_queue_name=None, call_agent_selection=None, im_agent_selection=None, call_task_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None):
+        """
+        Edits an existing queue.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        params['sq_queue_id']=sq_queue_id
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if sq_queue_name is not None:
+            params['sq_queue_name']=sq_queue_name
+
+        if new_sq_queue_name is not None:
+            params['new_sq_queue_name']=new_sq_queue_name
+
+        if call_agent_selection is not None:
+            params['call_agent_selection']=call_agent_selection
+
+        if im_agent_selection is not None:
+            params['im_agent_selection']=im_agent_selection
+
+        if call_task_selection is not None:
+            params['call_task_selection']=call_task_selection
+
+        if im_task_selection is not None:
+            params['im_task_selection']=im_task_selection
+
+        if description is not None:
+            params['description']=description
+
+        if call_max_waiting_time is not None:
+            params['call_max_waiting_time']=call_max_waiting_time
+
+        if im_max_waiting_time is not None:
+            params['im_max_waiting_time']=im_max_waiting_time
+
+        if call_max_queue_size is not None:
+            params['call_max_queue_size']=call_max_queue_size
+
+        if im_max_queue_size is not None:
+            params['im_max_queue_size']=im_max_queue_size
+
+        
+        res = self._perform_request('SQ_SetQueueInfo', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
+    def sq__del_queue(self, application_id, sq_queue_id, application_name=None, sq_queue_name=None):
+        """
+        Deletes a queue.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        params['sq_queue_id']=self._serialize_list(sq_queue_id)
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if sq_queue_name is not None:
+            params['sq_queue_name']=self._serialize_list(sq_queue_name)
+
+        
+        res = self._perform_request('SQ_DelQueue', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
+    def sq__get_queues(self, application_id, application_name=None, sq_queue_id=None, sq_queue_name=None, sq_queue_name_template=None, user_id=None, user_name=None, excluded_user_id=None, excluded_user_name=None, count=None, offset=None):
+        """
+        Gets the queue(s).
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if sq_queue_id is not None:
+            params['sq_queue_id']=self._serialize_list(sq_queue_id)
+
+        if sq_queue_name is not None:
+            params['sq_queue_name']=self._serialize_list(sq_queue_name)
+
+        if sq_queue_name_template is not None:
+            params['sq_queue_name_template']=sq_queue_name_template
+
+        if user_id is not None:
+            params['user_id']=user_id
+
+        if user_name is not None:
+            params['user_name']=user_name
+
+        if excluded_user_id is not None:
+            params['excluded_user_id']=excluded_user_id
+
+        if excluded_user_name is not None:
+            params['excluded_user_name']=excluded_user_name
+
+        if count is not None:
+            params['count']=count
+
+        if offset is not None:
+            params['offset']=offset
+
+        
+        res = self._perform_request('SQ_GetQueues', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+                self._preprocess_get_sq_queues_result(res["result"])
+        return res
+
+    def sq__add_skill(self, application_id, sq_skill_name, application_name=None, description=None):
+        """
+        Adds a new skill to the app.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        params['sq_skill_name']=sq_skill_name
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if description is not None:
+            params['description']=description
+
+        
+        res = self._perform_request('SQ_AddSkill', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
+    def sq__del_skill(self, application_id, sq_skill_id, application_name=None, sq_skill_name=None):
+        """
+        Deletes a skill and detaches it from agents.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        params['sq_skill_id']=self._serialize_list(sq_skill_id)
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if sq_skill_name is not None:
+            params['sq_skill_name']=self._serialize_list(sq_skill_name)
+
+        
+        res = self._perform_request('SQ_DelSkill', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
+    def sq__set_skill_info(self, application_id, sq_skill_id, application_name=None, sq_skill_name=None, new_sq_skill_name=None, description=None):
+        """
+        Edits an existing skill.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        params['sq_skill_id']=sq_skill_id
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if sq_skill_name is not None:
+            params['sq_skill_name']=sq_skill_name
+
+        if new_sq_skill_name is not None:
+            params['new_sq_skill_name']=new_sq_skill_name
+
+        if description is not None:
+            params['description']=description
+
+        
+        res = self._perform_request('SQ_SetSkillInfo', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
+    def sq__bind_skill(self, application_id, user_id, sq_skills, application_name=None, user_name=None, bind_mode=None):
+        """
+        Binds skills to agents.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        params['user_id']=self._serialize_list(user_id)
+
+        params['sq_skills']=sq_skills
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if user_name is not None:
+            params['user_name']=self._serialize_list(user_name)
+
+        if bind_mode is not None:
+            params['bind_mode']=bind_mode
+
+        
+        res = self._perform_request('SQ_BindSkill', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
+    def sq__unbind_skill(self, application_id, user_id, sq_skill_id, application_name=None, user_name=None, sq_skill_name=None):
+        """
+        Unbinds skills from agents.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        params['user_id']=self._serialize_list(user_id)
+
+        params['sq_skill_id']=self._serialize_list(sq_skill_id)
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if user_name is not None:
+            params['user_name']=self._serialize_list(user_name)
+
+        if sq_skill_name is not None:
+            params['sq_skill_name']=self._serialize_list(sq_skill_name)
+
+        
+        res = self._perform_request('SQ_UnbindSkill', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
+    def sq__get_skills(self, application_id, application_name=None, user_id=None, user_name=None, sq_skill_id=None, sq_skill_name=None, sq_skill_name_template=None, excluded_user_id=None, excluded_user_name=None, count=None, offset=None):
+        """
+        Gets the skill(s).
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if user_id is not None:
+            params['user_id']=self._serialize_list(user_id)
+
+        if user_name is not None:
+            params['user_name']=self._serialize_list(user_name)
+
+        if sq_skill_id is not None:
+            params['sq_skill_id']=self._serialize_list(sq_skill_id)
+
+        if sq_skill_name is not None:
+            params['sq_skill_name']=self._serialize_list(sq_skill_name)
+
+        if sq_skill_name_template is not None:
+            params['sq_skill_name_template']=sq_skill_name_template
+
+        if excluded_user_id is not None:
+            params['excluded_user_id']=excluded_user_id
+
+        if excluded_user_name is not None:
+            params['excluded_user_name']=excluded_user_name
+
+        if count is not None:
+            params['count']=count
+
+        if offset is not None:
+            params['offset']=offset
+
+        
+        res = self._perform_request('SQ_GetSkills', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+                self._preprocess_get_sq_skills_result(res["result"])
+        return res
+
+    def sq__bind_agent(self, application_id, sq_queue_id, user_id, application_name=None, sq_queue_name=None, user_name=None, bind_mode=None):
+        """
+        Binds agents to a queue.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        params['sq_queue_id']=sq_queue_id
+
+        params['user_id']=self._serialize_list(user_id)
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if sq_queue_name is not None:
+            params['sq_queue_name']=sq_queue_name
+
+        if user_name is not None:
+            params['user_name']=self._serialize_list(user_name)
+
+        if bind_mode is not None:
+            params['bind_mode']=bind_mode
+
+        
+        res = self._perform_request('SQ_BindAgent', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
+    def sq__unbind_agent(self, application_id, sq_queue_id, user_id, application_name=None, sq_queue_name=None, user_name=None):
+        """
+        Unbinds agents from queues.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        params['sq_queue_id']=self._serialize_list(sq_queue_id)
+
+        params['user_id']=self._serialize_list(user_id)
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if sq_queue_name is not None:
+            params['sq_queue_name']=self._serialize_list(sq_queue_name)
+
+        if user_name is not None:
+            params['user_name']=self._serialize_list(user_name)
+
+        
+        res = self._perform_request('SQ_UnbindAgent', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        return res
+
+    def sq__get_agents(self, application_id, application_name=None, sq_queue_id=None, sq_queue_name=None, excluded_sq_queue_id=None, excluded_sq_queue_name=None, sq_skills=None, user_id=None, user_name=None, user_name_template=None, sq_statuses=None, with_sq_skills=None, with_sq_queues=None, with_sq_statuses=None, count=None, offset=None):
+        """
+        Gets agents.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if sq_queue_id is not None:
+            params['sq_queue_id']=self._serialize_list(sq_queue_id)
+
+        if sq_queue_name is not None:
+            params['sq_queue_name']=self._serialize_list(sq_queue_name)
+
+        if excluded_sq_queue_id is not None:
+            params['excluded_sq_queue_id']=excluded_sq_queue_id
+
+        if excluded_sq_queue_name is not None:
+            params['excluded_sq_queue_name']=excluded_sq_queue_name
+
+        if sq_skills is not None:
+            params['sq_skills']=sq_skills
+
+        if user_id is not None:
+            params['user_id']=self._serialize_list(user_id)
+
+        if user_name is not None:
+            params['user_name']=self._serialize_list(user_name)
+
+        if user_name_template is not None:
+            params['user_name_template']=user_name_template
+
+        if sq_statuses is not None:
+            params['sq_statuses']=sq_statuses
+
+        if with_sq_skills is not None:
+            params['with_sq_skills']=with_sq_skills
+
+        if with_sq_queues is not None:
+            params['with_sq_queues']=with_sq_queues
+
+        if with_sq_statuses is not None:
+            params['with_sq_statuses']=with_sq_statuses
+
+        if count is not None:
+            params['count']=count
+
+        if offset is not None:
+            params['offset']=offset
+
+        
+        res = self._perform_request('SQ_GetAgents', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+                self._preprocess_get_sq_agents_result(res["result"])
+        return res
+
+    def sq__set_agent_info(self, application_id, user_id, handle_calls, application_name=None, user_name=None, max_simultaneous_conversations=None):
+        """
+        Edits the agent settings.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        params['user_id']=self._serialize_list(user_id)
+
+        params['handle_calls']=handle_calls
+
+        
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if user_name is not None:
+            params['user_name']=self._serialize_list(user_name)
+
+        if max_simultaneous_conversations is not None:
+            params['max_simultaneous_conversations']=max_simultaneous_conversations
+
+        
+        res = self._perform_request('SQ_SetAgentInfo', params)
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         return res

@@ -3,7 +3,7 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Search regulation address with ID = 1
+    # Search regulation address with ID = 1.
 
     REGULATION_ADDRESS_ID = 1
     

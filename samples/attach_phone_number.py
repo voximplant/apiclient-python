@@ -3,7 +3,7 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Attach the one US phone number to the account 1.
+    # Attach a US phone number to the account 1.
 
     COUNTRY_CODE = "US"
     PHONE_CATEGORY_NAME = "GEOGRAPHIC"

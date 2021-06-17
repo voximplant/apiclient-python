@@ -3,18 +3,16 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Get the first rule for the template 74951234567.
+    # Bind the skills with id 1 and 2 to all users.
 
     APPLICATION_ID = 1
-    TEMPLATE = "74951234567"
-    WITH_SCENARIOS = True
-    COUNT = 1
+    USER_ID = "all"
+    SQ_SKILLS = "[{\"sq_skill_id\":1,\"sq_skill_level\":1},{\"sq_skill_id\":2,\"sq_skill_level\":5}]"
     
     try:
-        res = voxapi.get_rules(application_id=APPLICATION_ID,
-            template=TEMPLATE,
-            with_scenarios=WITH_SCENARIOS,
-            count=COUNT)
+        res = voxapi.sq__bind_skill(APPLICATION_ID,
+            USER_ID,
+            SQ_SKILLS)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

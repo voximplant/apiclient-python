@@ -3,12 +3,14 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Cancel list with id = 1.
+    # Add a new skill.
 
-    LIST_ID = 1
+    APPLICATION_ID = 1
+    SQ_SKILL_NAME = "mySkill"
     
     try:
-        res = voxapi.stop_call_list_processing(LIST_ID)
+        res = voxapi.sq__add_skill(APPLICATION_ID,
+            SQ_SKILL_NAME)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))
