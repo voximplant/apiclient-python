@@ -8,8 +8,8 @@ if __name__ == "__main__":
     # Generate a service_level report file in csv format for the period
     # from 2021-03-17 00:00:00 to 2021-03-17 22:00:00.
 
-    FROM_DATE = datetime.datetime(2021, 3, 17, 0, 0, 0, pytz.utc)
-    TO_DATE = datetime.datetime(2021, 3, 17, 22, 0, 0, pytz.utc)
+    FROM_DATE = datetime.datetime(2021, 3, 17, 0, 0, 0, timezone=pytz.utc)
+    TO_DATE = datetime.datetime(2021, 3, 17, 22, 0, 0, timezone=pytz.utc)
     REPORT_TYPE = "service_level"
     APPLICATION_ID = 1
     SQ_QUEUE_ID = 1

@@ -6,7 +6,7 @@ if __name__ == "__main__":
     # Get the skills with id 2 and 4
 
     APPLICATION_ID = 1
-    SQ_SKILL_ID = 2
+    SQ_SKILL_ID = [2, 4]
     
     try:
         res = voxapi.sq__get_skills(APPLICATION_ID,

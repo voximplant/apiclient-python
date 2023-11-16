@@ -7,10 +7,10 @@ if __name__ == "__main__":
     
     # Get WT and TT statistics for the queue from the specified date.
 
-    FROM_DATE = datetime.datetime(2021, 4, 8, 0, 0, 0, pytz.utc)
-    TO_DATE = datetime.datetime(2021, 4, 10, 0, 0, 0, pytz.utc)
+    FROM_DATE = datetime.datetime(2021, 4, 8, 0, 0, 0, timezone=pytz.utc)
+    TO_DATE = datetime.datetime(2021, 4, 10, 0, 0, 0, timezone=pytz.utc)
     ACD_QUEUE_ID = 54
-    REPORT = "WT"
+    REPORT = ["WT", "TT"]
     AGGREGATION = "day"
     
     try:

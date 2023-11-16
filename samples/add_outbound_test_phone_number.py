@@ -3,14 +3,12 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Link regulation address to phone number
+    # Add a personal phone number.
 
-    REGULATION_ADDRESS_ID = 1
-    PHONE_ID = 1
+    PHONE_NUMBER = "12223334444"
     
     try:
-        res = voxapi.linkregulation_address(REGULATION_ADDRESS_ID,
-            phone_id=PHONE_ID)
+        res = voxapi.add_outbound_test_phone_number(PHONE_NUMBER)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

@@ -3,7 +3,7 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Get the time agents spent in the ONLINE status for all smart queues
+    # Get the time agents spent in the ONLINE status for all SmartQueues
     # within one application.
 
     REPORT_TYPE = "sum_agents_online_time"

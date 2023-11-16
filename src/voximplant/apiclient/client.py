@@ -434,6 +434,8 @@ class VoximplantAPI:
             s["phone_purchase_date"] = self._api_datetime_utc_to_py(s["phone_purchase_date"])
         if "unverified_hold_until" in s:
             s["unverified_hold_until"] = self._api_date_to_py(s["unverified_hold_until"])
+        if "modified" in s:
+            s["modified"] = self._api_datetime_utc_to_py(s["modified"])
 
     def _preprocess_new_attached_phone_info_type(self, s):
         if "unverified_hold_until" in s:
@@ -461,6 +463,9 @@ class VoximplantAPI:
     def _preprocess_caller_id_info_type(self, s):
         if "verified_until" in s:
             s["verified_until"] = self._api_date_to_py(s["verified_until"])
+
+    def _preprocess_outbound_test_phonenumber_info_type(self, s):
+            pass
 
     def _preprocess_contact_info_type(self, s):
         if "verified" in s:
@@ -637,6 +642,8 @@ class VoximplantAPI:
             self._preprocess_reset_account_password_request_callback(s["reset_account_password_request"])
         if "sip_registration_fail" in s:
             self._preprocess_sip_registration_fail_callback(s["sip_registration_fail"])
+        if "sip_registration_recovered" in s:
+            self._preprocess_sip_registration_recovered_callback(s["sip_registration_recovered"])
         if "stagnant_account" in s:
             self._preprocess_stagnant_account_callback(s["stagnant_account"])
         if "subscription_is_frozen" in s:
@@ -655,8 +662,6 @@ class VoximplantAPI:
             self._preprocess_expired_caller_id_callback(s["expired_callerid"])
         if "transcription_complete" in s:
             self._preprocess_transcription_complete_callback(s["transcription_complete"])
-        if "classification_complete" in s:
-            self._preprocess_classification_complete_callback(s["classification_complete"])
         if "sms_inbound" in s:
             self._preprocess_inbound_sms_callback(s["sms_inbound"])
         if "new_invoice" in s:
@@ -683,6 +688,8 @@ class VoximplantAPI:
             self._preprocess_a2p_activated_callback(s["a2p_sms_activated"])
         if "regulation_address_documents_requested" in s:
             self._preprocess_regulation_address_documents_requested_callback(s["regulation_address_documents_requested"])
+        if "invoice_received" in s:
+            self._preprocess_invoice_received_callback(s["invoice_received"])
 
     def _preprocess_a2p_sms_delivery_callback(self, s):
             pass
@@ -759,6 +766,19 @@ class VoximplantAPI:
             pass
 
     def _preprocess_sip_registration_fail_callback(self, s):
+        if "sip_registrations" in s:
+            for k in s["sip_registrations"]:
+                self._preprocess_sip_registration_is_failed_callback_item(k)
+
+    def _preprocess_sip_registration_is_failed_callback_item(self, s):
+            pass
+
+    def _preprocess_sip_registration_recovered_callback(self, s):
+        if "sip_registrations" in s:
+            for k in s["sip_registrations"]:
+                self._preprocess_sip_registration_is_recovered_callback_item(k)
+
+    def _preprocess_sip_registration_is_recovered_callback_item(self, s):
             pass
 
     def _preprocess_subscription_is_detached_callback(self, s):
@@ -820,18 +840,6 @@ class VoximplantAPI:
     def _preprocess_transcription_complete_callback_item(self, s):
             pass
 
-    def _preprocess_classification_complete_callback(self, s):
-        if "classification_complete" in s:
-            self._preprocess_classification_complete_callback_item(s["classification_complete"])
-
-    def _preprocess_classification_complete_callback_item(self, s):
-        if "classification_info" in s:
-            for k in s["classification_info"]:
-                self._preprocess_classification_unit(k)
-
-    def _preprocess_classification_unit(self, s):
-            pass
-
     def _preprocess_expiring_agreement_callback(self, s):
         if "expiration_date" in s:
             s["expiration_date"] = self._api_date_to_py(s["expiration_date"])
@@ -880,6 +888,12 @@ class VoximplantAPI:
     def _preprocess_regulation_address_documents_requested_callback(self, s):
         if "update_time" in s:
             s["update_time"] = self._api_datetime_utc_to_py(s["update_time"])
+
+    def _preprocess_invoice_received_callback(self, s):
+        if "invoice_date" in s:
+            s["invoice_date"] = self._api_datetime_utc_to_py(s["invoice_date"])
+        if "receival_date" in s:
+            s["receival_date"] = self._api_datetime_utc_to_py(s["receival_date"])
 
     def _preprocess_zip_code(self, s):
             pass
@@ -1031,7 +1045,9 @@ class VoximplantAPI:
             s["modified"] = self._api_datetime_utc_to_py(s["modified"])
 
     def _preprocess_get_sq_agents_result(self, s):
-            pass
+        if "sq_statuses" in s:
+            for k in s["sq_statuses"]:
+                self._preprocess_smart_queue_state__agent__status(k)
 
     def _preprocess_sq_agent_selection_strategies(self, s):
             pass
@@ -1107,6 +1123,34 @@ class VoximplantAPI:
     def _preprocess_key_value_keys(self, s):
             pass
 
+    def _preprocess_account_invocie(self, s):
+        if "period" in s:
+            self._preprocess_invoice_period(s["period"])
+        if "amount" in s:
+            self._preprocess_invoice_total_details(s["amount"])
+        if "rows" in s:
+            self._preprocess_invoice_spending_details(s["rows"])
+        if "invoice_date" in s:
+            s["invoice_date"] = self._api_date_to_py(s["invoice_date"])
+
+    def _preprocess_invoice_period(self, s):
+        if "from" in s:
+            s["from"] = self._api_date_to_py(s["from"])
+        if "to" in s:
+            s["to"] = self._api_date_to_py(s["to"])
+
+    def _preprocess_invoice_total_details(self, s):
+            pass
+
+    def _preprocess_invoice_spending_details(self, s):
+        if "amount" in s:
+            self._preprocess_invoice_total_details(s["amount"])
+        if "taxes" in s:
+            self._preprocess_invoice_taxes_details(s["taxes"])
+
+    def _preprocess_invoice_taxes_details(self, s):
+            pass
+
 
     def get_account_info(self, return_live_balance=None):
         """
@@ -1123,13 +1167,15 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetAccountInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_account_info_type(res["result"])
+            self._preprocess_account_info_type(res["result"])
+        
         return res
 
-    def set_account_info(self, new_account_email=None, new_account_password=None, language_code=None, location=None, account_first_name=None, account_last_name=None, min_balance_to_notify=None, account_notifications=None, tariff_changing_notifications=None, news_notifications=None, send_js_error=None, billing_address_name=None, billing_address_country_code=None, billing_address_address=None, billing_address_zip=None, billing_address_phone=None, account_custom_data=None, callback_url=None, callback_salt=None):
+    def set_account_info(self, new_account_email=None, new_account_password=None, language_code=None, location=None, account_first_name=None, account_last_name=None, min_balance_to_notify=None, account_notifications=None, tariff_changing_notifications=None, news_notifications=None, send_js_error=None, billing_address_name=None, billing_address_country_code=None, billing_address_address=None, billing_address_zip=None, billing_address_phone=None, account_custom_data=None, callback_url=None, callback_salt=None, store_outbound_sms=None, store_inbound_sms=None):
         """
         Edits the account's profile.
 
@@ -1196,14 +1242,22 @@ class VoximplantAPI:
         if callback_salt is not None:
             params['callback_salt']=callback_salt
 
+        if store_outbound_sms is not None:
+            params['store_outbound_sms']=store_outbound_sms
+
+        if store_inbound_sms is not None:
+            params['store_inbound_sms']=store_inbound_sms
+
         
         res = self._perform_request('SetAccountInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
+        
         return res
 
-    def set_child_account_info(self, child_account_id=None, child_account_name=None, child_account_email=None, new_child_account_email=None, new_child_account_password=None, account_notifications=None, tariff_changing_notifications=None, news_notifications=None, active=None, language_code=None, location=None, min_balance_to_notify=None, support_robokassa=None, support_bank_card=None, support_invoice=None, can_use_restricted=None, min_payment_amount=None):
+    def set_child_account_info(self, child_account_id=None, child_account_name=None, child_account_email=None, new_child_account_email=None, new_child_account_password=None, account_notifications=None, tariff_changing_notifications=None, news_notifications=None, active=None, language_code=None, location=None, min_balance_to_notify=None, support_robokassa=None, support_bank_card=None, support_invoice=None, can_use_restricted=None):
         """
         Edits the account's profile.
 
@@ -1275,13 +1329,12 @@ class VoximplantAPI:
         if can_use_restricted is not None:
             params['can_use_restricted']=can_use_restricted
 
-        if min_payment_amount is not None:
-            params['min_payment_amount']=min_payment_amount
-
         
         res = self._perform_request('SetChildAccountInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -1302,10 +1355,12 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetCurrencyRate', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_exchange_rates(res["result"])
+            self._preprocess_exchange_rates(res["result"])
+        
         return res
 
     def get_resource_price(self, resource_type=None, price_group_id=None, price_group_name=None, resource_param=None):
@@ -1332,11 +1387,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetResourcePrice', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_resource_price(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_resource_price(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_subscription_price(self, subscription_template_id=None, subscription_template_type=None, subscription_template_name=None, count=None, offset=None):
@@ -1366,11 +1426,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetSubscriptionPrice', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_subscription_template_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_subscription_template_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_children_accounts(self, child_account_id=None, child_account_name=None, child_account_email=None, active=None, frozen=None, ignore_invalid_accounts=None, brief_output=None, medium_output=None, count=None, offset=None, order_by=None, return_live_balance=None):
@@ -1421,11 +1486,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetChildrenAccounts', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_account_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_account_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_money_amount_to_charge(self, currency=None, charge_date=None):
@@ -1446,10 +1516,12 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetMoneyAmountToCharge', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_get_money_amount_to_charge_result(res["result"])
+            self._preprocess_get_money_amount_to_charge_result(res["result"])
+        
         return res
 
     def charge_account(self, phone_id=None, phone_number=None):
@@ -1482,15 +1554,17 @@ class VoximplantAPI:
 
         
         res = self._perform_request('ChargeAccount', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_charge_account_result(res["result"])
+            self._preprocess_charge_account_result(res["result"])
+        
         return res
 
     def change_account_plan(self, plan_type, plan_subscription_template_id=None):
         """
-        Configures the account's plan.
+        Configures the account's plan.<br><br>Please note that when you change the billing plan, we reserve the subscription fee and taxes for the upcoming month. Read more in the <a href='/docs/gettingstarted/billing'>Billing</a> page.
 
         
         :rtype: dict
@@ -1505,8 +1579,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('ChangeAccountPlan', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -1528,11 +1604,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetAccountPlans', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_account_plan_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_account_plan_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_available_plans(self, plan_type=None, plan_subscription_template_id=None):
@@ -1553,11 +1634,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetAvailablePlans', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_plan_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_plan_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def add_application(self, application_name, secure_record_storage=None):
@@ -1577,8 +1663,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('AddApplication', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -1612,8 +1700,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DelApplication', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -1653,8 +1743,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetApplicationInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -1688,11 +1780,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetApplications', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_application_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_application_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def add_user(self, user_name, user_display_name, user_password, application_id=None, application_name=None, parent_accounting=None, user_active=None, user_custom_data=None):
@@ -1740,8 +1837,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('AddUser', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -1791,8 +1890,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DelUser', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -1860,8 +1961,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetUserInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -1943,11 +2046,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetUsers', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_user_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_user_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def transfer_money_to_user(self, amount, user_id=None, user_name=None, application_id=None, application_name=None, currency=None, strict_mode=None, user_transaction_description=None, account_transaction_description=None):
@@ -2010,14 +2118,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('TransferMoneyToUser', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
+        
         return res
 
-    def create_manual_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, encoding=None, delimiter=None, escape=None, reference_ip=None):
+    def create_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, encoding=None, delimiter=None, escape=None, reference_ip=None):
         """
-        Adds a new CSV file for manual call list processing and bind it with the specified rule. To send a file, use the request body. To start processing calls, use the function [StartNextCallTask]. <b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing won't start, or it stops immediately if it was active.
+        Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the following options in a CSV file: <ul><li>**__start_execution_time** – when the call list processing will start every day, UTC+0 24-h format: HH:mm:ss</li><li>**__end_execution_time** – when the call list processing will stop every day,  UTC+0 24-h format: HH:mm:ss</li><li>**__start_at** – when the call list processing will start, UNIX timestamp. If not specified, the processing will start immediately after a method call</li></ul><br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.<br/><b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing won't start, or it stops immediately if it was active.
 
         
         :rtype: dict
@@ -2053,31 +2163,11 @@ class VoximplantAPI:
             params['reference_ip']=reference_ip
 
         
-        res = self._perform_request('CreateManualCallList', params)
+        res = self._perform_request('CreateCallList', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
-        return res
-
-    def start_next_call_task(self, list_id, custom_params=None):
-        """
-        Start processing the next task.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        params['list_id']=self._serialize_list(list_id)
-
-        
-        if custom_params is not None:
-            params['custom_params']=custom_params
-
-        
-        res = self._perform_request('StartNextCallTask', params)
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
         return res
 
@@ -2120,11 +2210,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetCallLists', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_call_list_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_call_list_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_call_list_details(self, list_id, count=None, offset=None, output=None, encoding=None, delimiter=None):
@@ -2156,11 +2251,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetCallListDetails', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_call_list_detail_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_call_list_detail_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def stop_call_list_processing(self, list_id):
@@ -2177,8 +2277,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('StopCallListProcessing', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -2196,14 +2298,16 @@ class VoximplantAPI:
         
         
         res = self._perform_request('RecoverCallList', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
     def add_scenario(self, scenario_name, scenario_script=None, rule_id=None, rule_name=None, rewrite=None):
         """
-        Adds a new scenario. Please use the POST method.
+        Adds a new scenario to the <a href="https://voximplant.com/docs/gettingstarted/basicconcepts/scenarios#shared-scenarios">Shared</a> folder, so the scenario is available in all the existing applications. Please use the POST method.
 
         
         :rtype: dict
@@ -2227,8 +2331,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('AddScenario', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -2262,14 +2368,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DelScenario', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
     def bind_scenario(self, scenario_id=None, scenario_name=None, rule_id=None, rule_name=None, application_id=None, application_name=None, bind=None):
         """
-        Bind the scenario list to the rule. You should specify the application_id or application_name if you specify the rule_name.
+        Bind the scenario list to the rule. You should specify the application_id or application_name if you specify the rule_name. Please note, the scenario and the routing rule need to be within the same application.
 
         
         :rtype: dict
@@ -2336,8 +2444,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('BindScenario', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -2368,16 +2478,21 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetScenarios', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_scenario_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_scenario_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def set_scenario_info(self, scenario_id=None, required_scenario_name=None, scenario_name=None, scenario_script=None):
         """
-        Edits the scenario. Please use the POST method.
+        Edits the scenario. You can edit the scenario's name and body. Please use the POST method.
 
         
         :rtype: dict
@@ -2411,8 +2526,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetScenarioInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -2449,14 +2566,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('ReorderScenarios', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
     def start_scenarios(self, rule_id, user_id=None, user_name=None, application_id=None, application_name=None, script_custom_data=None, reference_ip=None):
         """
-        Runs JavaScript scenarios on a Voximplant server. The scenarios run in a new media session.
+        Runs JavaScript scenarios on a Voximplant server. The scenarios run in a new media session. To start a scenario, pass the routing rule ID associated with the necessary scenario. You can use both GET and POST requests, but we recommend using the POST mode if you pass some data in the custom_data field. The maximum number of simultaneous requests is 200. If you exceed this number, you get the 429 error code.
 
         
         :rtype: dict
@@ -2506,14 +2625,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('StartScenarios', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
     def start_conference(self, conference_name, rule_id, user_id=None, user_name=None, application_id=None, application_name=None, script_custom_data=None, reference_ip=None):
         """
-        Runs a session for video conferencing or joins the existing video conference session.<br/><br/>When a session is created by calling this method, a scenario assigned to the specified **rule_id** will run on one of the servers dedicated to video conferencing. All further method calls with the same **rule_id** won't create a new video conference session, but join the already existing one.<br/><br/>Use the [StartScenarios] method for creating audio conferences.
+        Runs a session for video conferencing or joins the existing video conference session.<br/><br/>When you create a session by calling this method, a scenario runs on one of the servers dedicated to video conferencing. All further method calls with the same **conference_name** won't create a new video conference session but join the existing one.<br/><br/>Use the [StartScenarios] method for creating audio conferences.
 
         
         :rtype: dict
@@ -2565,8 +2686,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('StartConference', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -2628,8 +2751,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('AddRule', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -2681,8 +2806,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DelRule', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -2712,8 +2839,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetRuleInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -2768,11 +2897,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetRules', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_rule_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_rule_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def reorder_rules(self, rule_id):
@@ -2789,14 +2923,16 @@ class VoximplantAPI:
         
         
         res = self._perform_request('ReorderRules', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
     def get_call_history(self, from_date, to_date, call_session_history_id=None, application_id=None, application_name=None, user_id=None, rule_name=None, remote_number=None, local_number=None, call_session_history_custom_data=None, with_calls=None, with_records=None, with_other_resources=None, child_account_id=None, children_calls_only=None, with_header=None, desc_order=None, with_total_count=None, count=None, offset=None, output=None, is_async=None):
         """
-        Gets the call history.
+        Gets the account's call history, including call duration, cost, logs and other call information. You can filter the call history by a certain date
 
         
         :rtype: dict
@@ -2880,11 +3016,80 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetCallHistory', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_call_session_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_call_session_info_type(p)
+            except TypeError as te:
+                pass
+        
+        return res
+
+    def get_brief_call_history(self, from_date, to_date, output, is_async, call_session_history_id=None, application_id=None, application_name=None, rule_name=None, remote_number=None, local_number=None, call_session_history_custom_data=None, with_header=None, desc_order=None):
+        """
+        Gets the account's brief call history. Use the [GetHistoryReports], [DownloadHistoryReport] methods to download the report.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_brief_call_history")
+        
+        
+        params['from_date']=self._py_datetime_to_api(from_date)
+
+        params['to_date']=self._py_datetime_to_api(to_date)
+
+        params['output']=output
+
+        params['is_async']=is_async
+
+        
+        if call_session_history_id is not None:
+            params['call_session_history_id']=self._serialize_list(call_session_history_id)
+
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if rule_name is not None:
+            params['rule_name']=rule_name
+
+        if remote_number is not None:
+            params['remote_number']=self._serialize_list(remote_number)
+
+        if local_number is not None:
+            params['local_number']=self._serialize_list(local_number)
+
+        if call_session_history_custom_data is not None:
+            params['call_session_history_custom_data']=call_session_history_custom_data
+
+        if with_header is not None:
+            params['with_header']=with_header
+
+        if desc_order is not None:
+            params['desc_order']=desc_order
+
+        
+        res = self._perform_request('GetBriefCallHistory', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
         return res
 
     def get_history_reports(self, history_report_id=None, history_type=None, created_from=None, created_to=None, is_completed=None, desc_order=None, count=None, offset=None, application_id=None):
@@ -2926,14 +3131,19 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetHistoryReports', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_history_report_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_history_report_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
-    def get_transaction_history(self, from_date, to_date, transaction_id=None, transaction_type=None, user_id=None, child_account_id=None, children_transactions_only=None, users_transactions_only=None, desc_order=None, count=None, offset=None, output=None, is_async=None):
+    def get_transaction_history(self, from_date, to_date, transaction_id=None, transaction_type=None, user_id=None, child_account_id=None, children_transactions_only=None, users_transactions_only=None, desc_order=None, count=None, offset=None, output=None, is_async=None, is_uncommitted=None):
         """
         Gets the transaction history.
 
@@ -2980,18 +3190,26 @@ class VoximplantAPI:
         if is_async is not None:
             params['is_async']=is_async
 
+        if is_uncommitted is not None:
+            params['is_uncommitted']=is_uncommitted
+
         
         res = self._perform_request('GetTransactionHistory', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_transaction_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_transaction_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def delete_record(self, record_url=None, record_id=None):
         """
-        Try to remove record and transcription files.
+        Try to remove a record and transcription files.
 
         
         :rtype: dict
@@ -3007,8 +3225,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DeleteRecord', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3070,11 +3290,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetACDHistory', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_acd_session_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_acd_session_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_audit_log(self, from_date, to_date, audit_log_id=None, filtered_admin_user_id=None, filtered_ip=None, filtered_cmd=None, advanced_filters=None, with_header=None, desc_order=None, with_total_count=None, count=None, offset=None, output=None, is_async=None):
@@ -3129,16 +3354,21 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetAuditLog', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_audit_log_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_audit_log_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def add_pstn_black_list_item(self, pstn_blacklist_phone):
         """
-        Add a new phone number to the PSTN blacklist. BlackList works for numbers that are purchased from Voximplant only. Since we have no control over exact phone number format for calls from SIP integrations, blacklisting such numbers should be done via JavaScript scenarios.
+        Add a new phone number to the PSTN blacklist. Blacklist is used to block inbound calls from specified phone numbers to numbers purchased from Voximplant. Since we have no control over exact phone number format for calls from SIP integrations, blacklisting such numbers should be done via JavaScript scenarios.
 
         
         :rtype: dict
@@ -3150,8 +3380,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('AddPstnBlackListItem', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3171,8 +3403,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('SetPstnBlackListItem', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3190,8 +3424,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('DelPstnBlackListItem', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3219,14 +3455,19 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetPstnBlackList', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_pstn_black_list_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_pstn_black_list_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
-    def add_sip_white_list_item(self, sip_whitelist_network):
+    def add_sip_white_list_item(self, sip_whitelist_network, description=None):
         """
         Adds a new network address to the SIP white list.
 
@@ -3238,10 +3479,15 @@ class VoximplantAPI:
         params['sip_whitelist_network']=sip_whitelist_network
 
         
+        if description is not None:
+            params['description']=description
+
         
         res = self._perform_request('AddSipWhiteListItem', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3259,12 +3505,14 @@ class VoximplantAPI:
         
         
         res = self._perform_request('DelSipWhiteListItem', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
+        
         return res
 
-    def set_sip_white_list_item(self, sip_whitelist_id, sip_whitelist_network):
+    def set_sip_white_list_item(self, sip_whitelist_id, sip_whitelist_network, description=None):
         """
         Edits the SIP white list.
 
@@ -3278,10 +3526,15 @@ class VoximplantAPI:
         params['sip_whitelist_network']=sip_whitelist_network
 
         
+        if description is not None:
+            params['description']=description
+
         
         res = self._perform_request('SetSipWhiteListItem', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3306,16 +3559,21 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetSipWhiteList', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_sip_white_list_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_sip_white_list_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def create_sip_registration(self, sip_username, proxy, auth_user=None, outbound_proxy=None, password=None, is_persistent=None, application_id=None, application_name=None, rule_id=None, rule_name=None, user_id=None, user_name=None):
         """
-        Create a new SIP registration. You should specify the application_id or application_name if you specify the rule_name or user_id, or user_name. You should set is_persistent=true if you specify the user_id or user_name. You can bind only one SIP registration to the user (the previous SIP registration will be auto unbound).
+        Create a new SIP registration. You should specify the application_id or application_name if you specify the rule_name or user_id, or user_name. You should set is_persistent=true if you specify the user_id or user_name. You can bind only one SIP registration to the user (the previous SIP registration will be auto unbound).<br><br>Please note that when you create a SIP registration, we reserve the subscription fee and taxes for the upcoming month. Read more in the <a href='/docs/gettingstarted/billing'>Billing</a> page.
 
         
         :rtype: dict
@@ -3389,8 +3647,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('CreateSipRegistration', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3471,8 +3731,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('UpdateSipRegistration', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3542,8 +3804,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('BindSipRegistration', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3561,8 +3825,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('DeleteSipRegistration', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3663,16 +3929,21 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetSipRegistrations', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_sip_registration_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_sip_registration_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def attach_phone_number(self, country_code, phone_category_name, phone_region_id, phone_count=None, phone_number=None, country_state=None, regulation_address_id=None):
         """
-        Attach the phone number to the account. Note that phone numbers of some countries may require additional verification steps.
+        Attach the phone number to the account. Note that phone numbers of some countries may require additional verification steps.<br><br>Please note that when you purchase a phone number, we reserve the subscription fee and taxes for the upcoming month. Read more in the <a href='/docs/gettingstarted/billing'>Billing</a> page.
 
         
         :rtype: dict
@@ -3712,8 +3983,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('AttachPhoneNumber', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3784,8 +4057,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('BindPhoneNumberToApplication', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3819,8 +4094,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DeactivatePhoneNumber', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3857,12 +4134,14 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetPhoneNumberInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
+        
         return res
 
-    def get_phone_numbers(self, phone_id=None, application_id=None, application_name=None, is_bound_to_application=None, phone_template=None, country_code=None, phone_category_name=None, canceled=None, deactivated=None, auto_charge=None, from_phone_next_renewal=None, to_phone_next_renewal=None, from_phone_purchase_date=None, to_phone_purchase_date=None, child_account_id=None, children_phones_only=None, verification_name=None, verification_status=None, from_unverified_hold_until=None, to_unverified_hold_until=None, can_be_used=None, order_by=None, sandbox=None, count=None, offset=None, phone_region_name=None, rule_id=None, rule_name=None, is_bound_to_rule=None):
+    def get_phone_numbers(self, phone_id=None, phone_number=None, application_id=None, application_name=None, is_bound_to_application=None, phone_template=None, country_code=None, phone_category_name=None, canceled=None, deactivated=None, auto_charge=None, from_phone_next_renewal=None, to_phone_next_renewal=None, from_phone_purchase_date=None, to_phone_purchase_date=None, child_account_id=None, children_phones_only=None, verification_name=None, verification_status=None, from_unverified_hold_until=None, to_unverified_hold_until=None, can_be_used=None, order_by=None, sandbox=None, count=None, offset=None, phone_region_name=None, rule_id=None, rule_name=None, is_bound_to_rule=None):
         """
         Gets the account phone numbers.
 
@@ -3883,7 +4162,10 @@ class VoximplantAPI:
         
         
         if phone_id is not None:
-            params['phone_id']=phone_id
+            params['phone_id']=self._serialize_list(phone_id)
+
+        if phone_number is not None:
+            params['phone_number']=self._serialize_list(phone_number)
 
         if application_id is not None:
             params['application_id']=application_id
@@ -3971,11 +4253,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetPhoneNumbers', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_attached_phone_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_attached_phone_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_new_phone_numbers(self, country_code, phone_category_name, phone_region_id, country_state=None, count=None, offset=None):
@@ -4005,11 +4292,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetNewPhoneNumbers', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_new_phone_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_new_phone_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_phone_number_categories(self, country_code=None, sandbox=None, locale=None):
@@ -4033,11 +4325,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetPhoneNumberCategories', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_phone_number_country_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_phone_number_country_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_phone_number_country_states(self, country_code, phone_category_name, country_state=None):
@@ -4059,11 +4356,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetPhoneNumberCountryStates', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_phone_number_country_state_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_phone_number_country_state_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_phone_number_regions(self, country_code, phone_category_name, country_state=None, omit_empty=None, phone_region_id=None, phone_region_name=None, phone_region_code=None, locale=None):
@@ -4100,11 +4402,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetPhoneNumberRegions', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_phone_number_country_region_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_phone_number_country_region_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_actual_phone_number_region(self, country_code, phone_category_name, phone_region_id, country_state=None, locale=None):
@@ -4131,10 +4438,12 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetActualPhoneNumberRegion', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_phone_number_country_region_info_type(res["result"])
+            self._preprocess_phone_number_country_region_info_type(res["result"])
+        
         return res
 
     def add_caller_id(self, callerid_number):
@@ -4151,8 +4460,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('AddCallerID', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -4188,8 +4499,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('ActivateCallerID', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -4223,8 +4536,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DelCallerID', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -4258,11 +4573,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetCallerIDs', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_caller_id_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_caller_id_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def verify_caller_id(self, callerid_id=None, callerid_number=None):
@@ -4295,8 +4615,110 @@ class VoximplantAPI:
 
         
         res = self._perform_request('VerifyCallerID', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def add_outbound_test_phone_number(self, phone_number):
+        """
+        Adds a personal phone number to test outbound calls. Only one personal phone number can be used. To replace it with another, delete the existing one first.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['phone_number']=phone_number
+
+        
+        
+        res = self._perform_request('AddOutboundTestPhoneNumber', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def verify_outbound_test_phone_number(self):
+        """
+        Starts a call to the added phone number and pronounces a verification code. You have only 5 verification attempts per day and 100 in total. 1 minute should pass between 2 attempts.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        
+        
+        res = self._perform_request('VerifyOutboundTestPhoneNumber', params)
+        
+        return res
+
+    def activate_outbound_test_phone_number(self, verification_code):
+        """
+        Activates the phone number by the verification code.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['verification_code']=verification_code
+
+        
+        
+        res = self._perform_request('ActivateOutboundTestPhoneNumber', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def del_outbound_test_phone_number(self):
+        """
+        Deletes the existing phone number.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        
+        
+        res = self._perform_request('DelOutboundTestPhoneNumber', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def get_outbound_test_phone_numbers(self):
+        """
+        Shows the phone number info.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        
+        
+        res = self._perform_request('GetOutboundTestPhoneNumbers', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            try:
+                for p in res["result"]:
+                    self._preprocess_outbound_test_phonenumber_info_type(p)
+            except TypeError as te:
+                pass
         
         return res
 
@@ -4350,8 +4772,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('AddQueue', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -4423,8 +4847,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('BindUserToQueue', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -4458,8 +4884,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DelQueue', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -4517,12 +4945,14 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetQueueInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
+        
         return res
 
-    def get_queues(self, acd_queue_id=None, acd_queue_name=None, application_id=None, skill_id=None, excluded_skill_id=None, with_skills=None, showing_skill_id=None, count=None, offset=None):
+    def get_queues(self, acd_queue_id=None, acd_queue_name=None, application_id=None, skill_id=None, excluded_skill_id=None, with_skills=None, showing_skill_id=None, count=None, offset=None, with_operatorcount=None):
         """
         Gets the ACD queues.
 
@@ -4559,13 +4989,21 @@ class VoximplantAPI:
         if offset is not None:
             params['offset']=offset
 
+        if with_operatorcount is not None:
+            params['with_operatorcount']=with_operatorcount
+
         
         res = self._perform_request('GetQueues', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_queue_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_queue_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_acd_state(self, acd_queue_id=None):
@@ -4583,10 +5021,12 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetACDState', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_acd_state_type(res["result"])
+            self._preprocess_acd_state_type(res["result"])
+        
         return res
 
     def get_acd_operator_statistics(self, from_date, user_id, to_date=None, acd_queue_id=None, abbreviation=None, report=None, aggregation=None, group=None):
@@ -4623,11 +5063,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetACDOperatorStatistics', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_acd_operator_aggregation_group_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_acd_operator_aggregation_group_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_acd_queue_statistics(self, from_date, to_date=None, abbreviation=None, acd_queue_id=None, report=None, aggregation=None):
@@ -4659,11 +5104,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetACDQueueStatistics', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_acd_queue_statistics_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_acd_queue_statistics_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_acd_operator_status_statistics(self, from_date, user_id, to_date=None, acd_status=None, aggregation=None, group=None):
@@ -4694,16 +5144,21 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetACDOperatorStatusStatistics', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_acd_operator_status_aggregation_group_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_acd_operator_status_aggregation_group_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_smart_queue_realtime_metrics(self, report_type, application_id=None, application_name=None, user_id=None, user_name=None, sq_queue_id=None, sq_queue_name=None, from_date=None, to_date=None, timezone=None, interval=None, group_by=None, max_waiting_sec=None):
         """
-        Gets the metrics for the specified smart queue for the last 30 minutes.
+        Gets the metrics for the specified SmartQueue for the last 30 minutes. Refer to the <a href="/docs/guides/contact-center/reporting">SmartQueue reporting guide</a> to learn more.
 
         
         :rtype: dict
@@ -4783,16 +5238,21 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetSmartQueueRealtimeMetrics', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_smart_queue_metrics_result(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_smart_queue_metrics_result(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_smart_queue_day_history(self, report_type, application_id=None, application_name=None, user_id=None, user_name=None, sq_queue_id=None, sq_queue_name=None, from_date=None, to_date=None, timezone=None, interval=None, group_by=None, max_waiting_sec=None):
         """
-        Gets the metrics for the specified smart queue for the last 2 days.
+        Gets the metrics for the specified SmartQueue for the last 2 days. Refer to the <a href="/docs/guides/contact-center/reporting">SmartQueue reporting guide</a> to learn more.
 
         
         :rtype: dict
@@ -4874,16 +5334,21 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetSmartQueueDayHistory', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_smart_queue_metrics_result(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_smart_queue_metrics_result(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def request_smart_queue_history(self, from_date, to_date, report_type, application_id=None, application_name=None, user_id=None, user_name=None, sq_queue_id=None, sq_queue_name=None, timezone=None, interval=None, group_by=None, max_waiting_sec=None):
         """
-        Gets history for the specified smart queue.
+        Gets history for the specified SmartQueue. Refer to the <a href="/docs/guides/contact-center/reporting">SmartQueue reporting guide</a> to learn more.
 
         
         :rtype: dict
@@ -4963,14 +5428,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('RequestSmartQueueHistory', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
     def get_sq_state(self, application_id=None, application_name=None, sq_queue_id=None, sq_queue_name=None, timezone=None):
         """
-        Gets the current state of the specified smart queue.
+        Gets the current state of the specified SmartQueue.
 
         
         :rtype: dict
@@ -5019,16 +5486,88 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetSQState', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_smart_queue_state(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_smart_queue_state(p)
+            except TypeError as te:
+                pass
+        
+        return res
+
+    def sq__set_agent_custom_status_mapping(self, sq_status_name, custom_status_name, application_id):
+        """
+        Adds a status if there is no match for the given internal status and renames it if there is a match. It means that if the passed **sq_status_name** parameter is not in the mapping table, a new entry is created in there; if it is, the **name** field in its mapping is replaced with **custom_status_name**.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['sq_status_name']=sq_status_name
+
+        params['custom_status_name']=custom_status_name
+
+        params['application_id']=application_id
+
+        
+        
+        res = self._perform_request('SQ_SetAgentCustomStatusMapping', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def sq__get_agent_custom_status_mapping(self, application_id=None):
+        """
+        Returns the mapping list of SQ statuses and custom statuses. SQ statuses are returned whether or not they have mappings to custom statuses.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        
+        if application_id is not None:
+            params['application_id']=application_id
+
+        
+        res = self._perform_request('SQ_GetAgentCustomStatusMapping', params)
+        
+        return res
+
+    def sq__delete_agent_custom_status_mapping(self, application_id, sq_status_name=None):
+        """
+        Removes a mapping from the mapping table. If there is no such mapping, does nothing.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['application_id']=application_id
+
+        
+        if sq_status_name is not None:
+            params['sq_status_name']=sq_status_name
+
+        
+        res = self._perform_request('SQ_DeleteAgentCustomStatusMapping', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
         return res
 
     def add_skill(self, skill_name):
         """
-        Adds a new ACD operator skill.
+        Adds a new operator's skill. Works only for ACDv1. For SmartQueue/ACDv2, use <a href="#how-auth-works">this reference</a>.
 
         
         :rtype: dict
@@ -5040,14 +5579,16 @@ class VoximplantAPI:
         
         
         res = self._perform_request('AddSkill', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
     def del_skill(self, skill_id=None, skill_name=None):
         """
-        Deletes the skill.
+        Deletes an operator's skill. Works only for ACDv1. For SmartQueue/ACDv2, use <a href="#how-auth-works">this reference</a>.
 
         
         :rtype: dict
@@ -5075,14 +5616,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DelSkill', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
     def set_skill_info(self, new_skill_name, skill_id=None, skill_name=None):
         """
-        Edits the skill.
+        Edits an operator's skill. Works only for ACDv1. For SmartQueue/ACDv2, use <a href="#how-auth-works">this reference</a>.
 
         
         :rtype: dict
@@ -5112,14 +5655,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetSkillInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
     def get_skills(self, skill_id=None, skill_name=None, count=None, offset=None):
         """
-        Gets the skills.
+        Gets the skills of an operator. Works only for ACDv1. For SmartQueue/ACDv2, use <a href="#how-auth-works">this reference</a>.
 
         
         :rtype: dict
@@ -5141,16 +5686,21 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetSkills', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_skill_info_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_skill_info_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def bind_skill(self, skill_id=None, skill_name=None, user_id=None, user_name=None, acd_queue_id=None, acd_queue_name=None, application_id=None, application_name=None, bind=None):
         """
-        Binds the specified skills to the users (ACD operators) and/or the ACD queues.
+        Binds the specified skills to the users (ACD operators) and/or the ACD queues. Works only for ACDv1. For SmartQueue/ACDv2, use <a href="#how-auth-works">this reference</a>.
 
         
         :rtype: dict
@@ -5233,8 +5783,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('BindSkill', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -5271,11 +5823,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetAccountDocuments', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_account_verifications(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_account_verifications(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def add_admin_user(self, new_admin_user_name, admin_user_display_name, new_admin_user_password, admin_user_active=None, admin_role_id=None, admin_role_name=None):
@@ -5315,8 +5872,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('AddAdminUser', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -5350,8 +5909,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DelAdminUser', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -5397,8 +5958,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetAdminUserInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -5438,11 +6001,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetAdminUsers', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_admin_user_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_admin_user_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def add_admin_role(self, admin_role_name, admin_role_active=None, like_admin_role_id=None, like_admin_role_name=None, allowed_entries=None, denied_entries=None):
@@ -5484,8 +6052,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('AddAdminRole', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -5519,8 +6089,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DelAdminRole', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -5585,8 +6157,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetAdminRoleInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -5638,11 +6212,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetAdminRoles', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_admin_role_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_admin_role_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def attach_admin_role(self, required_admin_user_id=None, required_admin_user_name=None, admin_role_id=None, admin_role_name=None, mode=None):
@@ -5696,8 +6275,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('AttachAdminRole', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -5713,12 +6294,14 @@ class VoximplantAPI:
         
         
         res = self._perform_request('GetAvailableAdminRoleEntries', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
+        
         return res
 
-    def add_authorized_account_ip(self, authorized_ip, allowed=None):
+    def add_authorized_account_ip(self, authorized_ip, allowed=None, description=None):
         """
         Adds a new authorized IP4 or network to the white/black list.
 
@@ -5733,10 +6316,15 @@ class VoximplantAPI:
         if allowed is not None:
             params['allowed']=allowed
 
+        if description is not None:
+            params['description']=description
+
         
         res = self._perform_request('AddAuthorizedAccountIP', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -5773,12 +6361,14 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DelAuthorizedAccountIP', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
+        
         return res
 
-    def get_authorized_account_ips(self, authorized_ip=None, allowed=None, contains_ip=None, count=None, offset=None):
+    def get_authorized_account_ips(self, authorized_ip=None, allowed=None, contains_ip=None, count=None, offset=None, description=None):
         """
         Gets the authorized IP4 or network.
 
@@ -5803,13 +6393,21 @@ class VoximplantAPI:
         if offset is not None:
             params['offset']=offset
 
+        if description is not None:
+            params['description']=description
+
         
         res = self._perform_request('GetAuthorizedAccountIPs', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_authorized_account_ip_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_authorized_account_ip_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def check_authorized_account_ip(self, authorized_ip):
@@ -5826,8 +6424,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('CheckAuthorizedAccountIP', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -5863,8 +6463,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('LinkRegulationAddress', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -5891,11 +6493,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetZIPCodes', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_zip_code(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_zip_code(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_regulations_address(self, country_code=None, phone_category_name=None, phone_region_code=None, regulation_address_id=None, verified=None, in_progress=None):
@@ -5928,11 +6535,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetRegulationsAddress', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_regulation_address(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_regulation_address(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_available_regulations(self, country_code, phone_category_name, phone_region_code=None):
@@ -5954,8 +6566,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetAvailableRegulations', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -5974,11 +6588,38 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetCountries', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_regulation_country(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_regulation_country(p)
+            except TypeError as te:
+                pass
+        
+        return res
+
+    def get_account_phone_number_countries(self, application_id=None):
+        """
+        Gets all countries where the specific account has phone numbers.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        
+        if application_id is not None:
+            params['application_id']=self._serialize_list(application_id)
+
+        
+        res = self._perform_request('GetAccountPhoneNumberCountries', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
         return res
 
     def get_regions(self, country_code, phone_category_name, city_name=None, count=None, offset=None):
@@ -6006,11 +6647,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetRegions', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_regulation_region_record(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_regulation_region_record(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def add_push_credential(self, push_provider_name=None, push_provider_id=None, application_id=None, application_name=None, credential_bundle=None, cert_content=None, cert_file_name=None, cert_password=None, is_dev_mode=None, sender_id=None, server_key=None, service_account_file=None, huawei_client_id=None, huawei_client_secret=None, huawei_application_id=None):
@@ -6126,8 +6772,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('AddPushCredential', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6214,8 +6862,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetPushCredential', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6233,8 +6883,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('DelPushCredential', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6268,11 +6920,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetPushCredential', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_push_credential_info(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_push_credential_info(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def bind_push_credential(self, push_credential_id, application_id, bind=None):
@@ -6294,8 +6951,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('BindPushCredential', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6321,8 +6980,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('AddDialogflowKey', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6342,8 +7003,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('SetDialogflowKey', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6361,8 +7024,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('DelDialogflowKey', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6387,11 +7052,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetDialogflowKeys', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_dialogflow_key_info(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_dialogflow_key_info(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def bind_dialogflow_keys(self, dialogflow_key_id, application_id, bind=None):
@@ -6413,14 +7083,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('BindDialogflowKeys', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
+        
         return res
 
-    def send_sms_message(self, source, destination, sms_body):
+    def send_sms_message(self, source, destination, sms_body, store_body=None):
         """
-        Sends an SMS message between two phone numbers. The source phone number should be purchased from Voximplant and support SMS (which is indicated by the <b>is_sms_supported</b> property in the objects returned by the [GetPhoneNumbers] Management API) and SMS should be enabled for it via the [ControlSms] Management API. SMS messages can be received via HTTP callbacks, see <a href='/docs/howtos/integration/httpapi/callbacks'>this article</a> for details.
+        Sends an SMS message between two phone numbers. The source phone number should be purchased from Voximplant and support SMS (which is indicated by the <b>is_sms_supported</b> property in the objects returned by the [GetPhoneNumbers] Management API) and SMS should be enabled for it via the [ControlSms] Management API. SMS messages can be received via HTTP callbacks, see <a href='/docs/guides/managementapi/callbacks'>this article</a> for details.
 
         
         :rtype: dict
@@ -6434,16 +7106,21 @@ class VoximplantAPI:
         params['sms_body']=sms_body
 
         
+        if store_body is not None:
+            params['store_body']=store_body
+
         
         res = self._perform_request('SendSmsMessage', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
+        
         return res
 
-    def a2p_send_sms(self, src_number, dst_numbers, text):
+    def a2p_send_sms(self, src_number, dst_numbers, text, store_body=None):
         """
-        Sends an SMS message from the application to customers. The source phone number should be purchased from Voximplant and support SMS (which is indicated by the <b>is_sms_supported</b> property in the objects returned by the <a href='//voximplant.com/docs/references/httpapi/managing_phone_numbers#getphonenumbers'>/GetPhoneNumbers</a> Management API) and SMS should be enabled for it via the <a href='//voximplant.com/docs/references/httpapi/managing_sms#controlsms'>/ControlSms</a> Management API.
+        Sends an SMS message from the application to customers. The source phone number should be purchased from Voximplant and support SMS (which is indicated by the <b>is_sms_supported</b> property in the objects returned by the <a href='/docs/references/httpapi/managing_phone_numbers#getphonenumbers'>/GetPhoneNumbers</a> Management API) and SMS should be enabled for it via the <a href='/docs/references/httpapi/managing_sms#controlsms'>/ControlSms</a> Management API.
 
         
         :rtype: dict
@@ -6457,18 +7134,26 @@ class VoximplantAPI:
         params['text']=text
 
         
+        if store_body is not None:
+            params['store_body']=store_body
+
         
         res = self._perform_request('A2PSendSms', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_sms_transaction(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_sms_transaction(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def control_sms(self, phone_number, command):
         """
-        Enables or disables sending and receiving SMS for the phone number. Can be used only for phone numbers with SMS support, which is indicated by the <b>is_sms_supported</b> property in the objects returned by the [GetPhoneNumbers] Management API. Each inbound SMS message is charged according to the <a href='//voximplant.com/pricing'>pricing</a>. If enabled, SMS can be sent from this phone number using the [SendSmsMessage] Management API and received using the [InboundSmsCallback] property of the HTTP callback. See <a href='/docs/howtos/integration/httpapi/callbacks'>this article</a> for HTTP callback details.
+        Enables or disables sending and receiving SMS for the phone number. Can be used only for phone numbers with SMS support, which is indicated by the <b>is_sms_supported</b> property in the objects returned by the [GetPhoneNumbers] Management API. Each inbound SMS message is charged according to the <a href='//voximplant.com/pricing'>pricing</a>. If enabled, SMS can be sent from this phone number using the [SendSmsMessage] Management API and received using the [InboundSmsCallback] property of the HTTP callback. See <a href='/docs/guides/managementapi/callbacks'>this article</a> for HTTP callback details.
 
         
         :rtype: dict
@@ -6482,8 +7167,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('ControlSms', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6505,15 +7192,17 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetRecordStorages', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_record_storage_info_type(res["result"])
+            self._preprocess_record_storage_info_type(res["result"])
+        
         return res
 
     def create_key(self, description=None, role_id=None, role_name=None):
         """
-        Creates a public/private key pair. You can optionally specify one or more roles for the key, see [this article](https://voximplant.com/docs/introduction/introduction_to_voximplant/basic_concepts/service_accounts) for details.
+        Creates a public/private key pair. You can optionally specify one or more roles for the key.
 
         
         :rtype: dict
@@ -6542,11 +7231,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('CreateKey', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_key_info(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_key_info(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_keys(self, key_id=None, with_roles=None, offset=None, count=None):
@@ -6573,11 +7267,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetKeys', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_key_view(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_key_view(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def update_key(self, key_id, description):
@@ -6596,8 +7295,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('UpdateKey', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6615,8 +7316,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('DeleteKey', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6652,8 +7355,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetKeyRoles', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6674,11 +7379,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetKeyRoles', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_role_view(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_role_view(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def remove_key_roles(self, key_id, role_id=None, role_name=None):
@@ -6713,8 +7423,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('RemoveKeyRoles', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6753,10 +7465,12 @@ class VoximplantAPI:
 
         
         res = self._perform_request('AddSubUser', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_sub_user_id(res["result"])
+            self._preprocess_sub_user_id(res["result"])
+        
         return res
 
     def get_sub_users(self, subuser_id=None, with_roles=None, offset=None, count=None):
@@ -6783,11 +7497,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetSubUsers', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_sub_user_view(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_sub_user_view(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def set_sub_user_info(self, subuser_id, old_subuser_password=None, new_subuser_password=None, description=None):
@@ -6813,8 +7532,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetSubUserInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6832,8 +7553,10 @@ class VoximplantAPI:
         
         
         res = self._perform_request('DelSubUser', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6869,8 +7592,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetSubUserRoles', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6891,11 +7616,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetSubUserRoles', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_role_view(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_role_view(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def remove_sub_user_roles(self, subuser_id, role_id=None, role_name=None, force=None):
@@ -6933,8 +7663,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('RemoveSubUserRoles', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6953,11 +7685,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetRoles', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_role_view(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_role_view(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def get_role_groups(self):
@@ -6972,11 +7709,16 @@ class VoximplantAPI:
         
         
         res = self._perform_request('GetRoleGroups', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_role_group_view(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_role_group_view(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def set_key_value_item(self, key, value, application_id, application_name=None, ttl=None, expires_at=None):
@@ -7006,10 +7748,12 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SetKeyValueItem', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_key_value_items(res["result"])
+            self._preprocess_key_value_items(res["result"])
+        
         return res
 
     def del_key_value_item(self, key, application_id, application_name=None):
@@ -7031,8 +7775,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('DelKeyValueItem', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -7055,10 +7801,12 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetKeyValueItem', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_key_value_items(res["result"])
+            self._preprocess_key_value_items(res["result"])
+        
         return res
 
     def get_key_value_items(self, key, application_id, count=None, offset=None, application_name=None):
@@ -7086,10 +7834,12 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetKeyValueItems', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_key_value_items(res["result"])
+            self._preprocess_key_value_items(res["result"])
+        
         return res
 
     def get_key_value_keys(self, application_id, key=None, count=None, offset=None, application_name=None):
@@ -7118,10 +7868,38 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetKeyValueKeys', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_key_value_keys(res["result"])
+            self._preprocess_key_value_keys(res["result"])
+        
+        return res
+
+    def get_account_invoices(self, count=None, offset=None):
+        """
+        Gets all invoices of the specified USD or EUR account.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        
+        if count is not None:
+            params['count']=count
+
+        if offset is not None:
+            params['offset']=offset
+
+        
+        res = self._perform_request('GetAccountInvoices', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            self._preprocess_account_invocie(res["result"])
+        
         return res
 
     def get_sms_history(self, source_number=None, destination_number=None, direction=None, count=None, offset=None, from_date=None, to_date=None, output=None):
@@ -7160,11 +7938,16 @@ class VoximplantAPI:
 
         
         res = self._perform_request('GetSmsHistory', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_sms_history_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_sms_history_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
     def a2p_get_sms_history(self, source_number=None, destination_number=None, count=None, offset=None, from_date=None, to_date=None, output=None, delivery_status=None):
@@ -7203,14 +7986,19 @@ class VoximplantAPI:
 
         
         res = self._perform_request('A2PGetSmsHistory', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            for p in res["result"]:
-                self._preprocess_a2p_sms_history_type(p)
+            try:
+                for p in res["result"]:
+                    self._preprocess_a2p_sms_history_type(p)
+            except TypeError as te:
+                pass
+        
         return res
 
-    def sq__add_queue(self, application_id, sq_queue_name, call_agent_selection, call_task_selection, application_name=None, im_agent_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None):
+    def sq__add_queue(self, application_id, sq_queue_name, call_agent_selection, call_task_selection, application_name=None, im_agent_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None):
         """
         Adds a new queue.
 
@@ -7252,15 +8040,15 @@ class VoximplantAPI:
         if im_max_queue_size is not None:
             params['im_max_queue_size']=im_max_queue_size
 
+        if priority is not None:
+            params['priority']=priority
+
         
         res = self._perform_request('SQ_AddQueue', params)
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        if "result" in res:
-                self._preprocess_None(res["result"])
+        
         return res
 
-    def sq__set_queue_info(self, application_id, sq_queue_id, application_name=None, sq_queue_name=None, new_sq_queue_name=None, call_agent_selection=None, im_agent_selection=None, call_task_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None):
+    def sq__set_queue_info(self, application_id, sq_queue_id, application_name=None, sq_queue_name=None, new_sq_queue_name=None, call_agent_selection=None, im_agent_selection=None, call_task_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None):
         """
         Edits an existing queue.
 
@@ -7310,10 +8098,15 @@ class VoximplantAPI:
         if im_max_queue_size is not None:
             params['im_max_queue_size']=im_max_queue_size
 
+        if priority is not None:
+            params['priority']=priority
+
         
         res = self._perform_request('SQ_SetQueueInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -7339,12 +8132,14 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_DelQueue', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
+        
         return res
 
-    def sq__get_queues(self, application_id, application_name=None, sq_queue_id=None, sq_queue_name=None, sq_queue_name_template=None, user_id=None, user_name=None, excluded_user_id=None, excluded_user_name=None, count=None, offset=None):
+    def sq__get_queues(self, application_id, application_name=None, sq_queue_id=None, sq_queue_name=None, sq_queue_name_template=None, user_id=None, user_name=None, excluded_user_id=None, excluded_user_name=None, count=None, offset=None, with_agentcount=None):
         """
         Gets the queue(s).
 
@@ -7386,12 +8181,17 @@ class VoximplantAPI:
         if offset is not None:
             params['offset']=offset
 
+        if with_agentcount is not None:
+            params['with_agentcount']=with_agentcount
+
         
         res = self._perform_request('SQ_GetQueues', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_get_sq_queues_result(res["result"])
+            self._preprocess_get_sq_queues_result(res["result"])
+        
         return res
 
     def sq__add_skill(self, application_id, sq_skill_name, application_name=None, description=None):
@@ -7416,8 +8216,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_AddSkill', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -7443,8 +8245,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_DelSkill', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -7476,8 +8280,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_SetSkillInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -7508,8 +8314,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_BindSkill', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -7540,8 +8348,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_UnbindSkill', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -7589,10 +8399,12 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_GetSkills', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_get_sq_skills_result(res["result"])
+            self._preprocess_get_sq_skills_result(res["result"])
+        
         return res
 
     def sq__bind_agent(self, application_id, sq_queue_id, user_id, application_name=None, sq_queue_name=None, user_name=None, bind_mode=None):
@@ -7625,8 +8437,10 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_BindAgent', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -7657,12 +8471,14 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_UnbindAgent', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
+        
         return res
 
-    def sq__get_agents(self, application_id, application_name=None, sq_queue_id=None, sq_queue_name=None, excluded_sq_queue_id=None, excluded_sq_queue_name=None, sq_skills=None, user_id=None, user_name=None, user_name_template=None, sq_statuses=None, with_sq_skills=None, with_sq_queues=None, with_sq_statuses=None, count=None, offset=None):
+    def sq__get_agents(self, application_id, handle_calls, application_name=None, sq_queue_id=None, sq_queue_name=None, excluded_sq_queue_id=None, excluded_sq_queue_name=None, sq_skills=None, user_id=None, user_name=None, user_name_template=None, sq_statuses=None, with_sq_skills=None, with_sq_queues=None, with_sq_statuses=None, count=None, offset=None):
         """
         Gets agents.
 
@@ -7672,6 +8488,8 @@ class VoximplantAPI:
         params = dict()
         
         params['application_id']=application_id
+
+        params['handle_calls']=handle_calls
 
         
         if application_name is not None:
@@ -7721,10 +8539,12 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_GetAgents', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-                self._preprocess_get_sq_agents_result(res["result"])
+            self._preprocess_get_sq_agents_result(res["result"])
+        
         return res
 
     def sq__set_agent_info(self, application_id, user_id, handle_calls, application_name=None, user_name=None, max_simultaneous_conversations=None):
@@ -7754,7 +8574,9 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_SetAgentInfo', params)
+        
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res

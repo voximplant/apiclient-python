@@ -1,13 +1,19 @@
 # Voximplant API client library
-#### Version 1.0
+
+#### Version 1.4.0
 
 ## Prerequisites
 
 In order to use the Voximplant Python SDK, you need the following:
+
 1. A developer account. If you don't have one, [sign up here](https://voximplant.com/sign-up/).
-1. A private API key. There are 2 options to obtain it: 
+1. A private API key. There are 2 options to obtain it:
     1. Either generate it in the [Voximplant Control panel](https://manage.voximplant.com/settings/service_accounts)
-    1. Or call the [CreateKey](https://voximplant.com/docs/references/httpapi/managing_role_system#createkey) HTTP API method with the specified [authentication parameters](https://voximplant.com/docs/references/httpapi/auth_parameters). You'll receive a response with the __result__ field in it. Save the __result__ value in a file (since we don't store the keys, save it securely on your side).
+    1. Or call the [CreateKey](https://voximplant.com/docs/references/httpapi/managing_role_system#createkey) HTTP API
+       method with the
+       specified [authentication parameters](https://voximplant.com/docs/references/httpapi/auth_parameters). You'll
+       receive a response with the __result__ field in it. Save the __result__ value in a file (since we don't store the
+       keys, save it securely on your side).
 1. Python 2.x or 3.x runtime with `pip` and `setuptools`>=18.5 installed
 
 ## How to use
@@ -33,11 +39,13 @@ api = VoximplantAPI("/path/to/credentials.json")
 ```
 
 __env__:
+
 ```bash
 export VOXIMPLANT_CREDENTIALS=/path/to/credentials.json
 ```
 
 ## Examples
+
 ### Start a scenario
 
 ```python
@@ -51,7 +59,7 @@ if __name__ == "__main__":
     RULE_ID = 1
     SCRIPT_CUSTOM_DATA = "mystr"
     USER_ID = 1
-    
+
     try:
         res = api.start_scenarios(RULE_ID, script_custom_data=SCRIPT_CUSTOM_DATA, user_id=USER_ID)
         print(res)
@@ -60,6 +68,7 @@ if __name__ == "__main__":
 ```
 
 ### Send an SMS
+
 ```python
 from voximplant.apiclient import VoximplantAPI, VoximplantException
 
@@ -71,13 +80,14 @@ if __name__ == "__main__":
     SOURCE = "447443332211"
     DESTINATION = "447443332212"
     SMS_BODY = "Test message"
-    
+
     try:
         res = api.send_sms_message(SOURCE, DESTINATION, SMS_BODY)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))
 ```
+
 ### Get a call history item
 
 ```python
@@ -93,7 +103,7 @@ if __name__ == "__main__":
     FROM_DATE = datetime.datetime(2012, 1, 1, 0, 0, 0, pytz.utc)
     TO_DATE = datetime.datetime(2014, 1, 1, 0, 0, 0, pytz.utc)
     COUNT = 1
-    
+
     try:
         res = api.get_call_history(FROM_DATE, TO_DATE, count=COUNT)
         print(res)
