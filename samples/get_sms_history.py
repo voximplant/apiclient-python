@@ -7,7 +7,7 @@ if __name__ == "__main__":
     # March 1, 2019. Number of resulting rows is limited to 2.
 
     DESTINATION_NUMBER = "12345678222"
-    FROM_DATE = datetime.datetime(2019, 3, 1, 0, 0, 0, pytz.utc)
+    FROM_DATE = datetime.datetime(2019, 3, 1, 0, 0, 0, timezone=pytz.utc)
     
     try:
         res = voxapi.get_sms_history(destination_number=DESTINATION_NUMBER,

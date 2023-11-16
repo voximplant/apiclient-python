@@ -3,7 +3,7 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Get the two attached phone numbers.
+    # Get two attached phone numbers.
 
     COUNT = 2
     

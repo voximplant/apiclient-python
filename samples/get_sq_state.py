@@ -3,7 +3,7 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Gets the current state of the smart queue with id = 1.
+    # Get the current state of the SmartQueue with id = 1.
 
     APPLICATION_ID = 1
     SQ_QUEUE_ID = 1

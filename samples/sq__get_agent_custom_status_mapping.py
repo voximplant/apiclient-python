@@ -3,12 +3,12 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Download the completed history report with id = 1
+    # Get the status mappings.
 
-    HISTORY_REPORT_ID = 1
+    APPLICATION_ID = 1
     
     try:
-        res = voxapi.download_history_report(HISTORY_REPORT_ID)
+        res = voxapi.sq__get_agent_custom_status_mapping(application_id=APPLICATION_ID)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

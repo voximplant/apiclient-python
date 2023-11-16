@@ -3,16 +3,12 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Enable the auto charging.
+    # Activate the personal phone number by the verification code.
 
-    AUTO_CHARGE = True
-    MIN_BALANCE = "5"
-    CARD_OVERRUN_VALUE = "10"
+    VERIFICATION_CODE = "12345"
     
     try:
-        res = voxapi.config_card_payments(auto_charge=AUTO_CHARGE,
-            min_balance=MIN_BALANCE,
-            card_overrun_value=CARD_OVERRUN_VALUE)
+        res = voxapi.activate_outbound_test_phone_number(VERIFICATION_CODE)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

@@ -8,7 +8,7 @@ if __name__ == "__main__":
     # 447443332213.
 
     SRC_NUMBER = "447443332211"
-    DST_NUMBERS = "447443332212"
+    DST_NUMBERS = ["447443332212", "447443332213"]
     TEXT = "Test message"
     
     try:

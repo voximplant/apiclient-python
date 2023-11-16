@@ -6,7 +6,7 @@ if __name__ == "__main__":
     # Remove the roles 1, 2, 3 from the key.
 
     KEY_ID = "ab81c90e-543e-4446-9af9-105269dfafca"
-    ROLE_ID = 1
+    ROLE_ID = [1, 2, 3]
     
     try:
         res = voxapi.remove_key_roles(KEY_ID,

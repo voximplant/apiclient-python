@@ -8,9 +8,9 @@ if __name__ == "__main__":
     # Get statistics for the 'READY' and 'ONLINE' statuses of all
     # operators; grouped by operators.
 
-    FROM_DATE = datetime.datetime(2019, 5, 20, 11, 0, 0, pytz.utc)
+    FROM_DATE = datetime.datetime(2019, 5, 20, 11, 0, 0, timezone=pytz.utc)
     USER_ID = "all"
-    TO_DATE = datetime.datetime(2019, 5, 20, 13, 0, 0, pytz.utc)
+    TO_DATE = datetime.datetime(2019, 5, 20, 13, 0, 0, timezone=pytz.utc)
     ACD_STATUS = ["READY", "ONLINE"]
     AGGREGATION = "hour"
     GROUP = "user"

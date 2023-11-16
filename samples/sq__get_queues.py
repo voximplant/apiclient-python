@@ -6,7 +6,7 @@ if __name__ == "__main__":
     # Get all the queues.
 
     APPLICATION_ID = 1
-    SQ_QUEUE_ID = 1
+    SQ_QUEUE_ID = [1, 2]
     
     try:
         res = voxapi.sq__get_queues(APPLICATION_ID,

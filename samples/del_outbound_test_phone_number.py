@@ -3,16 +3,11 @@ from voximplant.apiclient import VoximplantAPI, VoximplantException
 if __name__ == "__main__":
     voxapi = VoximplantAPI("credentials.json")
     
-    # Get all agents with their current statuses.
+    # Delete the phone number.
 
-    APPLICATION_ID = 1
-    HANDLE_CALLS = False
-    WITH_SQ_STATUSES = True
     
     try:
-        res = voxapi.sq__get_agents(APPLICATION_ID,
-            HANDLE_CALLS,
-            with_sq_statuses=WITH_SQ_STATUSES)
+        res = voxapi.del_outbound_test_phone_number()
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

@@ -8,11 +8,11 @@ if __name__ == "__main__":
     # Get AC and TT statistics for two operators and the queue from the
     # specified date.
 
-    FROM_DATE = datetime.datetime(2021, 4, 8, 0, 0, 0, pytz.utc)
-    USER_ID = 1768
-    TO_DATE = datetime.datetime(2021, 4, 10, 0, 0, 0, pytz.utc)
+    FROM_DATE = datetime.datetime(2021, 4, 8, 0, 0, 0, timezone=pytz.utc)
+    USER_ID = [1768, 1769]
+    TO_DATE = datetime.datetime(2021, 4, 10, 0, 0, 0, timezone=pytz.utc)
     ACD_QUEUE_ID = 54
-    REPORT = "AC"
+    REPORT = ["AC", "TT"]
     AGGREGATION = "day"
     
     try:

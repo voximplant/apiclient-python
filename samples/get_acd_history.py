@@ -8,8 +8,8 @@ if __name__ == "__main__":
     # Get the two ACD session history records from the 2012-01-01 00:00:00
     # to the 2014-04-01 00:00:00.
 
-    FROM_DATE = datetime.datetime(2012, 1, 1, 0, 0, 0, pytz.utc)
-    TO_DATE = datetime.datetime(2014, 1, 1, 0, 0, 0, pytz.utc)
+    FROM_DATE = datetime.datetime(2012, 1, 1, 0, 0, 0, timezone=pytz.utc)
+    TO_DATE = datetime.datetime(2014, 1, 1, 0, 0, 0, timezone=pytz.utc)
     WITH_EVENTS = True
     COUNT = 2
     

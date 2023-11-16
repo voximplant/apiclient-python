@@ -6,7 +6,7 @@ if __name__ == "__main__":
     # Add the roles 1, 2, 3 to the subuser with id = 12.
 
     SUBUSER_ID = 12
-    ROLE_ID = 1
+    ROLE_ID = [1, 2, 3]
     
     try:
         res = voxapi.set_sub_user_roles(SUBUSER_ID,
