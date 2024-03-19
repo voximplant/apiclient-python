@@ -1123,7 +1123,7 @@ class VoximplantAPI:
     def _preprocess_key_value_keys(self, s):
             pass
 
-    def _preprocess_account_invocie(self, s):
+    def _preprocess_account_invoice(self, s):
         if "period" in s:
             self._preprocess_invoice_period(s["period"])
         if "amount" in s:
@@ -2125,7 +2125,7 @@ class VoximplantAPI:
         
         return res
 
-    def create_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, encoding=None, delimiter=None, escape=None, reference_ip=None):
+    def create_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, encoding=None, delimiter=None, escape=None, reference_ip=None, server_location=None):
         """
         Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the following options in a CSV file: <ul><li>**__start_execution_time** – when the call list processing will start every day, UTC+0 24-h format: HH:mm:ss</li><li>**__end_execution_time** – when the call list processing will stop every day,  UTC+0 24-h format: HH:mm:ss</li><li>**__start_at** – when the call list processing will start, UNIX timestamp. If not specified, the processing will start immediately after a method call</li></ul><br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.<br/><b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing won't start, or it stops immediately if it was active.
 
@@ -2161,6 +2161,9 @@ class VoximplantAPI:
 
         if reference_ip is not None:
             params['reference_ip']=reference_ip
+
+        if server_location is not None:
+            params['server_location']=server_location
 
         
         res = self._perform_request('CreateCallList', params)
@@ -2573,7 +2576,7 @@ class VoximplantAPI:
         
         return res
 
-    def start_scenarios(self, rule_id, user_id=None, user_name=None, application_id=None, application_name=None, script_custom_data=None, reference_ip=None):
+    def start_scenarios(self, rule_id, user_id=None, user_name=None, application_id=None, application_name=None, script_custom_data=None, reference_ip=None, server_location=None):
         """
         Runs JavaScript scenarios on a Voximplant server. The scenarios run in a new media session. To start a scenario, pass the routing rule ID associated with the necessary scenario. You can use both GET and POST requests, but we recommend using the POST mode if you pass some data in the custom_data field. The maximum number of simultaneous requests is 200. If you exceed this number, you get the 429 error code.
 
@@ -2623,6 +2626,9 @@ class VoximplantAPI:
         if reference_ip is not None:
             params['reference_ip']=reference_ip
 
+        if server_location is not None:
+            params['server_location']=server_location
+
         
         res = self._perform_request('StartScenarios', params)
         
@@ -2632,7 +2638,7 @@ class VoximplantAPI:
         
         return res
 
-    def start_conference(self, conference_name, rule_id, user_id=None, user_name=None, application_id=None, application_name=None, script_custom_data=None, reference_ip=None):
+    def start_conference(self, conference_name, rule_id, user_id=None, user_name=None, application_id=None, application_name=None, script_custom_data=None, reference_ip=None, server_location=None):
         """
         Runs a session for video conferencing or joins the existing video conference session.<br/><br/>When you create a session by calling this method, a scenario runs on one of the servers dedicated to video conferencing. All further method calls with the same **conference_name** won't create a new video conference session but join the existing one.<br/><br/>Use the [StartScenarios] method for creating audio conferences.
 
@@ -2683,6 +2689,9 @@ class VoximplantAPI:
 
         if reference_ip is not None:
             params['reference_ip']=reference_ip
+
+        if server_location is not None:
+            params['server_location']=server_location
 
         
         res = self._perform_request('StartConference', params)
@@ -7898,7 +7907,7 @@ class VoximplantAPI:
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            self._preprocess_account_invocie(res["result"])
+            self._preprocess_account_invoice(res["result"])
         
         return res
 
