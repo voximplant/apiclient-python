@@ -2127,7 +2127,7 @@ class VoximplantAPI:
 
     def create_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, encoding=None, delimiter=None, escape=None, reference_ip=None, server_location=None):
         """
-        Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the following options in a CSV file: <ul><li>**__start_execution_time** – when the call list processing will start every day, UTC+0 24-h format: HH:mm:ss</li><li>**__end_execution_time** – when the call list processing will stop every day,  UTC+0 24-h format: HH:mm:ss</li><li>**__start_at** – when the call list processing will start, UNIX timestamp. If not specified, the processing will start immediately after a method call</li></ul><br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.<br/><b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing won't start, or it stops immediately if it was active.
+        Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the following options in a CSV file: <ul><li>**__start_execution_time** – when the call list processing starts every day, UTC+0 24-h format: HH:mm:ss</li><li>**__end_execution_time** – when the call list processing stops every day,  UTC+0 24-h format: HH:mm:ss</li><li>**__start_at** – when the call list processing starts, UNIX timestamp. If not specified, the processing starts immediately after a method call</li></ul><br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.<br/><b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing does not start, or it stops immediately if it is active.
 
         
         :rtype: dict
@@ -2640,7 +2640,7 @@ class VoximplantAPI:
 
     def start_conference(self, conference_name, rule_id, user_id=None, user_name=None, application_id=None, application_name=None, script_custom_data=None, reference_ip=None, server_location=None):
         """
-        Runs a session for video conferencing or joins the existing video conference session.<br/><br/>When you create a session by calling this method, a scenario runs on one of the servers dedicated to video conferencing. All further method calls with the same **conference_name** won't create a new video conference session but join the existing one.<br/><br/>Use the [StartScenarios] method for creating audio conferences.
+        Runs a session for video conferencing or joins the existing video conference session.<br/><br/>When you create a session by calling this method, a scenario runs on one of the servers dedicated to video conferencing. All further method calls with the same **conference_name** do not create a new video conference session but join the existing one.<br/><br/>Use the [StartScenarios] method for creating audio conferences.
 
         
         :rtype: dict
@@ -3377,7 +3377,7 @@ class VoximplantAPI:
 
     def add_pstn_black_list_item(self, pstn_blacklist_phone):
         """
-        Add a new phone number to the PSTN blacklist. Blacklist is used to block incoming calls from specified phone numbers to numbers purchased from Voximplant. Since we have no control over exact phone number format for calls from SIP integrations, blacklisting such numbers should be done via JavaScript scenarios.
+        Add a new phone number to the PSTN blacklist. Use blacklist to block incoming calls from specified phone numbers to numbers purchased from Voximplant. Since we have no control over exact phone number format for calls from SIP integrations, blacklisting such numbers should be done via JavaScript scenarios.
 
         
         :rtype: dict
@@ -3582,7 +3582,7 @@ class VoximplantAPI:
 
     def create_sip_registration(self, sip_username, proxy, auth_user=None, outbound_proxy=None, password=None, is_persistent=None, application_id=None, application_name=None, rule_id=None, rule_name=None, user_id=None, user_name=None):
         """
-        Create a new SIP registration. You should specify the application_id or application_name if you specify the rule_name or user_id, or user_name. You should set is_persistent=true if you specify the user_id or user_name. You can bind only one SIP registration to the user (the previous SIP registration will be auto unbound).<br><br>Please note that when you create a SIP registration, we reserve the subscription fee and taxes for the upcoming month. Read more in the <a href='/docs/gettingstarted/billing'>Billing</a> page.
+        Create a new SIP registration. You should specify the application_id or application_name if you specify the rule_name or user_id, or user_name. You should set is_persistent=true if you specify the user_id or user_name. You can bind only one SIP registration to the user (the previous SIP registration are automatically unbound).<br><br>Please note that when you create a SIP registration, we reserve the subscription fee and taxes for the upcoming month. Read more in the <a href='/docs/gettingstarted/billing'>Billing</a> page.
 
         
         :rtype: dict
@@ -3665,7 +3665,7 @@ class VoximplantAPI:
 
     def update_sip_registration(self, sip_registration_id, sip_username=None, proxy=None, auth_user=None, outbound_proxy=None, password=None, application_id=None, application_name=None, rule_id=None, rule_name=None, user_id=None, user_name=None):
         """
-        Update SIP registration. You should specify the application_id or application_name if you specify the rule_name or user_id, or user_name. You can bind only one SIP registration to the user (the previous SIP registration will be auto unbound).
+        Update SIP registration. You should specify the application_id or application_name if you specify the rule_name or user_id, or user_name. You can bind only one SIP registration to the user (the previous SIP registration is automatically unbound).
 
         
         :rtype: dict
@@ -3749,7 +3749,7 @@ class VoximplantAPI:
 
     def bind_sip_registration(self, sip_registration_id=None, application_id=None, application_name=None, rule_id=None, rule_name=None, user_id=None, user_name=None, bind=None):
         """
-        Bind the SIP registration to the application/user or unbind the SIP registration from the application/user. You should specify the application_id or application_name if you specify the rule_name or user_id, or user_name. You should specify the sip_registration_id if you set bind=true. You can bind only one SIP registration to the user (the previous SIP registration will be auto unbound).
+        Bind the SIP registration to the application/user or unbind the SIP registration from the application/user. You should specify the application_id or application_name if you specify the rule_name or user_id, or user_name. You should specify the sip_registration_id if you set bind=true. You can bind only one SIP registration to the user (the previous SIP registration is automatically unbound).
 
         
         :rtype: dict
@@ -4379,7 +4379,7 @@ class VoximplantAPI:
 
     def get_phone_number_regions(self, country_code, phone_category_name, country_state=None, omit_empty=None, phone_region_id=None, phone_region_name=None, phone_region_code=None, locale=None):
         """
-        Get the country regions of the phone numbers. The response will also contain the info about multiple numbers subscription for the child accounts.
+        Get the country regions of the phone numbers. The response also contains the info about multiple numbers subscription for the child accounts.
 
         
         :rtype: dict
@@ -4425,7 +4425,7 @@ class VoximplantAPI:
 
     def get_actual_phone_number_region(self, country_code, phone_category_name, phone_region_id, country_state=None, locale=None):
         """
-        Get actual info on the country region of the phone numbers. The response will also contain the info about multiple numbers subscription for the child accounts.
+        Get actual info on the country region of the phone numbers. The response also contains the info about multiple numbers subscription for the child accounts.
 
         
         :rtype: dict
@@ -4457,7 +4457,7 @@ class VoximplantAPI:
 
     def add_caller_id(self, callerid_number):
         """
-        Adds a new caller ID. Caller ID is the phone that will be displayed to the called user. This number can be used for call back.
+        Adds a new caller ID. Caller ID is the phone that is displayed to the called user. This number can be used for call back.
 
         
         :rtype: dict
@@ -4517,7 +4517,7 @@ class VoximplantAPI:
 
     def del_caller_id(self, callerid_id=None, callerid_number=None):
         """
-        Deletes the CallerID. Note: you can't delete a CID permanently (the antispam defence).
+        Deletes the CallerID. Note: you cannot delete a CID permanently (the antispam defence).
 
         
         :rtype: dict
@@ -4633,7 +4633,7 @@ class VoximplantAPI:
 
     def add_outbound_test_phone_number(self, phone_number):
         """
-        Adds a personal phone number to test outbound calls. Only one personal phone number can be used. To replace it with another, delete the existing one first.
+        Adds a personal phone number to test outgoing calls. Only one personal phone number can be used. To replace it with another, delete the existing one first.
 
         
         :rtype: dict
@@ -7162,7 +7162,7 @@ class VoximplantAPI:
 
     def control_sms(self, phone_number, command):
         """
-        Enables or disables sending and receiving SMS for the phone number. Can be used only for phone numbers with SMS support, which is indicated by the <b>is_sms_supported</b> property in the objects returned by the [GetPhoneNumbers] Management API. Each incoming SMS message is charged according to the <a href='//voximplant.com/pricing'>pricing</a>. If enabled, SMS can be sent from this phone number using the [SendSmsMessage] Management API and received using the [InboundSmsCallback] property of the HTTP callback. See <a href='/docs/guides/managementapi/callbacks'>this article</a> for HTTP callback details.
+        Enables or disables sending and receiving SMS for the phone number. Can be used only for phone numbers with SMS support, which is indicated by the <b>is_sms_supported</b> property in the objects returned by the [GetPhoneNumbers] Management API. Each incoming SMS message is charged according to the <a href='//voximplant.com/pricing'>pricing</a>. If enabled, SMS can be sent from this phone number via the [SendSmsMessage] Management API and received via the [InboundSmsCallback] property of the HTTP callback. See <a href='/docs/guides/managementapi/callbacks'>this article</a> for HTTP callback details.
 
         
         :rtype: dict
@@ -7209,7 +7209,7 @@ class VoximplantAPI:
         
         return res
 
-    def create_key(self, description=None, role_id=None, role_name=None):
+    def create_key(self, description=None, key_name=None, role_id=None, role_name=None):
         """
         Creates a public/private key pair. You can optionally specify one or more roles for the key.
 
@@ -7231,6 +7231,9 @@ class VoximplantAPI:
         
         if description is not None:
             params['description']=description
+
+        if key_name is not None:
+            params['key_name']=key_name
 
         if role_id is not None:
             params['role_id']=self._serialize_list(role_id)
@@ -7288,7 +7291,7 @@ class VoximplantAPI:
         
         return res
 
-    def update_key(self, key_id, description):
+    def update_key(self, key_id, description, key_name=None):
         """
         Updates info of the specified key.
 
@@ -7302,6 +7305,9 @@ class VoximplantAPI:
         params['description']=description
 
         
+        if key_name is not None:
+            params['key_name']=key_name
+
         
         res = self._perform_request('UpdateKey', params)
         
@@ -7732,7 +7738,7 @@ class VoximplantAPI:
 
     def set_key_value_item(self, key, value, application_id, application_name=None, ttl=None, expires_at=None):
         """
-        Creates or updates a key-value pair. If an existing key is passed, the method will return the existing item and will change the value if needed. The keys should be unique within a Voximplant application.
+        Creates or updates a key-value pair. If an existing key is passed, the method returns the existing item and changes the value if needed. The keys should be unique within a Voximplant application.
 
         
         :rtype: dict
