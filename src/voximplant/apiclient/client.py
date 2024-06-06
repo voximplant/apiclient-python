@@ -2127,7 +2127,7 @@ class VoximplantAPI:
 
     def create_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, encoding=None, delimiter=None, escape=None, reference_ip=None, server_location=None):
         """
-        Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the following options in a CSV file: <ul><li>**__start_execution_time** – when the call list processing starts every day, UTC+0 24-h format: HH:mm:ss</li><li>**__end_execution_time** – when the call list processing stops every day,  UTC+0 24-h format: HH:mm:ss</li><li>**__start_at** – when the call list processing starts, UNIX timestamp. If not specified, the processing starts immediately after a method call</li></ul><br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.<br/><b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing does not start, or it stops immediately if it is active.
+        Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the following options in a CSV file: <ul><li>**__start_execution_time** – when the call list processing starts every day, UTC+0 24-h format: HH:mm:ss</li><li>**__end_execution_time** – when the call list processing stops every day,  UTC+0 24-h format: HH:mm:ss</li><li>**__start_at** – when the call list processing starts, UNIX timestamp. If not specified, the processing starts immediately after a method call</li><li>**__task_uuid** – call list UUID. A string up to 40 characters, can contain latin letters, digits, hyphens (-) and colons (:). Unique within the call list</li></ul><br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.<br/><b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing does not start, or it stops immediately if it is active.
 
         
         :rtype: dict
@@ -2702,7 +2702,7 @@ class VoximplantAPI:
         
         return res
 
-    def add_rule(self, rule_name, rule_pattern, application_id=None, application_name=None, rule_pattern_exclude=None, video_conference=None, scenario_id=None, scenario_name=None):
+    def add_rule(self, rule_name, rule_pattern, application_id=None, application_name=None, rule_pattern_exclude=None, video_conference=None, bind_key_id=None, scenario_id=None, scenario_name=None):
         """
         Adds a new rule for the application.
 
@@ -2751,6 +2751,9 @@ class VoximplantAPI:
 
         if video_conference is not None:
             params['video_conference']=video_conference
+
+        if bind_key_id is not None:
+            params['bind_key_id']=bind_key_id
 
         if scenario_id is not None:
             params['scenario_id']=self._serialize_list(scenario_id)
@@ -2822,7 +2825,7 @@ class VoximplantAPI:
         
         return res
 
-    def set_rule_info(self, rule_id, rule_name=None, rule_pattern=None, rule_pattern_exclude=None, video_conference=None):
+    def set_rule_info(self, rule_id, rule_name=None, rule_pattern=None, rule_pattern_exclude=None, video_conference=None, bind_key_id=None):
         """
         Edits the rule.
 
@@ -2846,6 +2849,9 @@ class VoximplantAPI:
         if video_conference is not None:
             params['video_conference']=video_conference
 
+        if bind_key_id is not None:
+            params['bind_key_id']=bind_key_id
+
         
         res = self._perform_request('SetRuleInfo', params)
         
@@ -2855,7 +2861,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_rules(self, application_id=None, application_name=None, rule_id=None, rule_name=None, video_conference=None, template=None, with_scenarios=None, count=None, offset=None):
+    def get_rules(self, application_id=None, application_name=None, rule_id=None, rule_name=None, video_conference=None, attached_key_id=None, template=None, with_scenarios=None, count=None, offset=None):
         """
         Gets the rules.
 
@@ -2891,6 +2897,9 @@ class VoximplantAPI:
 
         if video_conference is not None:
             params['video_conference']=video_conference
+
+        if attached_key_id is not None:
+            params['attached_key_id']=attached_key_id
 
         if template is not None:
             params['template']=template
