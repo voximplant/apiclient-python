@@ -237,9 +237,7 @@ class VoximplantAPI:
         if "last_downloaded" in s:
             s["last_downloaded"] = self._api_datetime_utc_to_py(s["last_downloaded"])
         if "store_until" in s:
-            s["store_until"] = self._api_datetime_utc_to_py(s["store_until"])
-        if "error" in s:
-            self._preprocess_api__error(s["error"])
+            s["store_until"] = self._api_date_to_py(s["store_until"])
 
     def _preprocess_calculated_call_history_data_type(self, s):
             pass
@@ -2227,7 +2225,7 @@ class VoximplantAPI:
 
     def get_call_list_details(self, list_id, count=None, offset=None, output=None, encoding=None, delimiter=None):
         """
-        Get details of the specified call list. Returns a CSV file by default.
+        Gets details of the specified call list. Returns a CSV file by default.
 
         
         :rtype: dict
@@ -2266,9 +2264,48 @@ class VoximplantAPI:
         
         return res
 
+    def edit_call_list_task(self, list_id, task_id=None, task_uuid=None, start_at=None, attempts_left=None, custom_data=None, min_execution_time=None):
+        """
+        Edits the specified call list's task.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['list_id']=list_id
+
+        
+        if task_id is not None:
+            params['task_id']=task_id
+
+        if task_uuid is not None:
+            params['task_uuid']=task_uuid
+
+        if start_at is not None:
+            params['start_at']=self._py_datetime_to_api(start_at)
+
+        if attempts_left is not None:
+            params['attempts_left']=attempts_left
+
+        if custom_data is not None:
+            params['custom_data']=custom_data
+
+        if min_execution_time is not None:
+            params['min_execution_time']=self._py_datetime_to_api(min_execution_time)
+
+        
+        res = self._perform_request('EditCallListTask', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
     def stop_call_list_processing(self, list_id):
         """
-        Stop processing the specified call list.
+        Stops processing the specified call list.
 
         
         :rtype: dict
