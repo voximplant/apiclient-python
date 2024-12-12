@@ -2345,7 +2345,7 @@ class VoximplantAPI:
         
         return res
 
-    def add_scenario(self, scenario_name, scenario_script=None, rule_id=None, rule_name=None, rewrite=None):
+    def add_scenario(self, scenario_name, scenario_script=None, rule_id=None, rule_name=None, rewrite=None, application_id=None, application_name=None):
         """
         Adds a new scenario to the <a href="https://voximplant.com/docs/gettingstarted/basicconcepts/scenarios#shared-scenarios">Shared</a> folder, so the scenario is available in all the existing applications. Please use the POST method.
 
@@ -2368,6 +2368,12 @@ class VoximplantAPI:
 
         if rewrite is not None:
             params['rewrite']=rewrite
+
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
 
         
         res = self._perform_request('AddScenario', params)
@@ -2491,7 +2497,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_scenarios(self, scenario_id=None, scenario_name=None, with_script=None, count=None, offset=None):
+    def get_scenarios(self, scenario_id=None, scenario_name=None, with_script=None, count=None, offset=None, application_id=None, application_name=None):
         """
         Gets the account's scenarios.
 
@@ -2515,6 +2521,12 @@ class VoximplantAPI:
 
         if offset is not None:
             params['offset']=offset
+
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
 
         
         res = self._perform_request('GetScenarios', params)
@@ -4320,7 +4332,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_new_phone_numbers(self, country_code, phone_category_name, phone_region_id, country_state=None, count=None, offset=None):
+    def get_new_phone_numbers(self, country_code, phone_category_name, phone_region_id, country_state=None, count=None, offset=None, phone_number_mask=None):
         """
         Gets the new phone numbers.
 
@@ -4344,6 +4356,9 @@ class VoximplantAPI:
 
         if offset is not None:
             params['offset']=offset
+
+        if phone_number_mask is not None:
+            params['phone_number_mask']=phone_number_mask
 
         
         res = self._perform_request('GetNewPhoneNumbers', params)
@@ -5211,7 +5226,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_smart_queue_realtime_metrics(self, report_type, application_id=None, application_name=None, user_id=None, user_name=None, sq_queue_id=None, sq_queue_name=None, from_date=None, to_date=None, timezone=None, interval=None, group_by=None, max_waiting_sec=None):
+    def get_smart_queue_realtime_metrics(self, report_type, application_id=None, application_name=None, user_id=None, user_name=None, sq_queue_name=None, from_date=None, to_date=None, timezone=None, interval=None, group_by=None, max_waiting_sec=None):
         """
         Gets the metrics for the specified SmartQueue for the last 30 minutes. Refer to the <a href="/docs/guides/contact-center/reporting">SmartQueue reporting guide</a> to learn more.
 
@@ -5243,8 +5258,6 @@ class VoximplantAPI:
         
         
         passed_args = []
-        if sq_queue_id is not None:
-            passed_args.append('sq_queue_id')
         if sq_queue_name is not None:
             passed_args.append('sq_queue_name')
         
@@ -5266,9 +5279,6 @@ class VoximplantAPI:
 
         if user_name is not None:
             params['user_name']=self._serialize_list(user_name)
-
-        if sq_queue_id is not None:
-            params['sq_queue_id']=self._serialize_list(sq_queue_id)
 
         if sq_queue_name is not None:
             params['sq_queue_name']=self._serialize_list(sq_queue_name)
