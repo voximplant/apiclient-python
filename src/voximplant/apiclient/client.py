@@ -6724,7 +6724,7 @@ class VoximplantAPI:
         
         return res
 
-    def add_push_credential(self, push_provider_name=None, push_provider_id=None, application_id=None, application_name=None, credential_bundle=None, cert_content=None, cert_file_name=None, cert_password=None, is_dev_mode=None, sender_id=None, server_key=None, service_account_file=None, huawei_client_id=None, huawei_client_secret=None, huawei_application_id=None):
+    def add_push_credential(self, push_provider_name=None, push_provider_id=None, application_id=None, application_name=None, credential_bundle=None, cert_content=None, cert_file_name=None, cert_password=None, is_dev_mode=None, service_account_file=None, huawei_client_id=None, huawei_client_secret=None, huawei_application_id=None):
         """
         Adds push credentials.
 
@@ -6762,17 +6762,13 @@ class VoximplantAPI:
         
         
         passed_args = []
-        if sender_id is not None:
-            passed_args.append('sender_id')
-        if server_key is not None:
-            passed_args.append('server_key')
         if service_account_file is not None:
             passed_args.append('service_account_file')
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_push_credential")
         if len(passed_args) == 0:
-            raise VoximplantException("None of sender_id, server_key, service_account_file passed into add_push_credential")
+            raise VoximplantException("None of service_account_file passed into add_push_credential")
         
         
         passed_args = []
@@ -6817,12 +6813,6 @@ class VoximplantAPI:
         if is_dev_mode is not None:
             params['is_dev_mode']=is_dev_mode
 
-        if sender_id is not None:
-            params['sender_id']=sender_id
-
-        if server_key is not None:
-            params['server_key']=server_key
-
         if service_account_file is not None:
             params['service_account_file']=service_account_file
 
@@ -6844,7 +6834,7 @@ class VoximplantAPI:
         
         return res
 
-    def set_push_credential(self, push_credential_id, cert_content=None, cert_password=None, is_dev_mode=None, sender_id=None, server_key=None, service_account_file=None, huawei_client_id=None, huawei_client_secret=None, huawei_application_id=None):
+    def set_push_credential(self, push_credential_id, cert_content=None, cert_password=None, is_dev_mode=None, service_account_file=None, huawei_client_id=None, huawei_client_secret=None, huawei_application_id=None):
         """
         Modifies push credentials.
 
@@ -6868,17 +6858,13 @@ class VoximplantAPI:
         
         
         passed_args = []
-        if sender_id is not None:
-            passed_args.append('sender_id')
-        if server_key is not None:
-            passed_args.append('server_key')
         if service_account_file is not None:
             passed_args.append('service_account_file')
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_push_credential")
         if len(passed_args) == 0:
-            raise VoximplantException("None of sender_id, server_key, service_account_file passed into set_push_credential")
+            raise VoximplantException("None of service_account_file passed into set_push_credential")
         
         
         passed_args = []
@@ -6906,12 +6892,6 @@ class VoximplantAPI:
 
         if is_dev_mode is not None:
             params['is_dev_mode']=is_dev_mode
-
-        if sender_id is not None:
-            params['sender_id']=sender_id
-
-        if server_key is not None:
-            params['server_key']=server_key
 
         if service_account_file is not None:
             params['service_account_file']=service_account_file
