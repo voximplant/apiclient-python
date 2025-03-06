@@ -2056,73 +2056,6 @@ class VoximplantAPI:
         
         return res
 
-    def transfer_money_to_user(self, amount, user_id=None, user_name=None, application_id=None, application_name=None, currency=None, strict_mode=None, user_transaction_description=None, account_transaction_description=None):
-        """
-        Transfer the account's money to the user or transfer the user's money to the account if the money amount is negative.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        passed_args = []
-        if user_id is not None:
-            passed_args.append('user_id')
-        if user_name is not None:
-            passed_args.append('user_name')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into transfer_money_to_user")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of user_id, user_name passed into transfer_money_to_user")
-        
-        
-        passed_args = []
-        if application_id is not None:
-            passed_args.append('application_id')
-        if application_name is not None:
-            passed_args.append('application_name')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into transfer_money_to_user")
-        
-        
-        params['amount']=amount
-
-        
-        if user_id is not None:
-            params['user_id']=self._serialize_list(user_id)
-
-        if user_name is not None:
-            params['user_name']=self._serialize_list(user_name)
-
-        if application_id is not None:
-            params['application_id']=application_id
-
-        if application_name is not None:
-            params['application_name']=application_name
-
-        if currency is not None:
-            params['currency']=currency
-
-        if strict_mode is not None:
-            params['strict_mode']=strict_mode
-
-        if user_transaction_description is not None:
-            params['user_transaction_description']=user_transaction_description
-
-        if account_transaction_description is not None:
-            params['account_transaction_description']=account_transaction_description
-
-        
-        res = self._perform_request('TransferMoneyToUser', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        
-        return res
-
     def create_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, encoding=None, delimiter=None, escape=None, reference_ip=None, server_location=None):
         """
         Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the following options in a CSV file: <ul><li>**__start_execution_time** – when the call list processing starts every day, UTC+0 24-h format: HH:mm:ss</li><li>**__end_execution_time** – when the call list processing stops every day,  UTC+0 24-h format: HH:mm:ss</li><li>**__start_at** – when the call list processing starts, UNIX timestamp. If not specified, the processing starts immediately after a method call</li><li>**__task_uuid** – call list UUID. A string up to 40 characters, can contain latin letters, digits, hyphens (-) and colons (:). Unique within the call list</li></ul><br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.<br/><b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing does not start, or it stops immediately if it is active.
@@ -2997,7 +2930,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_call_history(self, from_date, to_date, call_session_history_id=None, application_id=None, application_name=None, user_id=None, rule_name=None, remote_number=None, local_number=None, call_session_history_custom_data=None, with_calls=None, with_records=None, with_other_resources=None, child_account_id=None, children_calls_only=None, with_header=None, desc_order=None, with_total_count=None, count=None, offset=None, output=None, is_async=None):
+    def get_call_history(self, from_date, to_date, call_session_history_id=None, application_id=None, application_name=None, user_id=None, rule_name=None, remote_number=None, remote_number_list=None, local_number=None, call_session_history_custom_data=None, with_calls=None, with_records=None, with_other_resources=None, child_account_id=None, children_calls_only=None, with_header=None, desc_order=None, with_total_count=None, count=None, offset=None, output=None, is_async=None):
         """
         Gets the account's call history, including call duration, cost, logs and other call information. You can filter the call history by a certain date
 
@@ -3038,6 +2971,9 @@ class VoximplantAPI:
 
         if remote_number is not None:
             params['remote_number']=self._serialize_list(remote_number)
+
+        if remote_number_list is not None:
+            params['remote_number_list']=remote_number_list
 
         if local_number is not None:
             params['local_number']=self._serialize_list(local_number)
