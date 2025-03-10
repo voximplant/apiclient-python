@@ -54,6 +54,11 @@ class VoximplantAPI:
         result = requests.post("https://{}/platform_api".format(self.endpoint), data=params, headers=headers)
         if result.headers.get("content-type","").split(";")[0].lower() == "application/json":
             return json.loads(result.text)
+        elif result.headers.get("content-type","").split(";")[0].lower() == "application/octet-stream":
+            fileContent = result.content.decode('utf-8')
+            return {
+                "file_content": fileContent
+            }
         else:
             return result.content
 
@@ -230,6 +235,16 @@ class VoximplantAPI:
             s["requested"] = self._api_datetime_utc_to_py(s["requested"])
 
     def _preprocess_history_report_type(self, s):
+        if "created" in s:
+            s["created"] = self._api_datetime_utc_to_py(s["created"])
+        if "completed" in s:
+            s["completed"] = self._api_datetime_utc_to_py(s["completed"])
+        if "last_downloaded" in s:
+            s["last_downloaded"] = self._api_datetime_utc_to_py(s["last_downloaded"])
+        if "store_until" in s:
+            s["store_until"] = self._api_date_to_py(s["store_until"])
+
+    def _preprocess_common_report_type(self, s):
         if "created" in s:
             s["created"] = self._api_datetime_utc_to_py(s["created"])
         if "completed" in s:
@@ -1147,6 +1162,12 @@ class VoximplantAPI:
             self._preprocess_invoice_taxes_details(s["taxes"])
 
     def _preprocess_invoice_taxes_details(self, s):
+            pass
+
+    def _preprocess_sq_add_queue_result(self, s):
+            pass
+
+    def _preprocess_sq_add_skill_result(self, s):
             pass
 
 
@@ -2105,6 +2126,81 @@ class VoximplantAPI:
         
         return res
 
+    def append_to_call_list(self, file_content, list_id=None, encoding=None, escape=None, delimiter=None):
+        """
+        Appends a new task to the existing call list.<br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if list_id is not None:
+            passed_args.append('list_id')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into append_to_call_list")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of list_id passed into append_to_call_list")
+        
+        
+        params['file_content']=file_content
+
+        
+        if list_id is not None:
+            params['list_id']=list_id
+
+        if encoding is not None:
+            params['encoding']=encoding
+
+        if escape is not None:
+            params['escape']=escape
+
+        if delimiter is not None:
+            params['delimiter']=delimiter
+
+        
+        res = self._perform_request('AppendToCallList', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def delete_call_list(self, account_id=None):
+        """
+        Deletes an existing call list by its ID.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if account_id is not None:
+            passed_args.append('account_id')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into delete_call_list")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of account_id passed into delete_call_list")
+        
+        
+        
+        if account_id is not None:
+            params['account_id']=account_id
+
+        
+        res = self._perform_request('DeleteCallList', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
     def get_call_lists(self, list_id=None, name=None, is_active=None, from_date=None, to_date=None, type_list=None, count=None, offset=None, application_id=None):
         """
         Get all call lists for the specified user.
@@ -2229,6 +2325,35 @@ class VoximplantAPI:
 
         
         res = self._perform_request('EditCallListTask', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def cancel_call_list_task(self, account_id, list_id, tasks_ids=None, tasks_uuids=None):
+        """
+        Cancels the specified tasks in the call list by their IDs or UUIDs.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['account_id']=account_id
+
+        params['list_id']=list_id
+
+        
+        if tasks_ids is not None:
+            params['tasks_ids']=tasks_ids
+
+        if tasks_uuids is not None:
+            params['tasks_uuids']=tasks_uuids
+
+        
+        res = self._perform_request('CancelCallListTask', params)
         
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
@@ -2930,9 +3055,9 @@ class VoximplantAPI:
         
         return res
 
-    def get_call_history(self, from_date, to_date, call_session_history_id=None, application_id=None, application_name=None, user_id=None, rule_name=None, remote_number=None, remote_number_list=None, local_number=None, call_session_history_custom_data=None, with_calls=None, with_records=None, with_other_resources=None, child_account_id=None, children_calls_only=None, with_header=None, desc_order=None, with_total_count=None, count=None, offset=None, output=None, is_async=None):
+    def get_call_history(self, from_date, to_date, call_session_history_id=None, application_id=None, application_name=None, user_id=None, rule_name=None, remote_number=None, remote_number_list=None, local_number=None, call_session_history_custom_data=None, with_calls=None, with_records=None, with_other_resources=None, child_account_id=None, children_calls_only=None, desc_order=None, with_total_count=None, count=None, offset=None):
         """
-        Gets the account's call history, including call duration, cost, logs and other call information. You can filter the call history by a certain date
+        Gets the account's call history (including call duration, cost, logs and other call information). You can filter the call history by a certain date.
 
         
         :rtype: dict
@@ -2996,9 +3121,6 @@ class VoximplantAPI:
         if children_calls_only is not None:
             params['children_calls_only']=children_calls_only
 
-        if with_header is not None:
-            params['with_header']=with_header
-
         if desc_order is not None:
             params['desc_order']=desc_order
 
@@ -3010,12 +3132,6 @@ class VoximplantAPI:
 
         if offset is not None:
             params['offset']=offset
-
-        if output is not None:
-            params['output']=output
-
-        if is_async is not None:
-            params['is_async']=is_async
 
         
         res = self._perform_request('GetCallHistory', params)
@@ -3031,9 +3147,90 @@ class VoximplantAPI:
         
         return res
 
-    def get_brief_call_history(self, from_date, to_date, output, is_async, call_session_history_id=None, application_id=None, application_name=None, rule_name=None, remote_number=None, local_number=None, call_session_history_custom_data=None, with_header=None, desc_order=None):
+    def get_call_history_async(self, from_date, to_date, call_session_history_id=None, application_id=None, application_name=None, user_id=None, rule_name=None, remote_number=None, local_number=None, call_session_history_custom_data=None, with_calls=None, with_records=None, with_other_resources=None, child_account_id=None, children_calls_only=None, desc_order=None, with_header=None, output=None):
         """
-        Gets the account's brief call history. Use the [GetHistoryReports], [DownloadHistoryReport] methods to download the report.
+        The [GetCallHistory] asynchronous implementation. Use this function to download a large amounts of data. Take a look at the [GetHistoryReports] and [DownloadHistoryReport] functions for downloading details.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_call_history_async")
+        
+        
+        params['from_date']=self._py_datetime_to_api(from_date)
+
+        params['to_date']=self._py_datetime_to_api(to_date)
+
+        
+        if call_session_history_id is not None:
+            params['call_session_history_id']=self._serialize_list(call_session_history_id)
+
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if user_id is not None:
+            params['user_id']=self._serialize_list(user_id)
+
+        if rule_name is not None:
+            params['rule_name']=rule_name
+
+        if remote_number is not None:
+            params['remote_number']=self._serialize_list(remote_number)
+
+        if local_number is not None:
+            params['local_number']=self._serialize_list(local_number)
+
+        if call_session_history_custom_data is not None:
+            params['call_session_history_custom_data']=call_session_history_custom_data
+
+        if with_calls is not None:
+            params['with_calls']=with_calls
+
+        if with_records is not None:
+            params['with_records']=with_records
+
+        if with_other_resources is not None:
+            params['with_other_resources']=with_other_resources
+
+        if child_account_id is not None:
+            params['child_account_id']=self._serialize_list(child_account_id)
+
+        if children_calls_only is not None:
+            params['children_calls_only']=children_calls_only
+
+        if desc_order is not None:
+            params['desc_order']=desc_order
+
+        if with_header is not None:
+            params['with_header']=with_header
+
+        if output is not None:
+            params['output']=output
+
+        
+        res = self._perform_request('GetCallHistoryAsync', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def get_brief_call_history(self, from_date, to_date, output, call_session_history_id=None, application_id=None, application_name=None, rule_name=None, remote_number=None, local_number=None, call_session_history_custom_data=None, desc_order=None, with_header=None):
+        """
+        Gets the account's brief call history in the asynchronous mode. Take a look at the [GetHistoryReports] and [DownloadHistoryReport] functions for downloading details.
 
         
         :rtype: dict
@@ -3055,8 +3252,6 @@ class VoximplantAPI:
         params['to_date']=self._py_datetime_to_api(to_date)
 
         params['output']=output
-
-        params['is_async']=is_async
 
         
         if call_session_history_id is not None:
@@ -3080,11 +3275,11 @@ class VoximplantAPI:
         if call_session_history_custom_data is not None:
             params['call_session_history_custom_data']=call_session_history_custom_data
 
-        if with_header is not None:
-            params['with_header']=with_header
-
         if desc_order is not None:
             params['desc_order']=desc_order
+
+        if with_header is not None:
+            params['with_header']=with_header
 
         
         res = self._perform_request('GetBriefCallHistory', params)
@@ -3097,7 +3292,7 @@ class VoximplantAPI:
 
     def get_history_reports(self, history_report_id=None, history_type=None, created_from=None, created_to=None, is_completed=None, desc_order=None, count=None, offset=None, application_id=None):
         """
-        Gets the list of history reports and their statuses. The method returns info about reports made via [GetCallHistory] with the specified __output=csv__ and **is_async=true** parameters. Note that the **file_size** field in response is valid only for video calls.
+        Gets the list of history reports and their statuses. The method returns info about the reports made via [GetCallHistoryAsync], [GetTransactionHistoryAsync], [GetAuditLogAsync] and [GetBriefCallHistory] asynchronous methods. Note that the **file_size** field in response is valid only for the video calls.
 
         
         :rtype: dict
@@ -3146,7 +3341,72 @@ class VoximplantAPI:
         
         return res
 
-    def get_transaction_history(self, from_date, to_date, transaction_id=None, transaction_type=None, user_id=None, child_account_id=None, children_transactions_only=None, users_transactions_only=None, desc_order=None, count=None, offset=None, output=None, is_async=None, is_uncommitted=None):
+    def get_phone_number_reports(self, report_id=None, report_type=None, created_from=None, created_to=None, is_completed=None, desc_order=None, count=None, offset=None):
+        """
+        Receives information about the created phone numbers report or list of reports.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        
+        if report_id is not None:
+            params['report_id']=report_id
+
+        if report_type is not None:
+            params['report_type']=self._serialize_list(report_type)
+
+        if created_from is not None:
+            params['created_from']=self._py_datetime_to_api(created_from)
+
+        if created_to is not None:
+            params['created_to']=self._py_datetime_to_api(created_to)
+
+        if is_completed is not None:
+            params['is_completed']=is_completed
+
+        if desc_order is not None:
+            params['desc_order']=desc_order
+
+        if count is not None:
+            params['count']=count
+
+        if offset is not None:
+            params['offset']=offset
+
+        
+        res = self._perform_request('GetPhoneNumberReports', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            try:
+                for p in res["result"]:
+                    self._preprocess_common_report_type(p)
+            except TypeError as te:
+                pass
+        
+        return res
+
+    def download_history_report(self, history_report_id):
+        """
+        Downloads the required history report.<br><br>Please note, that the history report can return in a compressed state (*.gzip). In order for CURL to process a compressed file correctly, add the **--compressed** key.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['history_report_id']=history_report_id
+
+        
+        
+        res = self._perform_request('DownloadHistoryReport', params)
+        
+        return res
+
+    def get_transaction_history(self, from_date, to_date, transaction_id=None, transaction_type=None, user_id=None, child_account_id=None, children_transactions_only=None, users_transactions_only=None, desc_order=None, with_total_count=None, count=None, offset=None, is_uncommitted=None):
         """
         Gets the transaction history.
 
@@ -3181,17 +3441,14 @@ class VoximplantAPI:
         if desc_order is not None:
             params['desc_order']=desc_order
 
+        if with_total_count is not None:
+            params['with_total_count']=with_total_count
+
         if count is not None:
             params['count']=count
 
         if offset is not None:
             params['offset']=offset
-
-        if output is not None:
-            params['output']=output
-
-        if is_async is not None:
-            params['is_async']=is_async
 
         if is_uncommitted is not None:
             params['is_uncommitted']=is_uncommitted
@@ -3207,6 +3464,59 @@ class VoximplantAPI:
                     self._preprocess_transaction_info_type(p)
             except TypeError as te:
                 pass
+        
+        return res
+
+    def get_transaction_history_async(self, from_date, to_date, transaction_id=None, transaction_type=None, user_id=None, child_account_id=None, children_transactions_only=None, users_transactions_only=None, desc_order=None, is_uncommitted=None, with_header=None, output=None):
+        """
+        The [GetTransactionHistory] asynchronous implementation. Use this function to download a large amounts of data. Take a look at the [GetHistoryReports] and [DownloadHistoryReport] functions for downloading details.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['from_date']=self._py_datetime_to_api(from_date)
+
+        params['to_date']=self._py_datetime_to_api(to_date)
+
+        
+        if transaction_id is not None:
+            params['transaction_id']=self._serialize_list(transaction_id)
+
+        if transaction_type is not None:
+            params['transaction_type']=self._serialize_list(transaction_type)
+
+        if user_id is not None:
+            params['user_id']=self._serialize_list(user_id)
+
+        if child_account_id is not None:
+            params['child_account_id']=self._serialize_list(child_account_id)
+
+        if children_transactions_only is not None:
+            params['children_transactions_only']=children_transactions_only
+
+        if users_transactions_only is not None:
+            params['users_transactions_only']=users_transactions_only
+
+        if desc_order is not None:
+            params['desc_order']=desc_order
+
+        if is_uncommitted is not None:
+            params['is_uncommitted']=is_uncommitted
+
+        if with_header is not None:
+            params['with_header']=with_header
+
+        if output is not None:
+            params['output']=output
+
+        
+        res = self._perform_request('GetTransactionHistoryAsync', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -3305,7 +3615,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_audit_log(self, from_date, to_date, audit_log_id=None, filtered_admin_user_id=None, filtered_ip=None, filtered_cmd=None, advanced_filters=None, with_header=None, desc_order=None, with_total_count=None, count=None, offset=None, output=None, is_async=None):
+    def get_audit_log(self, from_date, to_date, audit_log_id=None, filtered_admin_user_id=None, filtered_ip=None, filtered_cmd=None, advanced_filters=None, desc_order=None, with_total_count=None, count=None, offset=None):
         """
         Gets the history of account changes.
 
@@ -3334,9 +3644,6 @@ class VoximplantAPI:
         if advanced_filters is not None:
             params['advanced_filters']=advanced_filters
 
-        if with_header is not None:
-            params['with_header']=with_header
-
         if desc_order is not None:
             params['desc_order']=desc_order
 
@@ -3349,12 +3656,6 @@ class VoximplantAPI:
         if offset is not None:
             params['offset']=offset
 
-        if output is not None:
-            params['output']=output
-
-        if is_async is not None:
-            params['is_async']=is_async
-
         
         res = self._perform_request('GetAuditLog', params)
         
@@ -3366,6 +3667,53 @@ class VoximplantAPI:
                     self._preprocess_audit_log_info_type(p)
             except TypeError as te:
                 pass
+        
+        return res
+
+    def get_audit_log_async(self, from_date, to_date, audit_log_id=None, filtered_admin_user_id=None, filtered_ip=None, filtered_cmd=None, advanced_filters=None, desc_order=None, with_header=None, output=None):
+        """
+        The [GetAuditLog] asynchronous implementation. Use this function to download a large amounts of data. Take a look at the [GetHistoryReports] and [DownloadHistoryReport] functions for downloading details.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['from_date']=self._py_datetime_to_api(from_date)
+
+        params['to_date']=self._py_datetime_to_api(to_date)
+
+        
+        if audit_log_id is not None:
+            params['audit_log_id']=self._serialize_list(audit_log_id)
+
+        if filtered_admin_user_id is not None:
+            params['filtered_admin_user_id']=filtered_admin_user_id
+
+        if filtered_ip is not None:
+            params['filtered_ip']=self._serialize_list(filtered_ip)
+
+        if filtered_cmd is not None:
+            params['filtered_cmd']=self._serialize_list(filtered_cmd)
+
+        if advanced_filters is not None:
+            params['advanced_filters']=advanced_filters
+
+        if desc_order is not None:
+            params['desc_order']=desc_order
+
+        if with_header is not None:
+            params['with_header']=with_header
+
+        if output is not None:
+            params['output']=output
+
+        
+        res = self._perform_request('GetAuditLogAsync', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -4265,6 +4613,28 @@ class VoximplantAPI:
                     self._preprocess_attached_phone_info_type(p)
             except TypeError as te:
                 pass
+        
+        return res
+
+    def get_phone_numbers_async(self, with_header=None):
+        """
+        Gets the asyncronous report regarding purchaced phone numbers.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        
+        if with_header is not None:
+            params['with_header']=with_header
+
+        
+        res = self._perform_request('GetPhoneNumbersAsync', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
         
         return res
 
@@ -6660,7 +7030,7 @@ class VoximplantAPI:
         
         return res
 
-    def add_push_credential(self, push_provider_name=None, push_provider_id=None, application_id=None, application_name=None, credential_bundle=None, cert_content=None, cert_file_name=None, cert_password=None, is_dev_mode=None, service_account_file=None, huawei_client_id=None, huawei_client_secret=None, huawei_application_id=None):
+    def add_push_credential(self, push_provider_name=None, push_provider_id=None, application_id=None, application_name=None, credential_bundle=None, cert_content=None, cert_file_name=None, cert_password=None, is_dev_mode=None, sender_id=None, server_key=None, service_account_file=None, huawei_client_id=None, huawei_client_secret=None, huawei_application_id=None):
         """
         Adds push credentials.
 
@@ -6693,18 +7063,18 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_push_credential")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of cert_content, cert_file_name, cert_password, is_dev_mode passed into add_push_credential")
         
         
         passed_args = []
+        if sender_id is not None:
+            passed_args.append('sender_id')
+        if server_key is not None:
+            passed_args.append('server_key')
         if service_account_file is not None:
             passed_args.append('service_account_file')
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_push_credential")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of service_account_file passed into add_push_credential")
         
         
         passed_args = []
@@ -6717,8 +7087,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_push_credential")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of huawei_client_id, huawei_client_secret, huawei_application_id passed into add_push_credential")
         
         
         
@@ -6749,6 +7117,12 @@ class VoximplantAPI:
         if is_dev_mode is not None:
             params['is_dev_mode']=is_dev_mode
 
+        if sender_id is not None:
+            params['sender_id']=sender_id
+
+        if server_key is not None:
+            params['server_key']=server_key
+
         if service_account_file is not None:
             params['service_account_file']=service_account_file
 
@@ -6770,7 +7144,7 @@ class VoximplantAPI:
         
         return res
 
-    def set_push_credential(self, push_credential_id, cert_content=None, cert_password=None, is_dev_mode=None, service_account_file=None, huawei_client_id=None, huawei_client_secret=None, huawei_application_id=None):
+    def set_push_credential(self, push_credential_id, cert_content=None, cert_password=None, is_dev_mode=None, sender_id=None, server_key=None, service_account_file=None, huawei_client_id=None, huawei_client_secret=None, huawei_application_id=None):
         """
         Modifies push credentials.
 
@@ -6789,18 +7163,18 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_push_credential")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of cert_content, cert_password, is_dev_mode passed into set_push_credential")
         
         
         passed_args = []
+        if sender_id is not None:
+            passed_args.append('sender_id')
+        if server_key is not None:
+            passed_args.append('server_key')
         if service_account_file is not None:
             passed_args.append('service_account_file')
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_push_credential")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of service_account_file passed into set_push_credential")
         
         
         passed_args = []
@@ -6813,8 +7187,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_push_credential")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of huawei_client_id, huawei_client_secret, huawei_application_id passed into set_push_credential")
         
         
         params['push_credential_id']=push_credential_id
@@ -6828,6 +7200,12 @@ class VoximplantAPI:
 
         if is_dev_mode is not None:
             params['is_dev_mode']=is_dev_mode
+
+        if sender_id is not None:
+            params['sender_id']=sender_id
+
+        if server_key is not None:
+            params['server_key']=server_key
 
         if service_account_file is not None:
             params['service_account_file']=service_account_file
@@ -7889,6 +8267,23 @@ class VoximplantAPI:
         
         return res
 
+    def download_invoice(self, invoice_id):
+        """
+        Downloads the specified invoice.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['invoice_id']=invoice_id
+
+        
+        
+        res = self._perform_request('DownloadInvoice', params)
+        
+        return res
+
     def get_sms_history(self, source_number=None, destination_number=None, direction=None, count=None, offset=None, from_date=None, to_date=None, output=None):
         """
         Gets the history of sent and/or received SMS.
@@ -8032,6 +8427,11 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_AddQueue', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            self._preprocess_sq_add_queue_result(res["result"])
         
         return res
 
@@ -8206,7 +8606,8 @@ class VoximplantAPI:
         
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
+        if "result" in res:
+            self._preprocess_sq_add_skill_result(res["result"])
         
         return res
 
