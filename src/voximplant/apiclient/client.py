@@ -4616,6 +4616,27 @@ class VoximplantAPI:
         
         return res
 
+    def is_account_phone_number(self, phone_number):
+        """
+        Checks if the phone number belongs to the authorized account.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['phone_number']=phone_number
+
+        
+        
+        res = self._perform_request('IsAccountPhoneNumber', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
     def get_phone_numbers_async(self, with_header=None):
         """
         Gets the asyncronous report regarding purchaced phone numbers.
@@ -8380,7 +8401,7 @@ class VoximplantAPI:
         
         return res
 
-    def sq__add_queue(self, application_id, sq_queue_name, call_agent_selection, call_task_selection, application_name=None, im_agent_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None):
+    def sq__add_queue(self, application_id, sq_queue_name, call_agent_selection, call_task_selection, application_name=None, im_agent_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None, call_max_waiting_time_in_seconds=None, im_max_waiting_time_in_seconds=None):
         """
         Adds a new queue.
 
@@ -8425,6 +8446,12 @@ class VoximplantAPI:
         if priority is not None:
             params['priority']=priority
 
+        if call_max_waiting_time_in_seconds is not None:
+            params['call_max_waiting_time_in_seconds']=call_max_waiting_time_in_seconds
+
+        if im_max_waiting_time_in_seconds is not None:
+            params['im_max_waiting_time_in_seconds']=im_max_waiting_time_in_seconds
+
         
         res = self._perform_request('SQ_AddQueue', params)
         
@@ -8435,7 +8462,7 @@ class VoximplantAPI:
         
         return res
 
-    def sq__set_queue_info(self, application_id, sq_queue_id, application_name=None, sq_queue_name=None, new_sq_queue_name=None, call_agent_selection=None, im_agent_selection=None, call_task_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None):
+    def sq__set_queue_info(self, application_id, sq_queue_id, application_name=None, sq_queue_name=None, new_sq_queue_name=None, call_agent_selection=None, im_agent_selection=None, call_task_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None, call_max_waiting_time_in_seconds=None, im_max_waiting_time_in_seconds=None):
         """
         Edits an existing queue.
 
@@ -8487,6 +8514,12 @@ class VoximplantAPI:
 
         if priority is not None:
             params['priority']=priority
+
+        if call_max_waiting_time_in_seconds is not None:
+            params['call_max_waiting_time_in_seconds']=call_max_waiting_time_in_seconds
+
+        if im_max_waiting_time_in_seconds is not None:
+            params['im_max_waiting_time_in_seconds']=im_max_waiting_time_in_seconds
 
         
         res = self._perform_request('SQ_SetQueueInfo', params)
