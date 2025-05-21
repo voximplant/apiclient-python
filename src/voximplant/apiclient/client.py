@@ -2169,6 +2169,51 @@ class VoximplantAPI:
         
         return res
 
+    def edit_call_list(self, list_id, interval_seconds=None, num_attempts=None, max_simultaneous=None, ip_address=None, name=None, priority=None, start_at=None, server_location=None):
+        """
+        Edits the specified call list by its ID.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['list_id']=list_id
+
+        
+        if interval_seconds is not None:
+            params['interval_seconds']=interval_seconds
+
+        if num_attempts is not None:
+            params['num_attempts']=num_attempts
+
+        if max_simultaneous is not None:
+            params['max_simultaneous']=max_simultaneous
+
+        if ip_address is not None:
+            params['ip_address']=ip_address
+
+        if name is not None:
+            params['name']=name
+
+        if priority is not None:
+            params['priority']=priority
+
+        if start_at is not None:
+            params['start_at']=start_at
+
+        if server_location is not None:
+            params['server_location']=server_location
+
+        
+        res = self._perform_request('EditCallList', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
     def delete_call_list(self, account_id=None):
         """
         Deletes an existing call list by its ID.
@@ -2405,7 +2450,7 @@ class VoximplantAPI:
 
     def add_scenario(self, scenario_name, scenario_script=None, rule_id=None, rule_name=None, rewrite=None, application_id=None, application_name=None):
         """
-        Adds a new scenario to the <a href="https://voximplant.com/docs/gettingstarted/basicconcepts/scenarios#shared-scenarios">Shared</a> folder, so the scenario is available in all the existing applications. Please use the POST method.
+        Adds a new scenario to the <a href="https://voximplant.com/docs/gettingstarted/basicconcepts/scenarios#shared-scenarios">Shared</a> folder, so the scenario is available in all the existing applications. Please use the POST method.<br><br>When adding a scenario to the Shared folder, the `application_id` and `application_name` parameters should not be provided.
 
         
         :rtype: dict
@@ -4639,7 +4684,7 @@ class VoximplantAPI:
 
     def get_phone_numbers_async(self, with_header=None):
         """
-        Gets the asyncronous report regarding purchaced phone numbers.
+        Gets the asynchronous report regarding purchased phone numbers.
 
         
         :rtype: dict
@@ -5917,7 +5962,7 @@ class VoximplantAPI:
 
     def sq__get_agent_custom_status_mapping(self, application_id=None):
         """
-        Returns the mapping list of SQ statuses and custom statuses. SQ statuses are returned whether or not they have mappings to custom statuses.
+        Returns the mapping list of SQ statuses and custom statuses. SQ statuses are returned whether they have mappings to custom statuses.
 
         
         :rtype: dict
@@ -8264,7 +8309,7 @@ class VoximplantAPI:
 
     def get_account_invoices(self, count=None, offset=None):
         """
-        Gets all invoices of the specified USD or EUR account.
+        Gets all invoices for the specified USD or EUR account.
 
         
         :rtype: dict
