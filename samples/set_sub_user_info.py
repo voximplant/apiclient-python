@@ -1,7 +1,10 @@
-from voximplant.apiclient import VoximplantAPI, VoximplantException
+from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
-    voxapi = VoximplantAPI("credentials.json")
+    config = VoximplantAPIConfig(
+        credentials_file_path="credentials.json",
+    )
+    voxapi = VoximplantAPI(config=config)
     
     # Edit the password and description for the subuser with id = 12 from
     # account_id = 1.

@@ -1,9 +1,12 @@
-from voximplant.apiclient import VoximplantAPI, VoximplantException
+from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI, VoximplantException
 import pytz
 import datetime
 
 if __name__ == "__main__":
-    voxapi = VoximplantAPI("credentials.json")
+    config = VoximplantAPIConfig(
+        credentials_file_path="credentials.json",
+    )
+    voxapi = VoximplantAPI(config=config)
     
     # Get the three transactions record from the 2012-01-01 00:00:00 UTC to
     # the 2014-01-01 00:00:00 UTC with the 'gift' or 'money_distribution'

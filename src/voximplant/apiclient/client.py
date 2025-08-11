@@ -17,8 +17,38 @@ class VoximplantException(Exception):
 
 
 
+class VoximplantAPIConfig:
+    """Configuration class for VoximplantAPI"""
+
+    def __init__(self, credentials_file_path="credentials.json", endpoint="api.voximplant.com", account_id=0):
+        self.credentials_file_path = credentials_file_path
+        self.endpoint = endpoint
+        self.account_id = account_id
+
+
+
 class VoximplantAPI:
     """Voximplant API access helper"""
+
+    def __init__(self, credentials_file_path = None, endpoint = None, config = None):
+        self.endpoint = endpoint or "api.voximplant.com"
+        self.credentials_file_path = None
+        self.account_id = None
+        if config is not None:
+            self.credentials_file_path = config.credentials_file_path or self.credentials_file_path
+            self.endpoint = config.endpoint or self.endpoint
+            self.account_id = config.account_id
+        elif credentials_file_path is not None:
+            self.credentials_file_path = credentials_file_path
+        if self.credentials_file_path is None:
+            self.credentials_file_path = os.getenv("VOXIMPLANT_CREDENTIALS")
+        with open(self.credentials_file_path) as credentials_file:
+            self.credentials = json.load(credentials_file)
+        if self.credentials is None:
+            raise VoximplantException("Credentials not found")
+        if self.account_id is None:
+            self.account_id = self.credentials.get("account_id")
+
 
     def _api_date_to_py(self, d):
         if d == "":
@@ -61,19 +91,6 @@ class VoximplantAPI:
             }
         else:
             return result.content
-
-    def __init__(self, credentials_file_path = None, endpoint = None):
-        if credentials_file_path is None:
-            credentials_file_path = os.getenv("VOXIMPLANT_CREDENTIALS")
-        with open(credentials_file_path) as credentials_file:
-            self.credentials = json.load(credentials_file)
-        if self.credentials is None:
-            raise VoximplantException("Credentials not found")
-        self.account_id = self.credentials["account_id"]
-        if not (endpoint is None):
-            self.endpoint = endpoint
-        else:
-            self.endpoint = "api.voximplant.com"
 
     def _serialize_list(self, p):
         if isinstance(p, str) or (sys.version_info[0] < 3 and isinstance(p, basestring)):
@@ -500,7 +517,7 @@ class VoximplantAPI:
     def _preprocess_cloned_acd_skill_type(self, s):
             pass
 
-    def _preprocess_exchange_rates(self, s):
+    def _preprocess_exchange_rates_type(self, s):
             pass
 
     def _preprocess_resource_price(self, s):
@@ -603,10 +620,30 @@ class VoximplantAPI:
             for k in s["documents"]:
                 self._preprocess_account_verification_document(k)
 
-    def _preprocess_account_verifications(self, s):
+    def _preprocess_account_documents_type(self, s):
         if "verifications" in s:
             for k in s["verifications"]:
                 self._preprocess_account_verification_type(k)
+
+    def _preprocess_account_verifications_type(self, s):
+        if "credentials" in s:
+            for k in s["credentials"]:
+                self._preprocess_account_verifications_type_credentials(k)
+        if "default_end_user" in s:
+            for k in s["default_end_user"]:
+                self._preprocess_account_verifications_type_default_end_user(k)
+        if "agreements" in s:
+            for k in s["agreements"]:
+                self._preprocess_account_verifications_type_agreements(k)
+
+    def _preprocess_account_verifications_type_credentials(self, s):
+            pass
+
+    def _preprocess_account_verifications_type_default_end_user(self, s):
+            pass
+
+    def _preprocess_account_verifications_type_agreements(self, s):
+            pass
 
     def _preprocess_subscription_template_type(self, s):
             pass
@@ -677,6 +714,8 @@ class VoximplantAPI:
             self._preprocess_transcription_complete_callback(s["transcription_complete"])
         if "sms_inbound" in s:
             self._preprocess_inbound_sms_callback(s["sms_inbound"])
+        if "phone_number_activation_status_changed" in s:
+            self._preprocess_phone_number_activation_status_changed_callback(s["phone_number_activation_status_changed"])
         if "new_invoice" in s:
             self._preprocess_new_invoice_callback(s["new_invoice"])
         if "expiring_agreement" in s:
@@ -958,6 +997,13 @@ class VoximplantAPI:
     def _preprocess_inbound_sms_callback(self, s):
         if "sms_inbound" in s:
             self._preprocess_inbound_sms_callback_item(s["sms_inbound"])
+
+    def _preprocess_phone_number_activation_status_changed_callback(self, s):
+        if "phone_number_activation_status_changed" in s:
+            self._preprocess_phone_number_activation_status_changed_callback_item(s["phone_number_activation_status_changed"])
+
+    def _preprocess_phone_number_activation_status_changed_callback_item(self, s):
+            pass
 
     def _preprocess_inbound_sms_callback_item(self, s):
             pass
@@ -1378,7 +1424,7 @@ class VoximplantAPI:
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
-            self._preprocess_exchange_rates(res["result"])
+            self._preprocess_exchange_rates_type(res["result"])
         
         return res
 
@@ -1540,44 +1586,6 @@ class VoximplantAPI:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
             self._preprocess_get_money_amount_to_charge_result(res["result"])
-        
-        return res
-
-    def charge_account(self, phone_id=None, phone_number=None):
-        """
-        Charges the account in the manual mode. You should call the ChargeAccount function to charge the subscriptions having the auto_charge=false.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        passed_args = []
-        if phone_id is not None:
-            passed_args.append('phone_id')
-        if phone_number is not None:
-            passed_args.append('phone_number')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into charge_account")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of phone_id, phone_number passed into charge_account")
-        
-        
-        
-        if phone_id is not None:
-            params['phone_id']=self._serialize_list(phone_id)
-
-        if phone_number is not None:
-            params['phone_number']=self._serialize_list(phone_number)
-
-        
-        res = self._perform_request('ChargeAccount', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        if "result" in res:
-            self._preprocess_charge_account_result(res["result"])
         
         return res
 
@@ -6229,7 +6237,7 @@ class VoximplantAPI:
 
     def get_account_documents(self, with_details=None, verification_name=None, verification_status=None, from_unverified_hold_until=None, to_unverified_hold_until=None, child_account_id=None, children_verifications_only=None):
         """
-        Gets the account documents and the verification states.
+        Gets the account documents and the verification states.<br><br>This method will be deprecated in the next versions. We recommend to use the [GetAccountVerifications](/docs/references/httpapi/accounts#getaccountverifications) method to get all the verifications and statuses for the account.
 
         
         :rtype: dict
@@ -6266,7 +6274,33 @@ class VoximplantAPI:
         if "result" in res:
             try:
                 for p in res["result"]:
-                    self._preprocess_account_verifications(p)
+                    self._preprocess_account_documents_type(p)
+            except TypeError as te:
+                pass
+        
+        return res
+
+    def get_account_verifications(self, account_id):
+        """
+        Gets all RU verifications for the specified account.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['account_id']=account_id
+
+        
+        
+        res = self._perform_request('GetAccountVerifications', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            try:
+                for p in res["result"]:
+                    self._preprocess_account_verifications_type(p)
             except TypeError as te:
                 pass
         
@@ -8446,7 +8480,7 @@ class VoximplantAPI:
         
         return res
 
-    def sq__add_queue(self, application_id, sq_queue_name, call_agent_selection, call_task_selection, application_name=None, im_agent_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None, call_max_waiting_time_in_seconds=None, im_max_waiting_time_in_seconds=None):
+    def sq__add_queue(self, application_id, sq_queue_name, call_agent_selection, call_task_selection, application_name=None, im_agent_selection=None, im_task_selection=None, hold_calls_if_inactive_agents=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None, call_max_waiting_time_in_seconds=None, im_max_waiting_time_in_seconds=None):
         """
         Adds a new queue.
 
@@ -8472,6 +8506,9 @@ class VoximplantAPI:
 
         if im_task_selection is not None:
             params['im_task_selection']=im_task_selection
+
+        if hold_calls_if_inactive_agents is not None:
+            params['hold_calls_if_inactive_agents']=hold_calls_if_inactive_agents
 
         if description is not None:
             params['description']=description
@@ -8507,7 +8544,7 @@ class VoximplantAPI:
         
         return res
 
-    def sq__set_queue_info(self, application_id, sq_queue_id, application_name=None, sq_queue_name=None, new_sq_queue_name=None, call_agent_selection=None, im_agent_selection=None, call_task_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None, call_max_waiting_time_in_seconds=None, im_max_waiting_time_in_seconds=None):
+    def sq__set_queue_info(self, application_id, sq_queue_id, application_name=None, sq_queue_name=None, hold_calls_if_inactive_agents=None, new_sq_queue_name=None, call_agent_selection=None, im_agent_selection=None, call_task_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None, call_max_waiting_time_in_seconds=None, im_max_waiting_time_in_seconds=None):
         """
         Edits an existing queue.
 
@@ -8526,6 +8563,9 @@ class VoximplantAPI:
 
         if sq_queue_name is not None:
             params['sq_queue_name']=sq_queue_name
+
+        if hold_calls_if_inactive_agents is not None:
+            params['hold_calls_if_inactive_agents']=hold_calls_if_inactive_agents
 
         if new_sq_queue_name is not None:
             params['new_sq_queue_name']=new_sq_queue_name

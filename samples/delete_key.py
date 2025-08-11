@@ -1,7 +1,10 @@
-from voximplant.apiclient import VoximplantAPI, VoximplantException
+from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
-    voxapi = VoximplantAPI("credentials.json")
+    config = VoximplantAPIConfig(
+        credentials_file_path="credentials.json",
+    )
+    voxapi = VoximplantAPI(config=config)
     KEY_ID = "ab81c66e-570e-4446-9af9-105269dfafca"
     
     try:

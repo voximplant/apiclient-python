@@ -1,20 +1,20 @@
 # Voximplant API client library
 
-#### Version 2.2.0
+#### Version 2.3.0
 
 ## Prerequisites
 
 In order to use the Voximplant Python SDK, you need the following:
 
 1. A developer account. If you don't have one, [sign up here](https://voximplant.com/sign-up/).
-1. A private API key. There are 2 options to obtain it:
+2. A private API key. There are 2 options to obtain it:
     1. Either generate it in the [Voximplant Control panel](https://manage.voximplant.com/settings/service_accounts)
-    1. Or call the [CreateKey](https://voximplant.com/docs/references/httpapi/managing_role_system#createkey) HTTP API
+    2. Or call the [CreateKey](https://voximplant.com/docs/references/httpapi/managing_role_system#createkey) HTTP API
        method with the
        specified [authentication parameters](https://voximplant.com/docs/references/httpapi/auth_parameters). You'll
        receive a response with the __result__ field in it. Save the __result__ value in a file (since we don't store the
        keys, save it securely on your side).
-1. Python 2.x or 3.x runtime with `pip` and `setuptools`>=18.5 installed
+3. Python 2.x or 3.x runtime with `pip` and `setuptools`>=18.5 installed
 
 ## How to use
 
@@ -27,7 +27,7 @@ python -m pip install --user voximplant-apiclient
 Then import the SDK in your script
 
 ```python
-from voximplant.apiclient import VoximplantAPI
+from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI
 ```
 
 Next, specify the path to the JSON service account file either in the constructor or using the environment.
@@ -35,7 +35,10 @@ Next, specify the path to the JSON service account file either in the constructo
 __constructor__:
 
 ```python
-api = VoximplantAPI("/path/to/credentials.json")
+config = VoximplantAPIConfig(
+    credentials_file_path="/path/to/credentials.json",
+)
+api = VoximplantAPI(config=config)
 ```
 
 __env__:
@@ -49,10 +52,13 @@ export VOXIMPLANT_CREDENTIALS=/path/to/credentials.json
 ### Start a scenario
 
 ```python
-from voximplant.apiclient import VoximplantAPI, VoximplantException
+from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
-    api = VoximplantAPI("credentials.json")
+    config = VoximplantAPIConfig(
+        credentials_file_path="credentials.json",
+    )
+    api = VoximplantAPI(config=config)
 
     # Start a scenario of the user 1
 
@@ -70,10 +76,13 @@ if __name__ == "__main__":
 ### Send an SMS
 
 ```python
-from voximplant.apiclient import VoximplantAPI, VoximplantException
+from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
-    api = VoximplantAPI("credentials.json")
+    config = VoximplantAPIConfig(
+        credentials_file_path="credentials.json",
+    )
+    api = VoximplantAPI(config=config)
 
     # Send the SMS with the "Test message" text from the phone number 447443332211 to the phone number 447443332212
 
@@ -91,12 +100,15 @@ if __name__ == "__main__":
 ### Get a call history item
 
 ```python
-from voximplant.apiclient import VoximplantAPI, VoximplantException
+from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI, VoximplantException
 import pytz
 import datetime
 
 if __name__ == "__main__":
-    api = VoximplantAPI("credentials.json")
+    config = VoximplantAPIConfig(
+        credentials_file_path="credentials.json",
+    )
+    api = VoximplantAPI(config=config)
 
     # Get the first call session history record from the 2012-01-01 00:00:00 UTC to the 2014-01-01 00:00:00 UTC
 

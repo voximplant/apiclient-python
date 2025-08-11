@@ -1,7 +1,10 @@
-from voximplant.apiclient import VoximplantAPI, VoximplantException
+from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI, VoximplantException
 
 if __name__ == "__main__":
-    voxapi = VoximplantAPI("credentials.json")
+    config = VoximplantAPIConfig(
+        credentials_file_path="credentials.json",
+    )
+    voxapi = VoximplantAPI(config=config)
     
     # Get messages that had been sent to number 12345678222 starting from
     # March 1, 2019. Number of resulting rows is limited to 2.

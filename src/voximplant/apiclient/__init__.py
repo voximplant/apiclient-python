@@ -1,1 +1,1 @@
-from .client import VoximplantAPI, VoximplantException
+from .client import VoximplantAPIConfig, VoximplantAPI, VoximplantException

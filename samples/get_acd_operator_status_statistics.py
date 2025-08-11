@@ -1,9 +1,12 @@
-from voximplant.apiclient import VoximplantAPI, VoximplantException
+from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI, VoximplantException
 import pytz
 import datetime
 
 if __name__ == "__main__":
-    voxapi = VoximplantAPI("credentials.json")
+    config = VoximplantAPIConfig(
+        credentials_file_path="credentials.json",
+    )
+    voxapi = VoximplantAPI(config=config)
     
     # Get statistics for the 'READY' and 'ONLINE' statuses of all
     # operators; grouped by operators.

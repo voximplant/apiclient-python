@@ -1,9 +1,12 @@
-from voximplant.apiclient import VoximplantAPI, VoximplantException
+from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI, VoximplantException
 import pytz
 import datetime
 
 if __name__ == "__main__":
-    voxapi = VoximplantAPI("credentials.json")
+    config = VoximplantAPIConfig(
+        credentials_file_path="credentials.json",
+    )
+    voxapi = VoximplantAPI(config=config)
     
     # Get the first call session history record with calls and record URLs
     # from the 2020-02-25 00:00:00 UTC to the 2020-02-26 00:00:00 UTC.
