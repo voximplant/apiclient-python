@@ -457,6 +457,12 @@ class VoximplantAPI:
     def _preprocess_new_phone_info_type(self, s):
             pass
 
+    def _preprocess_wab_phone_info_type(self, s):
+        if "created" in s:
+            s["created"] = self._api_datetime_utc_to_py(s["created"])
+        if "modified" in s:
+            s["modified"] = self._api_datetime_utc_to_py(s["modified"])
+
     def _preprocess_attached_phone_info_type(self, s):
         if "phone_next_renewal" in s:
             s["phone_next_renewal"] = self._api_date_to_py(s["phone_next_renewal"])
@@ -4893,6 +4899,196 @@ class VoximplantAPI:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         if "result" in res:
             self._preprocess_phone_number_country_region_info_type(res["result"])
+        
+        return res
+
+    def add_wab_phone_number(self, wab_phone_number, voice_password, description=None, application_id=None, application_name=None, rule_id=None, rule_name=None):
+        """
+        Adds a new WhatsApp Business phone number.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_wab_phone_number")
+        
+        
+        passed_args = []
+        if rule_id is not None:
+            passed_args.append('rule_id')
+        if rule_name is not None:
+            passed_args.append('rule_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_wab_phone_number")
+        
+        
+        params['wab_phone_number']=wab_phone_number
+
+        params['voice_password']=voice_password
+
+        
+        if description is not None:
+            params['description']=description
+
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if rule_id is not None:
+            params['rule_id']=rule_id
+
+        if rule_name is not None:
+            params['rule_name']=rule_name
+
+        
+        res = self._perform_request('AddWABPhoneNumber', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def delete_wab_phone_number(self, wab_phone_number):
+        """
+        Deletes a WhatsApp Business phone number.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['wab_phone_number']=wab_phone_number
+
+        
+        
+        res = self._perform_request('DeleteWABPhoneNumber', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def set_wab_phone_number_info(self, wab_phone_number, voice_password=None, description=None, application_id=None, application_name=None, rule_id=None, rule_name=None):
+        """
+        Sets details for the specified WhatsApp Business phone number.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_wab_phone_number_info")
+        
+        
+        passed_args = []
+        if rule_id is not None:
+            passed_args.append('rule_id')
+        if rule_name is not None:
+            passed_args.append('rule_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_wab_phone_number_info")
+        
+        
+        params['wab_phone_number']=wab_phone_number
+
+        
+        if voice_password is not None:
+            params['voice_password']=voice_password
+
+        if description is not None:
+            params['description']=description
+
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if rule_id is not None:
+            params['rule_id']=rule_id
+
+        if rule_name is not None:
+            params['rule_name']=rule_name
+
+        
+        res = self._perform_request('SetWABPhoneNumberInfo', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def get_wab_phone_numbers(self, wab_phone_number=None, application_id=None, application_name=None, country_code=None, count=None, offset=None):
+        """
+        Gets the account's WhatsApp Business phone numbers.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_wab_phone_numbers")
+        
+        
+        
+        if wab_phone_number is not None:
+            params['wab_phone_number']=wab_phone_number
+
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if country_code is not None:
+            params['country_code']=country_code
+
+        if count is not None:
+            params['count']=count
+
+        if offset is not None:
+            params['offset']=offset
+
+        
+        res = self._perform_request('GetWABPhoneNumbers', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            try:
+                for p in res["result"]:
+                    self._preprocess_wab_phone_info_type(p)
+            except TypeError as te:
+                pass
         
         return res
 
