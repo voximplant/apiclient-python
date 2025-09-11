@@ -633,8 +633,7 @@ class VoximplantAPI:
 
     def _preprocess_account_verifications_type(self, s):
         if "credentials" in s:
-            for k in s["credentials"]:
-                self._preprocess_account_verifications_type_credentials(k)
+            self._preprocess_account_verifications_type_credentials(s["credentials"])
         if "default_end_user" in s:
             for k in s["default_end_user"]:
                 self._preprocess_account_verifications_type_default_end_user(k)
