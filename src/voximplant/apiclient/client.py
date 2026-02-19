@@ -70,7 +70,7 @@ class VoximplantAPI:
 
     def build_auth_header(self):
         ts = int(time.time())
-        token = jwt.encode({"iss":self.account_id, "iat":ts-5, "exp":ts+24}, self.credentials["private_key"], algorithm='RS256', headers={"kid": self.credentials["key_id"]})
+        token = jwt.encode({"iss":str(self.account_id), "iat":ts-5, "exp":ts+24}, self.credentials["private_key"], algorithm='RS256', headers={"kid": self.credentials["key_id"]})
         if isinstance(token, str):
             return 'Bearer '+token
         else:
@@ -661,6 +661,8 @@ class VoximplantAPI:
     def _preprocess_account_callback(self, s):
         if "account_document_uploaded" in s:
             self._preprocess_account_document_uploaded_callback(s["account_document_uploaded"])
+        if "batch_task_cancelling_completed" in s:
+            self._preprocess_batch_task_cancelling_callback(s["batch_task_cancelling_completed"])
         if "regulation_address_uploaded" in s:
             self._preprocess_regulation_address_uploaded_callback(s["regulation_address_uploaded"])
         if "account_document_verified" in s:
@@ -754,6 +756,9 @@ class VoximplantAPI:
     def _preprocess_account_document_uploaded_callback(self, s):
         if "uploaded" in s:
             s["uploaded"] = self._api_datetime_utc_to_py(s["uploaded"])
+
+    def _preprocess_batch_task_cancelling_callback(self, s):
+            pass
 
     def _preprocess_balance_is_changed(self, s):
             pass
@@ -2090,7 +2095,7 @@ class VoximplantAPI:
         
         return res
 
-    def create_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, encoding=None, delimiter=None, escape=None, reference_ip=None, server_location=None):
+    def create_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, encoding=None, delimiter=None, escape=None, reference_ip=None, server_location=None, task_priority_strategy=None):
         """
         Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the following options in a CSV file: <ul><li>**__start_execution_time** – when the call list processing starts every day, UTC+0 24-h format: HH:mm:ss</li><li>**__end_execution_time** – when the call list processing stops every day,  UTC+0 24-h format: HH:mm:ss</li><li>**__start_at** – when the call list processing starts, UNIX timestamp. If not specified, the processing starts immediately after a method call</li><li>**__task_uuid** – call list UUID. A string up to 40 characters, can contain latin letters, digits, hyphens (-) and colons (:). Unique within the call list</li></ul><br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.<br/><b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing does not start, or it stops immediately if it is active.
 
@@ -2129,6 +2134,9 @@ class VoximplantAPI:
 
         if server_location is not None:
             params['server_location']=server_location
+
+        if task_priority_strategy is not None:
+            params['task_priority_strategy']=task_priority_strategy
 
         
         res = self._perform_request('CreateCallList', params)
@@ -2182,7 +2190,41 @@ class VoximplantAPI:
         
         return res
 
-    def edit_call_list(self, list_id, interval_seconds=None, num_attempts=None, max_simultaneous=None, ip_address=None, name=None, priority=None, start_at=None, server_location=None):
+    def cancel_call_list_batch(self, batch_ids, list_id=None):
+        """
+        Cancels all tasks in the call list with the specified batch UUID.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if list_id is not None:
+            passed_args.append('list_id')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into cancel_call_list_batch")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of list_id passed into cancel_call_list_batch")
+        
+        
+        params['batch_ids']=batch_ids
+
+        
+        if list_id is not None:
+            params['list_id']=list_id
+
+        
+        res = self._perform_request('CancelCallListBatch', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def edit_call_list(self, list_id, interval_seconds=None, num_attempts=None, max_simultaneous=None, ip_address=None, name=None, priority=None, start_at=None, task_priority_strategy=None, server_location=None):
         """
         Edits the specified call list by its ID.
 
@@ -2215,6 +2257,9 @@ class VoximplantAPI:
         if start_at is not None:
             params['start_at']=start_at
 
+        if task_priority_strategy is not None:
+            params['task_priority_strategy']=task_priority_strategy
+
         if server_location is not None:
             params['server_location']=server_location
 
@@ -2224,6 +2269,25 @@ class VoximplantAPI:
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
         
+        
+        return res
+
+    def edit_call_list_tasks_priority(self, list_id, tasks):
+        """
+        Edits priorities of existing tasks in the specified call list.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        params['list_id']=list_id
+
+        params['tasks']=tasks
+
+        
+        
+        res = self._perform_request('EditCallListTasksPriority', params)
         
         return res
 
@@ -2310,7 +2374,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_call_list_details(self, list_id, count=None, offset=None, output=None, encoding=None, delimiter=None):
+    def get_call_list_details(self, list_id, count=None, offset=None, output=None, encoding=None, delimiter=None, batch_id=None):
         """
         Gets details of the specified call list. Returns a CSV file by default.
 
@@ -2336,6 +2400,9 @@ class VoximplantAPI:
 
         if delimiter is not None:
             params['delimiter']=delimiter
+
+        if batch_id is not None:
+            params['batch_id']=batch_id
 
         
         res = self._perform_request('GetCallListDetails', params)
@@ -2392,7 +2459,7 @@ class VoximplantAPI:
 
     def cancel_call_list_task(self, account_id, list_id, tasks_ids=None, tasks_uuids=None):
         """
-        Cancels the specified tasks in the call list by their IDs or UUIDs.
+        Cancels the specified tasks in the call list by their IDs or UUIDs. The maximum number of tasks to cancel is 1000.
 
         
         :rtype: dict
@@ -2743,7 +2810,7 @@ class VoximplantAPI:
 
     def start_scenarios(self, rule_id, user_id=None, user_name=None, application_id=None, application_name=None, script_custom_data=None, reference_ip=None, server_location=None):
         """
-        Runs JavaScript scenarios on a Voximplant server. The scenarios run in a new media session. To start a scenario, pass the routing rule ID associated with the necessary scenario. You can use both GET and POST requests, but we recommend using the POST mode if you pass some data in the custom_data field. The maximum number of simultaneous requests is 200. If you exceed this number, you get the 429 error code.
+        Runs JavaScript scenarios on a Voximplant server. The scenarios run in a new media session. To start a scenario, pass the routing rule ID associated with the necessary scenario. You can use both GET and POST requests at your choice. If you need to send custom data, we recommend to use the POST method and to include the data in the `custom_data` field of the request body. The maximum number of concurrent HTTP-requests is limited to 200. If this number is exceeded, this method returns the 429 code error (Too Many Requests) until the number of active requests is reduced. If you exceed this number, you get the 429 error code.
 
         
         :rtype: dict
@@ -3982,7 +4049,7 @@ class VoximplantAPI:
 
     def create_sip_registration(self, sip_username, proxy, auth_user=None, outbound_proxy=None, password=None, is_persistent=None, application_id=None, application_name=None, rule_id=None, rule_name=None, user_id=None, user_name=None):
         """
-        Create a new SIP registration. You should specify the application_id or application_name if you specify the rule_name or user_id, or user_name. You should set is_persistent=true if you specify the user_id or user_name. You can bind only one SIP registration to the user (the previous SIP registration are automatically unbound).<br><br>Please note that when you create a SIP registration, we reserve the subscription fee and taxes for the upcoming month. Read more in the <a href='/docs/gettingstarted/billing'>Billing</a> page.
+        Creates a new SIP registration (the platform registers as a user on a 3rd party SIP server).<br><br>There are two modes of SIP registration:<br><ol><li>Persistent registration, when the platform registers on a 3rd party SIP server as a user and the registration lasts until deleted (or there are network/technical issues with it — see the corresponding callback)</li><li>Non-persistent registration (set `is_persistent` to false) which is initiated only when the specificed user (with `user_id` or `user_name`) logs in via one of Voximplant SDKs. As soon the user logs off, the registration goes offline. This mode helps to implement SIP softphone-like apps using Voximplant’s SDKs.</li></ol><br>Please note that when you create a SIP registration, we reserve the subscription fee and taxes for the upcoming month. Read more in the <a href='/docs/gettingstarted/billing'>Billing</a> page.
 
         
         :rtype: dict
@@ -4241,7 +4308,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_sip_registrations(self, sip_registration_id=None, sip_username=None, deactivated=None, successful=None, is_persistent=None, application_id=None, application_name=None, is_bound_to_application=None, rule_id=None, rule_name=None, user_id=None, user_name=None, proxy=None, in_progress=None, status_code=None, count=None, offset=None):
+    def get_sip_registrations(self, sip_registration_id=None, sip_username=None, deactivated=None, successful=None, is_persistent=None, application_id=None, application_name=None, is_bound_to_application=None, rule_id=None, rule_name=None, user_id=None, proxy=None, in_progress=None, status_code=None, count=None, offset=None):
         """
         Get active SIP registrations.
 
@@ -4275,13 +4342,11 @@ class VoximplantAPI:
         passed_args = []
         if user_id is not None:
             passed_args.append('user_id')
-        if user_name is not None:
-            passed_args.append('user_name')
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_sip_registrations")
         if len(passed_args) == 0:
-            raise VoximplantException("None of user_id, user_name passed into get_sip_registrations")
+            raise VoximplantException("None of user_id passed into get_sip_registrations")
         
         
         
@@ -4317,9 +4382,6 @@ class VoximplantAPI:
 
         if user_id is not None:
             params['user_id']=self._serialize_list(user_id)
-
-        if user_name is not None:
-            params['user_name']=self._serialize_list(user_name)
 
         if proxy is not None:
             params['proxy']=self._serialize_list(proxy)
@@ -4550,7 +4612,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_phone_numbers(self, phone_id=None, phone_number=None, application_id=None, application_name=None, is_bound_to_application=None, phone_template=None, country_code=None, phone_category_name=None, canceled=None, deactivated=None, auto_charge=None, from_phone_next_renewal=None, to_phone_next_renewal=None, from_phone_purchase_date=None, to_phone_purchase_date=None, child_account_id=None, children_phones_only=None, verification_name=None, verification_status=None, from_unverified_hold_until=None, to_unverified_hold_until=None, can_be_used=None, order_by=None, sandbox=None, count=None, offset=None, phone_region_name=None, rule_id=None, rule_name=None, is_bound_to_rule=None):
+    def get_phone_numbers(self, phone_id=None, phone_number=None, activation_status=None, application_id=None, application_name=None, is_bound_to_application=None, phone_template=None, country_code=None, phone_category_name=None, canceled=None, deactivated=None, auto_charge=None, from_phone_next_renewal=None, to_phone_next_renewal=None, from_phone_purchase_date=None, to_phone_purchase_date=None, child_account_id=None, children_phones_only=None, verification_name=None, verification_status=None, from_unverified_hold_until=None, to_unverified_hold_until=None, can_be_used=None, order_by=None, sandbox=None, count=None, offset=None, phone_region_name=None, rule_id=None, rule_name=None, is_bound_to_rule=None):
         """
         Gets the account phone numbers.
 
@@ -4575,6 +4637,9 @@ class VoximplantAPI:
 
         if phone_number is not None:
             params['phone_number']=self._serialize_list(phone_number)
+
+        if activation_status is not None:
+            params['activation_status']=self._serialize_list(activation_status)
 
         if application_id is not None:
             params['application_id']=application_id
@@ -7774,7 +7839,7 @@ class VoximplantAPI:
 
     def a2p_send_sms(self, src_number, dst_numbers, text, store_body=None):
         """
-        Sends an SMS message from the application to customers. The source phone number should be purchased from Voximplant and support SMS (which is indicated by the <b>is_sms_supported</b> property in the objects returned by the <a href='/docs/references/httpapi/managing_phone_numbers#getphonenumbers'>/GetPhoneNumbers</a> Management API) and SMS should be enabled for it via the <a href='/docs/references/httpapi/managing_sms#controlsms'>/ControlSms</a> Management API.
+        Sends an A2P SMS message from the application to customers. A SenderID is required for A2P messages. Please contact support for installing a SenderID.
 
         
         :rtype: dict
@@ -7856,7 +7921,7 @@ class VoximplantAPI:
 
     def create_key(self, description=None, key_name=None, role_id=None, role_name=None):
         """
-        Creates a public/private key pair. You can optionally specify one or more roles for the key.
+        Creates a public/private key pair. You can optionally specify one or more roles for the key. You can find all available service account roles [here](/docs/getting-started/basic-concepts/management-api#service-account-roles).
 
         
         :rtype: dict
@@ -8675,7 +8740,7 @@ class VoximplantAPI:
         
         return res
 
-    def sq__add_queue(self, application_id, sq_queue_name, call_agent_selection, call_task_selection, application_name=None, im_agent_selection=None, im_task_selection=None, hold_calls_if_inactive_agents=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None, call_max_waiting_time_in_seconds=None, im_max_waiting_time_in_seconds=None):
+    def sq__add_queue(self, application_id, sq_queue_name, call_agent_selection, call_task_selection, application_name=None, hold_im_if_inactive_agents=None, im_agent_selection=None, im_task_selection=None, hold_calls_if_inactive_agents=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None, call_max_waiting_time_in_seconds=None, im_max_waiting_time_in_seconds=None):
         """
         Adds a new queue.
 
@@ -8695,6 +8760,9 @@ class VoximplantAPI:
         
         if application_name is not None:
             params['application_name']=application_name
+
+        if hold_im_if_inactive_agents is not None:
+            params['hold_im_if_inactive_agents']=hold_im_if_inactive_agents
 
         if im_agent_selection is not None:
             params['im_agent_selection']=im_agent_selection
@@ -8739,7 +8807,7 @@ class VoximplantAPI:
         
         return res
 
-    def sq__set_queue_info(self, application_id, sq_queue_id, application_name=None, sq_queue_name=None, hold_calls_if_inactive_agents=None, new_sq_queue_name=None, call_agent_selection=None, im_agent_selection=None, call_task_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None, call_max_waiting_time_in_seconds=None, im_max_waiting_time_in_seconds=None):
+    def sq__set_queue_info(self, application_id, sq_queue_id, application_name=None, hold_im_if_inactive_agents=None, sq_queue_name=None, hold_calls_if_inactive_agents=None, new_sq_queue_name=None, call_agent_selection=None, im_agent_selection=None, call_task_selection=None, im_task_selection=None, description=None, call_max_waiting_time=None, im_max_waiting_time=None, call_max_queue_size=None, im_max_queue_size=None, priority=None, call_max_waiting_time_in_seconds=None, im_max_waiting_time_in_seconds=None):
         """
         Edits an existing queue.
 
@@ -8755,6 +8823,9 @@ class VoximplantAPI:
         
         if application_name is not None:
             params['application_name']=application_name
+
+        if hold_im_if_inactive_agents is not None:
+            params['hold_im_if_inactive_agents']=hold_im_if_inactive_agents
 
         if sq_queue_name is not None:
             params['sq_queue_name']=sq_queue_name

@@ -6,11 +6,12 @@ if __name__ == "__main__":
     )
     voxapi = VoximplantAPI(config=config)
     
-    # Get the all children.
+    # Get the specified children.
 
+    CHILD_ACCOUNT_ID = [414877, 464478]
     
     try:
-        res = voxapi.get_children_accounts()
+        res = voxapi.get_children_accounts(child_account_id=CHILD_ACCOUNT_ID)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))
