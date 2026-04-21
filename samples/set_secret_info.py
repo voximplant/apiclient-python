@@ -6,12 +6,16 @@ if __name__ == "__main__":
     )
     voxapi = VoximplantAPI(config=config)
     
-    # Verify the callerID 1.
+    # Update the value for secret 10.
 
-    CALLERID_ID = 1
+    APPLICATION_ID = 1
+    SECRET_ID = 10
+    SECRET_VALUE = "newsecret456"
     
     try:
-        res = voxapi.verify_caller_id(callerid_id=CALLERID_ID)
+        res = voxapi.set_secret_info(application_id=APPLICATION_ID,
+            secret_id=SECRET_ID,
+            secret_value=SECRET_VALUE)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

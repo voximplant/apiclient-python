@@ -6,14 +6,14 @@ if __name__ == "__main__":
     )
     voxapi = VoximplantAPI(config=config)
     
-    # Activate the callerID by the verification code.
+    # Delete secret with ID 10.
 
-    VERIFICATION_CODE = "12345"
-    CALLERID_ID = 1
+    APPLICATION_ID = 1
+    SECRET_ID = 10
     
     try:
-        res = voxapi.activate_caller_id(VERIFICATION_CODE,
-            callerid_id=CALLERID_ID)
+        res = voxapi.del_secret(application_id=APPLICATION_ID,
+            secret_id=SECRET_ID)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

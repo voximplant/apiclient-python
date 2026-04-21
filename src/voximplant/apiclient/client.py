@@ -1226,6 +1226,21 @@ class VoximplantAPI:
     def _preprocess_sq_add_skill_result(self, s):
             pass
 
+    def _preprocess_add_secret_result(self, s):
+            pass
+
+    def _preprocess_get_secret_value_result(self, s):
+        if "created" in s:
+            s["created"] = self._api_datetime_utc_to_py(s["created"])
+        if "modified" in s:
+            s["modified"] = self._api_datetime_utc_to_py(s["modified"])
+
+    def _preprocess_secret_list_item(self, s):
+        if "created" in s:
+            s["created"] = self._api_datetime_utc_to_py(s["created"])
+        if "modified" in s:
+            s["modified"] = self._api_datetime_utc_to_py(s["modified"])
+
 
     def get_account_info(self, return_live_balance=None):
         """
@@ -2418,7 +2433,7 @@ class VoximplantAPI:
         
         return res
 
-    def edit_call_list_task(self, list_id, task_id=None, task_uuid=None, start_at=None, attempts_left=None, custom_data=None, min_execution_time=None):
+    def edit_call_list_task(self, list_id, task_id=None, task_uuid=None, start_at=None, attempts_left=None, custom_data=None, min_execution_time=None, max_execution_time=None):
         """
         Edits the specified call list's task.
 
@@ -2447,6 +2462,9 @@ class VoximplantAPI:
 
         if min_execution_time is not None:
             params['min_execution_time']=self._py_datetime_to_api(min_execution_time)
+
+        if max_execution_time is not None:
+            params['max_execution_time']=self._py_datetime_to_api(max_execution_time)
 
         
         res = self._perform_request('EditCallListTask', params)
@@ -5156,66 +5174,6 @@ class VoximplantAPI:
         
         return res
 
-    def add_caller_id(self, callerid_number):
-        """
-        Adds a new caller ID. Caller ID is the phone that is displayed to the called user. This number can be used for call back.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        params['callerid_number']=callerid_number
-
-        
-        
-        res = self._perform_request('AddCallerID', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        
-        return res
-
-    def activate_caller_id(self, verification_code, callerid_id=None, callerid_number=None):
-        """
-        Activates the CallerID by the verification code.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        passed_args = []
-        if callerid_id is not None:
-            passed_args.append('callerid_id')
-        if callerid_number is not None:
-            passed_args.append('callerid_number')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into activate_caller_id")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of callerid_id, callerid_number passed into activate_caller_id")
-        
-        
-        params['verification_code']=verification_code
-
-        
-        if callerid_id is not None:
-            params['callerid_id']=callerid_id
-
-        if callerid_number is not None:
-            params['callerid_number']=callerid_number
-
-        
-        res = self._perform_request('ActivateCallerID', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        
-        return res
-
     def del_caller_id(self, callerid_id=None, callerid_number=None):
         """
         Deletes the CallerID. Note: you cannot delete a CID permanently (the antispam defence).
@@ -5292,43 +5250,6 @@ class VoximplantAPI:
                     self._preprocess_caller_id_info_type(p)
             except TypeError as te:
                 pass
-        
-        return res
-
-    def verify_caller_id(self, callerid_id=None, callerid_number=None):
-        """
-        Gets a verification code via phone call to the **callerid_number**.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        passed_args = []
-        if callerid_id is not None:
-            passed_args.append('callerid_id')
-        if callerid_number is not None:
-            passed_args.append('callerid_number')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into verify_caller_id")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of callerid_id, callerid_number passed into verify_caller_id")
-        
-        
-        
-        if callerid_id is not None:
-            params['callerid_id']=callerid_id
-
-        if callerid_number is not None:
-            params['callerid_number']=callerid_number
-
-        
-        res = self._perform_request('VerifyCallerID', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
         
         return res
 
@@ -9346,6 +9267,285 @@ class VoximplantAPI:
 
         
         res = self._perform_request('SQ_SetAgentInfo', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def add_secret(self, secret_name, secret_value, application_id=None, application_name=None, description=None):
+        """
+        Adds a new secret.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_secret")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of application_id, application_name passed into add_secret")
+        
+        
+        params['secret_name']=secret_name
+
+        params['secret_value']=secret_value
+
+        
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if description is not None:
+            params['description']=description
+
+        
+        res = self._perform_request('AddSecret', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            try:
+                for p in res["result"]:
+                    self._preprocess_add_secret_result(p)
+            except TypeError as te:
+                pass
+        
+        return res
+
+    def del_secret(self, application_id=None, application_name=None, secret_id=None, secret_name=None):
+        """
+        Deletes an existing secret.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_secret")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of application_id, application_name passed into del_secret")
+        
+        
+        passed_args = []
+        if secret_id is not None:
+            passed_args.append('secret_id')
+        if secret_name is not None:
+            passed_args.append('secret_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_secret")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of secret_id, secret_name passed into del_secret")
+        
+        
+        
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if secret_id is not None:
+            params['secret_id']=self._serialize_list(secret_id)
+
+        if secret_name is not None:
+            params['secret_name']=self._serialize_list(secret_name)
+
+        
+        res = self._perform_request('DelSecret', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        
+        
+        return res
+
+    def get_secret_value(self, application_id=None, application_name=None, secret_id=None, secret_name=None):
+        """
+        Gets the value of a specific secret.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_secret_value")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of application_id, application_name passed into get_secret_value")
+        
+        
+        passed_args = []
+        if secret_id is not None:
+            passed_args.append('secret_id')
+        if secret_name is not None:
+            passed_args.append('secret_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_secret_value")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of secret_id, secret_name passed into get_secret_value")
+        
+        
+        
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if secret_id is not None:
+            params['secret_id']=secret_id
+
+        if secret_name is not None:
+            params['secret_name']=secret_name
+
+        
+        res = self._perform_request('GetSecretValue', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            try:
+                for p in res["result"]:
+                    self._preprocess_get_secret_value_result(p)
+            except TypeError as te:
+                pass
+        
+        return res
+
+    def get_secrets(self, application_id=None, application_name=None, secret_name_part=None, count=None, offset=None):
+        """
+        Gets the list of an application's secrets.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_secrets")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of application_id, application_name passed into get_secrets")
+        
+        
+        
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if secret_name_part is not None:
+            params['secret_name_part']=secret_name_part
+
+        if count is not None:
+            params['count']=count
+
+        if offset is not None:
+            params['offset']=offset
+
+        
+        res = self._perform_request('GetSecrets', params)
+        
+        if "error" in res:
+            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
+        if "result" in res:
+            try:
+                for p in res["result"]:
+                    self._preprocess_secret_list_item(p)
+            except TypeError as te:
+                pass
+        
+        return res
+
+    def set_secret_info(self, application_id=None, application_name=None, secret_id=None, secret_name=None, new_secret_name=None, secret_value=None, description=None):
+        """
+        Edits a secret's parameters.
+
+        
+        :rtype: dict
+        """
+        params = dict()
+        
+        passed_args = []
+        if application_id is not None:
+            passed_args.append('application_id')
+        if application_name is not None:
+            passed_args.append('application_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_secret_info")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of application_id, application_name passed into set_secret_info")
+        
+        
+        passed_args = []
+        if secret_id is not None:
+            passed_args.append('secret_id')
+        if secret_name is not None:
+            passed_args.append('secret_name')
+        
+        if len(passed_args) > 1:
+            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_secret_info")
+        if len(passed_args) == 0:
+            raise VoximplantException("None of secret_id, secret_name passed into set_secret_info")
+        
+        
+        
+        if application_id is not None:
+            params['application_id']=application_id
+
+        if application_name is not None:
+            params['application_name']=application_name
+
+        if secret_id is not None:
+            params['secret_id']=secret_id
+
+        if secret_name is not None:
+            params['secret_name']=secret_name
+
+        if new_secret_name is not None:
+            params['new_secret_name']=new_secret_name
+
+        if secret_value is not None:
+            params['secret_value']=secret_value
+
+        if description is not None:
+            params['description']=description
+
+        
+        res = self._perform_request('SetSecretInfo', params)
         
         if "error" in res:
             raise VoximplantException(res["error"]["msg"], res["error"]["code"])
