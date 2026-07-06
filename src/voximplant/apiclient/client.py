@@ -1366,8 +1366,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_child_account_info")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of child_account_id, child_account_name, child_account_email passed into set_child_account_info")
         
         
         
@@ -1739,8 +1737,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_application")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into del_application")
         
         
         
@@ -1776,8 +1772,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_application_info")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, required_application_name passed into set_application_info")
         
         
         
@@ -1861,8 +1855,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_user")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into add_user")
         
         
         params['user_name']=user_name
@@ -1913,8 +1905,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_user")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of user_id, user_name passed into del_user")
         
         
         passed_args = []
@@ -1966,8 +1956,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_user_info")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of user_id, user_name passed into set_user_info")
         
         
         passed_args = []
@@ -2110,9 +2098,9 @@ class VoximplantAPI:
         
         return res
 
-    def create_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, interval_seconds=None, encoding=None, delimiter=None, escape=None, reference_ip=None, server_location=None, task_priority_strategy=None):
+    def create_call_list(self, rule_id, priority, max_simultaneous, num_attempts, name, file_content, list_custom_data=None, interval_seconds=None, encoding=None, delimiter=None, escape=None, reference_ip=None, server_location=None, task_priority_strategy=None):
         """
-        Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the following options in a CSV file: <ul><li>**__start_execution_time** – when the call list processing starts every day, UTC+0 24-h format: HH:mm:ss</li><li>**__end_execution_time** – when the call list processing stops every day,  UTC+0 24-h format: HH:mm:ss</li><li>**__start_at** – when the call list processing starts, UNIX timestamp. If not specified, the processing starts immediately after a method call</li><li>**__task_uuid** – call list UUID. A string up to 40 characters, can contain latin letters, digits, hyphens (-) and colons (:). Unique within the call list</li></ul><br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.<br/><b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing does not start, or it stops immediately if it is active.
+        Adds a new CSV file for call list processing and starts the specified rule immediately. To send a file, use the request body. To set the call time constraints, use the following options in a CSV file: <ul><li>**__start_execution_time** – when the call list processing starts every day, UTC+0 24-h format: HH:mm:ss</li><li>**__end_execution_time** – when the call list processing stops every day,  UTC+0 24-h format: HH:mm:ss</li><li>**__start_at** – when the call list processing starts, UNIX timestamp. If not specified, the processing starts immediately after a method call</li><li>**__task_uuid** – call list UUID. A string up to 40 characters, can contain latin letters, digits, hyphens (-) and colons (:). Unique within the call list</li></ul><br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.<br/><b>IMPORTANT:</b> the account's balance should be equal or greater than 1 USD. If the balance is lower than 1 USD, the call list processing does not start, or it stops immediately if it is active.<br><br>You can specify a custom call schedule for every record. Refer to the <a href="/docs/guides/solutions/call-lists">Call lists guide</a> for more information.
 
         
         :rtype: dict
@@ -2132,6 +2120,9 @@ class VoximplantAPI:
         params['file_content']=file_content
 
         
+        if list_custom_data is not None:
+            params['list_custom_data']=list_custom_data
+
         if interval_seconds is not None:
             params['interval_seconds']=interval_seconds
 
@@ -2164,7 +2155,7 @@ class VoximplantAPI:
 
     def append_to_call_list(self, file_content, list_id=None, encoding=None, escape=None, delimiter=None):
         """
-        Appends a new task to the existing call list.<br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.
+        Appends a new task to the existing call list.<br>This method accepts CSV files with custom delimiters, such a commas (,), semicolons (;) and other. To specify a delimiter, pass it to the <b>delimiter</b> parameter.<br><br>You can specify a custom call schedule for every record. Refer to the <a href="/docs/guides/solutions/call-lists">Call lists guide</a> for more information.
 
         
         :rtype: dict
@@ -2177,8 +2168,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into append_to_call_list")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of list_id passed into append_to_call_list")
         
         
         params['file_content']=file_content
@@ -2220,8 +2209,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into cancel_call_list_batch")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of list_id passed into cancel_call_list_batch")
         
         
         params['batch_ids']=batch_ids
@@ -2239,7 +2226,7 @@ class VoximplantAPI:
         
         return res
 
-    def edit_call_list(self, list_id, interval_seconds=None, num_attempts=None, max_simultaneous=None, ip_address=None, name=None, priority=None, start_at=None, task_priority_strategy=None, server_location=None):
+    def edit_call_list(self, list_id, list_custom_data=None, interval_seconds=None, num_attempts=None, max_simultaneous=None, ip_address=None, name=None, priority=None, start_at=None, task_priority_strategy=None, server_location=None):
         """
         Edits the specified call list by its ID.
 
@@ -2251,6 +2238,9 @@ class VoximplantAPI:
         params['list_id']=list_id
 
         
+        if list_custom_data is not None:
+            params['list_custom_data']=list_custom_data
+
         if interval_seconds is not None:
             params['interval_seconds']=interval_seconds
 
@@ -2433,7 +2423,7 @@ class VoximplantAPI:
         
         return res
 
-    def edit_call_list_task(self, list_id, task_id=None, task_uuid=None, start_at=None, attempts_left=None, custom_data=None, min_execution_time=None, max_execution_time=None):
+    def edit_call_list_task(self, list_id, task_id=None, call_schedule=None, task_uuid=None, start_at=None, attempts_left=None, custom_data=None, min_execution_time=None, max_execution_time=None):
         """
         Edits the specified call list's task.
 
@@ -2447,6 +2437,9 @@ class VoximplantAPI:
         
         if task_id is not None:
             params['task_id']=task_id
+
+        if call_schedule is not None:
+            params['call_schedule']=call_schedule
 
         if task_uuid is not None:
             params['task_uuid']=task_uuid
@@ -2602,8 +2595,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_scenario")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of scenario_id, scenario_name passed into del_scenario")
         
         
         
@@ -2639,8 +2630,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into bind_scenario")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of scenario_id, scenario_name passed into bind_scenario")
         
         
         passed_args = []
@@ -2651,8 +2640,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into bind_scenario")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of rule_id, rule_name passed into bind_scenario")
         
         
         passed_args = []
@@ -2663,8 +2650,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into bind_scenario")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into bind_scenario")
         
         
         
@@ -2760,8 +2745,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_scenario_info")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of scenario_id, required_scenario_name passed into set_scenario_info")
         
         
         
@@ -2803,8 +2786,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into reorder_scenarios")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of rule_id, rule_name passed into reorder_scenarios")
         
         
         
@@ -2969,8 +2950,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_rule")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into add_rule")
         
         
         passed_args = []
@@ -2981,8 +2960,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_rule")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of scenario_id, scenario_name passed into add_rule")
         
         
         params['rule_name']=rule_name
@@ -3037,8 +3014,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_rule")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of rule_id, rule_name passed into del_rule")
         
         
         passed_args = []
@@ -3049,8 +3024,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_rule")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into del_rule")
         
         
         
@@ -3128,8 +3101,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_rules")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into get_rules")
         
         
         
@@ -4353,8 +4324,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_sip_registrations")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of rule_id, rule_name passed into get_sip_registrations")
         
         
         passed_args = []
@@ -4363,8 +4332,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_sip_registrations")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of user_id passed into get_sip_registrations")
         
         
         
@@ -4447,8 +4414,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into attach_phone_number")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of phone_count, phone_number passed into attach_phone_number")
         
         
         params['country_code']=country_code
@@ -4496,8 +4461,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into bind_phone_number_to_application")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of phone_id, phone_number passed into bind_phone_number_to_application")
         
         
         passed_args = []
@@ -4508,8 +4471,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into bind_phone_number_to_application")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into bind_phone_number_to_application")
         
         
         passed_args = []
@@ -4570,8 +4531,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into deactivate_phone_number")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of phone_id, phone_number passed into deactivate_phone_number")
         
         
         
@@ -4607,8 +4566,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_phone_number_info")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of phone_id, phone_number passed into set_phone_number_info")
         
         
         
@@ -5191,8 +5148,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_caller_id")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of callerid_id, callerid_number passed into del_caller_id")
         
         
         
@@ -5370,8 +5325,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_queue")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into add_queue")
         
         
         params['acd_queue_name']=acd_queue_name
@@ -5427,8 +5380,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into bind_user_to_queue")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into bind_user_to_queue")
         
         
         passed_args = []
@@ -5439,8 +5390,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into bind_user_to_queue")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of user_id, user_name passed into bind_user_to_queue")
         
         
         passed_args = []
@@ -5451,8 +5400,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into bind_user_to_queue")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of acd_queue_id, acd_queue_name passed into bind_user_to_queue")
         
         
         params['bind']=bind
@@ -5502,8 +5449,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_queue")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of acd_queue_id, acd_queue_name passed into del_queue")
         
         
         
@@ -5539,8 +5484,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_queue_info")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of acd_queue_id, acd_queue_name passed into set_queue_info")
         
         
         
@@ -5804,8 +5747,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_smart_queue_realtime_metrics")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into get_smart_queue_realtime_metrics")
         
         
         passed_args = []
@@ -5893,8 +5834,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_smart_queue_day_history")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into get_smart_queue_day_history")
         
         
         passed_args = []
@@ -5989,8 +5928,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into request_smart_queue_history")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into request_smart_queue_history")
         
         
         passed_args = []
@@ -6229,8 +6166,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_skill")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of skill_id, skill_name passed into del_skill")
         
         
         
@@ -6266,8 +6201,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_skill_info")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of skill_id, skill_name passed into set_skill_info")
         
         
         params['new_skill_name']=new_skill_name
@@ -6341,8 +6274,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into bind_skill")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of skill_id, skill_name passed into bind_skill")
         
         
         passed_args = []
@@ -6353,8 +6284,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into bind_skill")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of user_id, user_name passed into bind_skill")
         
         
         passed_args = []
@@ -6365,8 +6294,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into bind_skill")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of acd_queue_id, acd_queue_name passed into bind_skill")
         
         
         passed_args = []
@@ -6487,472 +6414,6 @@ class VoximplantAPI:
         
         return res
 
-    def add_admin_user(self, new_admin_user_name, admin_user_display_name, new_admin_user_password, admin_user_active=None, admin_role_id=None, admin_role_name=None):
-        """
-        Adds a new admin user into the specified parent or child account.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        passed_args = []
-        if admin_role_id is not None:
-            passed_args.append('admin_role_id')
-        if admin_role_name is not None:
-            passed_args.append('admin_role_name')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_admin_user")
-        
-        
-        params['new_admin_user_name']=new_admin_user_name
-
-        params['admin_user_display_name']=admin_user_display_name
-
-        params['new_admin_user_password']=new_admin_user_password
-
-        
-        if admin_user_active is not None:
-            params['admin_user_active']=admin_user_active
-
-        if admin_role_id is not None:
-            params['admin_role_id']=admin_role_id
-
-        if admin_role_name is not None:
-            params['admin_role_name']=self._serialize_list(admin_role_name)
-
-        
-        res = self._perform_request('AddAdminUser', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        
-        return res
-
-    def del_admin_user(self, required_admin_user_id=None, required_admin_user_name=None):
-        """
-        Deletes the specified admin user.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        passed_args = []
-        if required_admin_user_id is not None:
-            passed_args.append('required_admin_user_id')
-        if required_admin_user_name is not None:
-            passed_args.append('required_admin_user_name')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_admin_user")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of required_admin_user_id, required_admin_user_name passed into del_admin_user")
-        
-        
-        
-        if required_admin_user_id is not None:
-            params['required_admin_user_id']=self._serialize_list(required_admin_user_id)
-
-        if required_admin_user_name is not None:
-            params['required_admin_user_name']=self._serialize_list(required_admin_user_name)
-
-        
-        res = self._perform_request('DelAdminUser', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        
-        return res
-
-    def set_admin_user_info(self, required_admin_user_id=None, required_admin_user_name=None, new_admin_user_name=None, admin_user_display_name=None, new_admin_user_password=None, admin_user_active=None):
-        """
-        Edits the specified admin user.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        passed_args = []
-        if required_admin_user_id is not None:
-            passed_args.append('required_admin_user_id')
-        if required_admin_user_name is not None:
-            passed_args.append('required_admin_user_name')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_admin_user_info")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of required_admin_user_id, required_admin_user_name passed into set_admin_user_info")
-        
-        
-        
-        if required_admin_user_id is not None:
-            params['required_admin_user_id']=required_admin_user_id
-
-        if required_admin_user_name is not None:
-            params['required_admin_user_name']=required_admin_user_name
-
-        if new_admin_user_name is not None:
-            params['new_admin_user_name']=new_admin_user_name
-
-        if admin_user_display_name is not None:
-            params['admin_user_display_name']=admin_user_display_name
-
-        if new_admin_user_password is not None:
-            params['new_admin_user_password']=new_admin_user_password
-
-        if admin_user_active is not None:
-            params['admin_user_active']=admin_user_active
-
-        
-        res = self._perform_request('SetAdminUserInfo', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        
-        return res
-
-    def get_admin_users(self, required_admin_user_id=None, required_admin_user_name=None, admin_user_display_name=None, admin_user_active=None, with_roles=None, with_access_entries=None, count=None, offset=None):
-        """
-        Gets the admin users of the specified account. Note that both account types - parent and child - can have its own admins.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        
-        if required_admin_user_id is not None:
-            params['required_admin_user_id']=required_admin_user_id
-
-        if required_admin_user_name is not None:
-            params['required_admin_user_name']=required_admin_user_name
-
-        if admin_user_display_name is not None:
-            params['admin_user_display_name']=admin_user_display_name
-
-        if admin_user_active is not None:
-            params['admin_user_active']=admin_user_active
-
-        if with_roles is not None:
-            params['with_roles']=with_roles
-
-        if with_access_entries is not None:
-            params['with_access_entries']=with_access_entries
-
-        if count is not None:
-            params['count']=count
-
-        if offset is not None:
-            params['offset']=offset
-
-        
-        res = self._perform_request('GetAdminUsers', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        if "result" in res:
-            try:
-                for p in res["result"]:
-                    self._preprocess_admin_user_type(p)
-            except TypeError as te:
-                pass
-        
-        return res
-
-    def add_admin_role(self, admin_role_name, admin_role_active=None, like_admin_role_id=None, like_admin_role_name=None, allowed_entries=None, denied_entries=None):
-        """
-        Adds a new admin role.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        passed_args = []
-        if like_admin_role_id is not None:
-            passed_args.append('like_admin_role_id')
-        if like_admin_role_name is not None:
-            passed_args.append('like_admin_role_name')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_admin_role")
-        
-        
-        params['admin_role_name']=admin_role_name
-
-        
-        if admin_role_active is not None:
-            params['admin_role_active']=admin_role_active
-
-        if like_admin_role_id is not None:
-            params['like_admin_role_id']=self._serialize_list(like_admin_role_id)
-
-        if like_admin_role_name is not None:
-            params['like_admin_role_name']=self._serialize_list(like_admin_role_name)
-
-        if allowed_entries is not None:
-            params['allowed_entries']=self._serialize_list(allowed_entries)
-
-        if denied_entries is not None:
-            params['denied_entries']=self._serialize_list(denied_entries)
-
-        
-        res = self._perform_request('AddAdminRole', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        
-        return res
-
-    def del_admin_role(self, admin_role_id=None, admin_role_name=None):
-        """
-        Deletes the specified admin role.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        passed_args = []
-        if admin_role_id is not None:
-            passed_args.append('admin_role_id')
-        if admin_role_name is not None:
-            passed_args.append('admin_role_name')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_admin_role")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of admin_role_id, admin_role_name passed into del_admin_role")
-        
-        
-        
-        if admin_role_id is not None:
-            params['admin_role_id']=self._serialize_list(admin_role_id)
-
-        if admin_role_name is not None:
-            params['admin_role_name']=self._serialize_list(admin_role_name)
-
-        
-        res = self._perform_request('DelAdminRole', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        
-        return res
-
-    def set_admin_role_info(self, admin_role_id=None, admin_role_name=None, new_admin_role_name=None, admin_role_active=None, entry_modification_mode=None, allowed_entries=None, denied_entries=None, like_admin_role_id=None, like_admin_role_name=None):
-        """
-        Edits the specified admin role.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        passed_args = []
-        if admin_role_id is not None:
-            passed_args.append('admin_role_id')
-        if admin_role_name is not None:
-            passed_args.append('admin_role_name')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_admin_role_info")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of admin_role_id, admin_role_name passed into set_admin_role_info")
-        
-        
-        passed_args = []
-        if like_admin_role_id is not None:
-            passed_args.append('like_admin_role_id')
-        if like_admin_role_name is not None:
-            passed_args.append('like_admin_role_name')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_admin_role_info")
-        
-        
-        
-        if admin_role_id is not None:
-            params['admin_role_id']=admin_role_id
-
-        if admin_role_name is not None:
-            params['admin_role_name']=admin_role_name
-
-        if new_admin_role_name is not None:
-            params['new_admin_role_name']=new_admin_role_name
-
-        if admin_role_active is not None:
-            params['admin_role_active']=admin_role_active
-
-        if entry_modification_mode is not None:
-            params['entry_modification_mode']=entry_modification_mode
-
-        if allowed_entries is not None:
-            params['allowed_entries']=self._serialize_list(allowed_entries)
-
-        if denied_entries is not None:
-            params['denied_entries']=self._serialize_list(denied_entries)
-
-        if like_admin_role_id is not None:
-            params['like_admin_role_id']=self._serialize_list(like_admin_role_id)
-
-        if like_admin_role_name is not None:
-            params['like_admin_role_name']=self._serialize_list(like_admin_role_name)
-
-        
-        res = self._perform_request('SetAdminRoleInfo', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        
-        return res
-
-    def get_admin_roles(self, admin_role_id=None, admin_role_name=None, admin_role_active=None, with_entries=None, with_account_roles=None, with_parent_roles=None, included_admin_user_id=None, excluded_admin_user_id=None, full_admin_users_matching=None, showing_admin_user_id=None, count=None, offset=None):
-        """
-        Gets the admin roles.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        
-        if admin_role_id is not None:
-            params['admin_role_id']=admin_role_id
-
-        if admin_role_name is not None:
-            params['admin_role_name']=admin_role_name
-
-        if admin_role_active is not None:
-            params['admin_role_active']=admin_role_active
-
-        if with_entries is not None:
-            params['with_entries']=with_entries
-
-        if with_account_roles is not None:
-            params['with_account_roles']=with_account_roles
-
-        if with_parent_roles is not None:
-            params['with_parent_roles']=with_parent_roles
-
-        if included_admin_user_id is not None:
-            params['included_admin_user_id']=self._serialize_list(included_admin_user_id)
-
-        if excluded_admin_user_id is not None:
-            params['excluded_admin_user_id']=self._serialize_list(excluded_admin_user_id)
-
-        if full_admin_users_matching is not None:
-            params['full_admin_users_matching']=full_admin_users_matching
-
-        if showing_admin_user_id is not None:
-            params['showing_admin_user_id']=showing_admin_user_id
-
-        if count is not None:
-            params['count']=count
-
-        if offset is not None:
-            params['offset']=offset
-
-        
-        res = self._perform_request('GetAdminRoles', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        if "result" in res:
-            try:
-                for p in res["result"]:
-                    self._preprocess_admin_role_type(p)
-            except TypeError as te:
-                pass
-        
-        return res
-
-    def attach_admin_role(self, required_admin_user_id=None, required_admin_user_name=None, admin_role_id=None, admin_role_name=None, mode=None):
-        """
-        Attaches the admin role(s) to the already existing admin(s).
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        passed_args = []
-        if required_admin_user_id is not None:
-            passed_args.append('required_admin_user_id')
-        if required_admin_user_name is not None:
-            passed_args.append('required_admin_user_name')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into attach_admin_role")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of required_admin_user_id, required_admin_user_name passed into attach_admin_role")
-        
-        
-        passed_args = []
-        if admin_role_id is not None:
-            passed_args.append('admin_role_id')
-        if admin_role_name is not None:
-            passed_args.append('admin_role_name')
-        
-        if len(passed_args) > 1:
-            raise VoximplantException(", ". join(passed_args) + " passed simultaneously into attach_admin_role")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of admin_role_id, admin_role_name passed into attach_admin_role")
-        
-        
-        
-        if required_admin_user_id is not None:
-            params['required_admin_user_id']=self._serialize_list(required_admin_user_id)
-
-        if required_admin_user_name is not None:
-            params['required_admin_user_name']=self._serialize_list(required_admin_user_name)
-
-        if admin_role_id is not None:
-            params['admin_role_id']=self._serialize_list(admin_role_id)
-
-        if admin_role_name is not None:
-            params['admin_role_name']=self._serialize_list(admin_role_name)
-
-        if mode is not None:
-            params['mode']=mode
-
-        
-        res = self._perform_request('AttachAdminRole', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        
-        return res
-
-    def get_available_admin_role_entries(self):
-        """
-        Gets the all available admin role entries.
-
-        
-        :rtype: dict
-        """
-        params = dict()
-        
-        
-        
-        res = self._perform_request('GetAvailableAdminRoleEntries', params)
-        
-        if "error" in res:
-            raise VoximplantException(res["error"]["msg"], res["error"]["code"])
-        
-        
-        return res
-
     def add_authorized_account_ip(self, authorized_ip, allowed=None, description=None):
         """
         Adds a new authorized IP4 or network to the white/black list.
@@ -6997,8 +6458,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_authorized_account_ip")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of authorized_ip, contains_ip passed into del_authorized_account_ip")
         
         
         
@@ -7328,8 +6787,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_push_credential")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of push_provider_name, push_provider_id passed into add_push_credential")
         
         
         passed_args = []
@@ -8565,7 +8022,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_sms_history(self, source_number=None, destination_number=None, direction=None, count=None, offset=None, from_date=None, to_date=None, output=None):
+    def get_sms_history(self, message_id=None, source_number=None, destination_number=None, direction=None, count=None, offset=None, from_date=None, to_date=None, output=None):
         """
         Gets the history of sent and/or received SMS.
 
@@ -8575,6 +8032,9 @@ class VoximplantAPI:
         params = dict()
         
         
+        if message_id is not None:
+            params['message_id']=self._serialize_list(message_id)
+
         if source_number is not None:
             params['source_number']=source_number
 
@@ -8613,7 +8073,7 @@ class VoximplantAPI:
         
         return res
 
-    def a2p_get_sms_history(self, source_number=None, destination_number=None, count=None, offset=None, from_date=None, to_date=None, output=None, delivery_status=None):
+    def a2p_get_sms_history(self, message_id=None, source_number=None, destination_number=None, count=None, offset=None, from_date=None, to_date=None, output=None, delivery_status=None):
         """
         Gets the history of sent/or received A2P SMS.
 
@@ -8623,6 +8083,9 @@ class VoximplantAPI:
         params = dict()
         
         
+        if message_id is not None:
+            params['message_id']=self._serialize_list(message_id)
+
         if source_number is not None:
             params['source_number']=source_number
 
@@ -9291,8 +8754,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into add_secret")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into add_secret")
         
         
         params['secret_name']=secret_name
@@ -9340,8 +8801,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into del_secret")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into del_secret")
         
         
         passed_args = []
@@ -9395,8 +8854,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_secret_value")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into get_secret_value")
         
         
         passed_args = []
@@ -9407,8 +8864,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_secret_value")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of secret_id, secret_name passed into get_secret_value")
         
         
         
@@ -9455,8 +8910,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into get_secrets")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into get_secrets")
         
         
         
@@ -9506,8 +8959,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_secret_info")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of application_id, application_name passed into set_secret_info")
         
         
         passed_args = []
@@ -9518,8 +8969,6 @@ class VoximplantAPI:
         
         if len(passed_args) > 1:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into set_secret_info")
-        if len(passed_args) == 0:
-            raise VoximplantException("None of secret_id, secret_name passed into set_secret_info")
         
         
         
