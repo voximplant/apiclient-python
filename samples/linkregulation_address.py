@@ -12,7 +12,7 @@ if __name__ == "__main__":
     PHONE_ID = 1
     
     try:
-        res = voxapi.link_regulation_address(REGULATION_ADDRESS_ID,
+        res = voxapi.linkregulation_address(REGULATION_ADDRESS_ID,
             phone_id=PHONE_ID)
         print(res)
     except VoximplantException as e:

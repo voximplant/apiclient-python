@@ -1,6 +1,4 @@
 from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI, VoximplantException
-import datetime
-import pytz
 
 if __name__ == "__main__":
     config = VoximplantAPIConfig(
@@ -18,8 +16,8 @@ if __name__ == "__main__":
     TRANSACTION_TYPE = ["gift", "money_distribution"]
     
     try:
-        res = voxapi.get_transaction_history(FROM_DATE,
-            TO_DATE,
+        res = voxapi.get_transaction_history(from_date=FROM_DATE,
+            to_date=TO_DATE,
             count=COUNT,
             transaction_type=TRANSACTION_TYPE)
         print(res)

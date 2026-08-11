@@ -1,6 +1,4 @@
 from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI, VoximplantException
-import datetime
-import pytz
 
 if __name__ == "__main__":
     config = VoximplantAPIConfig(
@@ -18,8 +16,8 @@ if __name__ == "__main__":
     OUTPUT = "csv"
     
     try:
-        res = voxapi.get_audit_log_async(FROM_DATE,
-            TO_DATE,
+        res = voxapi.get_audit_log_async(from_date=FROM_DATE,
+            to_date=TO_DATE,
             filtered_cmd=FILTERED_CMD,
             advanced_filters=ADVANCED_FILTERS,
             output=OUTPUT)

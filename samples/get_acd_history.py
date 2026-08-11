@@ -1,6 +1,4 @@
 from voximplant.apiclient import VoximplantAPIConfig, VoximplantAPI, VoximplantException
-import datetime
-import pytz
 
 if __name__ == "__main__":
     config = VoximplantAPIConfig(
@@ -17,8 +15,8 @@ if __name__ == "__main__":
     COUNT = 2
     
     try:
-        res = voxapi.get_acd_history(FROM_DATE,
-            TO_DATE,
+        res = voxapi.get_acd_history(from_date=FROM_DATE,
+            to_date=TO_DATE,
             with_events=WITH_EVENTS,
             count=COUNT)
         print(res)
