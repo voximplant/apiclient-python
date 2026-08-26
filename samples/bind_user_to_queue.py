@@ -8,16 +8,16 @@ if __name__ == "__main__":
     
     # Bind three users to one queue.
 
-    BIND = True
     APPLICATION_ID = 1
     USER_ID = [12, 987, 456]
     ACD_QUEUE_NAME = "myqueue"
+    BIND = True
     
     try:
-        res = voxapi.bind_user_to_queue(BIND,
-            application_id=APPLICATION_ID,
+        res = voxapi.bind_user_to_queue(application_id=APPLICATION_ID,
             user_id=USER_ID,
-            acd_queue_name=ACD_QUEUE_NAME)
+            acd_queue_name=ACD_QUEUE_NAME,
+            bind=BIND)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

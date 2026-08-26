@@ -5623,7 +5623,7 @@ class VoximplantAPI:
         
         return res
 
-    def bind_user_to_queue(self, bind, application_id=None, application_name=None, user_id=None, user_name=None, acd_queue_id=None, acd_queue_name=None):
+    def bind_user_to_queue(self, bind=None, application_id=None, application_name=None, user_id=None, user_name=None, acd_queue_id=None, acd_queue_name=None):
         """
         Bind/unbind users to/from the specified ACD queues. Note that users and queues should be already bound to the same application.
 
@@ -5662,9 +5662,10 @@ class VoximplantAPI:
             raise VoximplantException(", ". join(passed_args) + " passed simultaneously into bind_user_to_queue")
         
         
-        params['bind']=bind
-
         
+        if bind is not None:
+            params['bind']=bind
+
         if application_id is not None:
             params['application_id']=application_id
 
@@ -5727,7 +5728,7 @@ class VoximplantAPI:
         
         return res
 
-    def set_queue_info(self, acd_queue_id=None, acd_queue_name=None, new_acd_queue_name=None, acd_queue_priority=None, auto_binding=None, service_probability=None, max_queue_size=None, max_waiting_time=None, average_service_time=None, application_id=None):
+    def set_queue_info(self, acd_queue_id=None, acd_queue_name=None, new_acd_queue_name=None, acd_queue_priority=None, auto_binding=None, service_probability=None, max_queue_size=None, max_waiting_time=None, average_service_time=None, application_id=None, application_name=None):
         """
         Edits the ACD queue.
 
@@ -5777,6 +5778,9 @@ class VoximplantAPI:
         if application_id is not None:
             params['application_id']=application_id
 
+        if application_name is not None:
+            params['application_name']=application_name
+
         
         res = self._perform_request('SetQueueInfo', params)
         
@@ -5786,7 +5790,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_queues(self, acd_queue_id=None, acd_queue_name=None, application_id=None, skill_id=None, excluded_skill_id=None, with_skills=None, showing_skill_id=None, count=None, offset=None, with_operatorcount=None):
+    def get_queues(self, acd_queue_id=None, acd_queue_name=None, application_id=None, application_name=None, skill_id=None, skill_name=None, excluded_skill_id=None, excluded_skill_name=None, with_skills=None, showing_skill_id=None, count=None, offset=None, with_operatorcount=None, show_deleted=None):
         """
         Gets the ACD queues.
 
@@ -5805,11 +5809,20 @@ class VoximplantAPI:
         if application_id is not None:
             params['application_id']=application_id
 
+        if application_name is not None:
+            params['application_name']=application_name
+
         if skill_id is not None:
             params['skill_id']=skill_id
 
+        if skill_name is not None:
+            params['skill_name']=skill_name
+
         if excluded_skill_id is not None:
             params['excluded_skill_id']=excluded_skill_id
+
+        if excluded_skill_name is not None:
+            params['excluded_skill_name']=excluded_skill_name
 
         if with_skills is not None:
             params['with_skills']=with_skills
@@ -5825,6 +5838,9 @@ class VoximplantAPI:
 
         if with_operatorcount is not None:
             params['with_operatorcount']=with_operatorcount
+
+        if show_deleted is not None:
+            params['show_deleted']=show_deleted
 
         
         res = self._perform_request('GetQueues', params)
@@ -5909,7 +5925,7 @@ class VoximplantAPI:
         
         return res
 
-    def get_acd_queue_statistics(self, from_date, to_date=None, abbreviation=None, acd_queue_id=None, report=None, aggregation=None):
+    def get_acd_queue_statistics(self, from_date, acd_queue_id, to_date=None, abbreviation=None, report=None, aggregation=None):
         """
         Get statistics for calls distributed to users (referred as 'operators') via the 'queue' distribution system. This method can filter statistic based on operator ids, queue ids and date-time interval. It can also group results by day or hour.
 
@@ -5920,15 +5936,14 @@ class VoximplantAPI:
         
         params['from_date']=self._py_datetime_to_api(from_date)
 
+        params['acd_queue_id']=self._serialize_list(acd_queue_id)
+
         
         if to_date is not None:
             params['to_date']=self._py_datetime_to_api(to_date)
 
         if abbreviation is not None:
             params['abbreviation']=abbreviation
-
-        if acd_queue_id is not None:
-            params['acd_queue_id']=self._serialize_list(acd_queue_id)
 
         if report is not None:
             params['report']=self._serialize_list(report)
