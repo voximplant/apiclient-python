@@ -12,8 +12,8 @@ if __name__ == "__main__":
     SQ_QUEUE_ID = 3
     
     try:
-        res = voxapi.sq__del_queue(APPLICATION_ID,
-            SQ_QUEUE_ID)
+        res = voxapi.sq__del_queue(application_id=APPLICATION_ID,
+            sq_queue_id=SQ_QUEUE_ID)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

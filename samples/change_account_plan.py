@@ -8,12 +8,12 @@ if __name__ == "__main__":
     
     # Change the IM plan.
 
-    PLAN_TYPE = "IM"
     PLAN_SUBSCRIPTION_TEMPLATE_ID = 3
+    PLAN_TYPE = "IM"
     
     try:
-        res = voxapi.change_account_plan(PLAN_TYPE,
-            plan_subscription_template_id=PLAN_SUBSCRIPTION_TEMPLATE_ID)
+        res = voxapi.change_account_plan(PLAN_SUBSCRIPTION_TEMPLATE_ID,
+            plan_type=PLAN_TYPE)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

@@ -12,7 +12,7 @@ if __name__ == "__main__":
     SQ_SKILL_ID = [2, 4]
     
     try:
-        res = voxapi.sq__get_skills(APPLICATION_ID,
+        res = voxapi.sq__get_skills(application_id=APPLICATION_ID,
             sq_skill_id=SQ_SKILL_ID)
         print(res)
     except VoximplantException as e:

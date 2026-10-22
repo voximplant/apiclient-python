@@ -13,8 +13,8 @@ if __name__ == "__main__":
     NEW_SQ_QUEUE_NAME = "myNewSmartQueue"
     
     try:
-        res = voxapi.sq__set_queue_info(APPLICATION_ID,
-            SQ_QUEUE_ID,
+        res = voxapi.sq__set_queue_info(application_id=APPLICATION_ID,
+            sq_queue_id=SQ_QUEUE_ID,
             new_sq_queue_name=NEW_SQ_QUEUE_NAME)
         print(res)
     except VoximplantException as e:

@@ -9,12 +9,10 @@ if __name__ == "__main__":
     # Get all agents with their current statuses.
 
     APPLICATION_ID = 1
-    HANDLE_CALLS = False
     WITH_SQ_STATUSES = True
     
     try:
-        res = voxapi.sq__get_agents(APPLICATION_ID,
-            HANDLE_CALLS,
+        res = voxapi.sq__get_agents(application_id=APPLICATION_ID,
             with_sq_statuses=WITH_SQ_STATUSES)
         print(res)
     except VoximplantException as e:

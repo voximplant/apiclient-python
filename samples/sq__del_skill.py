@@ -12,8 +12,8 @@ if __name__ == "__main__":
     SQ_SKILL_ID = 5
     
     try:
-        res = voxapi.sq__del_skill(APPLICATION_ID,
-            SQ_SKILL_ID)
+        res = voxapi.sq__del_skill(application_id=APPLICATION_ID,
+            sq_skill_id=SQ_SKILL_ID)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

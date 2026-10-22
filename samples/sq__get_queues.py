@@ -12,7 +12,7 @@ if __name__ == "__main__":
     SQ_QUEUE_ID = [1, 2]
     
     try:
-        res = voxapi.sq__get_queues(APPLICATION_ID,
+        res = voxapi.sq__get_queues(application_id=APPLICATION_ID,
             sq_queue_id=SQ_QUEUE_ID)
         print(res)
     except VoximplantException as e:

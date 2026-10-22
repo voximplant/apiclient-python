@@ -13,7 +13,7 @@ if __name__ == "__main__":
     
     try:
         res = voxapi.get_phone_number_country_states(COUNTRY_CODE,
-            PHONE_CATEGORY_NAME)
+            phone_category_name=PHONE_CATEGORY_NAME)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

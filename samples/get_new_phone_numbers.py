@@ -14,9 +14,9 @@ if __name__ == "__main__":
     COUNT = 2
     
     try:
-        res = voxapi.get_new_phone_numbers(COUNTRY_CODE,
-            PHONE_CATEGORY_NAME,
-            PHONE_REGION_ID,
+        res = voxapi.get_new_phone_numbers(country_code=COUNTRY_CODE,
+            phone_category_name=PHONE_CATEGORY_NAME,
+            phone_region_id=PHONE_REGION_ID,
             count=COUNT)
         print(res)
     except VoximplantException as e:

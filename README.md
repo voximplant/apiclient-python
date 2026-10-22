@@ -1,6 +1,14 @@
 # Voximplant API client library
 
-#### Version 2.10.0
+#### Version 2.11.0
+
+> **NOTE**
+>
+> From **2.11.0**, the library uses `httpx` instead of `requests` to perform HTTP requests.  
+> 
+> The public API is unchanged: the same classes, methods, parameters, and return values.
+> `requests` is no longer a dependency of this package, and transport failures raised by the
+> client are `httpx` errors.
 
 ## Prerequisites
 

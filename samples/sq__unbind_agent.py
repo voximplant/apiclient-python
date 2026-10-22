@@ -13,9 +13,9 @@ if __name__ == "__main__":
     USER_ID = 1
     
     try:
-        res = voxapi.sq__unbind_agent(APPLICATION_ID,
-            SQ_QUEUE_ID,
-            USER_ID)
+        res = voxapi.sq__unbind_agent(application_id=APPLICATION_ID,
+            sq_queue_id=SQ_QUEUE_ID,
+            user_id=USER_ID)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

@@ -12,7 +12,7 @@ if __name__ == "__main__":
     SCRIPT_CUSTOM_DATA = "mystr"
     
     try:
-        res = voxapi.start_scenarios(RULE_ID,
+        res = voxapi.start_scenarios(rule_id=RULE_ID,
             script_custom_data=SCRIPT_CUSTOM_DATA)
         print(res)
     except VoximplantException as e:

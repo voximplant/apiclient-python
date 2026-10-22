@@ -13,9 +13,9 @@ if __name__ == "__main__":
     SQ_SKILL_ID = 1
     
     try:
-        res = voxapi.sq__unbind_skill(APPLICATION_ID,
-            USER_ID,
-            SQ_SKILL_ID)
+        res = voxapi.sq__unbind_skill(application_id=APPLICATION_ID,
+            user_id=USER_ID,
+            sq_skill_id=SQ_SKILL_ID)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

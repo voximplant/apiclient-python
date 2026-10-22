@@ -13,8 +13,8 @@ if __name__ == "__main__":
     NEW_SQ_SKILL_NAME = "newSkill"
     
     try:
-        res = voxapi.sq__set_skill_info(APPLICATION_ID,
-            SQ_SKILL_ID,
+        res = voxapi.sq__set_skill_info(application_id=APPLICATION_ID,
+            sq_skill_id=SQ_SKILL_ID,
             new_sq_skill_name=NEW_SQ_SKILL_NAME)
         print(res)
     except VoximplantException as e:

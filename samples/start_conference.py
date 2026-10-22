@@ -14,7 +14,7 @@ if __name__ == "__main__":
     
     try:
         res = voxapi.start_conference(CONFERENCE_NAME,
-            RULE_ID,
+            rule_id=RULE_ID,
             script_custom_data=SCRIPT_CUSTOM_DATA)
         print(res)
     except VoximplantException as e:

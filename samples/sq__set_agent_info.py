@@ -13,9 +13,9 @@ if __name__ == "__main__":
     HANDLE_CALLS = True
     
     try:
-        res = voxapi.sq__set_agent_info(APPLICATION_ID,
-            USER_ID,
-            HANDLE_CALLS)
+        res = voxapi.sq__set_agent_info(application_id=APPLICATION_ID,
+            user_id=USER_ID,
+            handle_calls=HANDLE_CALLS)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))

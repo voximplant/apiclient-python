@@ -8,12 +8,12 @@ if __name__ == "__main__":
     
     # Add a new skill.
 
-    APPLICATION_ID = 1
     SQ_SKILL_NAME = "mySkill"
+    APPLICATION_ID = 1
     
     try:
-        res = voxapi.sq__add_skill(APPLICATION_ID,
-            SQ_SKILL_NAME)
+        res = voxapi.sq__add_skill(SQ_SKILL_NAME,
+            application_id=APPLICATION_ID)
         print(res)
     except VoximplantException as e:
         print("Error: {}".format(e.message))
